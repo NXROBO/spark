@@ -1,0 +1,21 @@
+*~
+*.swp
+*.user
+*.autosave
+CMakeLists.txt.user
+qtcreator-*
+*.user
+*.bat
+*.d
+*.g
+*.ldata
+*.log
+
+>>>>>>> fsm_ngh_beta
+build-simple_goals-Desktop-Default/
+build-*/
+build
+*.pyc
+*.orig
+.tmp
+/spark_tutorials/spark_iflytek/msc/res/asr/GrmBuilld/

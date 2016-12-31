@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<!-- 
+	spark robot's description    
+	
+	Copyright 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot name="spark" xmlns:xacro="http://ros.org/wiki/xacro">
+  	<xacro:include filename="$(find spark_description)/urdf/spark_340.urdf.xacro"/> 	
+</robot>

@@ -1,0 +1,21 @@
+1.安装：
+a.准备环境
+操作系统：ubantu14.04
+ROS版本：indigo
+b.解压目录：
+spar.rar.gz到home目录下，解压后目录为~/spark/install:
+c.设置：
+终端执行以下命令：
+cd ～/spark/install/doc
+sudo ./install.sh
+
+
+2.随行APP运行
+cd ~spark/install
+./follow_run.sh
+
+
+3.键盘控制
+source ./setup.bash
+rosrun teleop teleop 200 2
+
