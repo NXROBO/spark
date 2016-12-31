@@ -1,0 +1,9 @@
+<!--
+  The spark people (or whatever) follower nodelet.   
+ -->
+
+<launch>	
+	<node pkg="nodelet" type="nodelet" name="spark_base_nodelet_manager" args="manager"/>
+	<include file="$(find spark_follower)/launch/include/velocity_smoother.launch.xml"/>
+  	<node pkg="nodelet" type="nodelet" name="nxfollower_nodelet" args="load nxfollower/NxFollowerNodelet spark_base_nodelet_manager" output="screen"/>
+</launch>

@@ -1,0 +1,18 @@
+1.工作空间编译方式：
+a.catkin编译:
+进入spark工作空间，执行那个命令"catkin_make"
+b.eclipse编译
+进入spark工作空间，执行那个命令"./eclipse.sh"
+
+
+2.随行APP运行
+请参考 ～/spark/src/spark_app/spark_follower/doc的readme说明。
+
+
+3.键盘控制
+请参考 ～/spark/src/spark/spark_teleop节点
+
+
+4.深度摄像头
+a.使用方法请参考～/spark/src/spark_app/spark_follower节点
+b.深度摄像头的驱动OpenNI2在tool目录下

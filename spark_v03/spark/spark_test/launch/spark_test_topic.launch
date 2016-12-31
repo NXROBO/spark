@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="spark_test" type="spark_test_topic_node" name="spark_test_topic_node" output="screen"/>
+</launch>

@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!-- 
+	spark base    
+	© 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot name="spark_base">
+
+	<link name="base_footprint"/>			
+		
+	<link name="base_link">
+		<inertial>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <mass
+		    value="1.916261377" />
+		  <inertia
+		    ixx="0.014675824"
+		    ixy="-0.000054001"
+		    ixz="0.000353449"
+		    iyy="0.012747161"
+		    iyz="-0.000019714"
+		    izz="0.024582136" />
+		</inertial>
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		  </geometry>
+		</collision>	
+	</link>	
+	<joint name="base_joint" type="fixed">
+		<origin
+			xyz="0 0 0.01" 
+			rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="base_link" />
+	</joint>
+
+ 
+	<link name="left_wheel_link">
+		<inertial>
+	        <mass value="0.01" />
+	        <origin xyz="0 0 0" />
+	        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+	                 iyy="0.001" iyz="0.0" 
+	                 izz="0.001" />
+	    </inertial>	
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		  </geometry>
+		</collision>	
+	</link>  	
+	<joint name="left_wheel_joint" type="continuous">
+		<origin 
+			xyz="0 0.131 0.024" 
+			rpy="0 0 0" />
+		<axis xyz="0 1 0"/>
+		<parent link="base_link"/>
+		<child link="left_wheel_link" />
+	</joint>	
+	
+	
+	<link name="right_wheel_link">
+		<inertial>
+	        <mass value="0.01" />
+	        <origin xyz="0 0 0" />
+	        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+	                 iyy="0.001" iyz="0.0" 
+	                 izz="0.001" />
+	    </inertial>
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		  </geometry>
+		</collision>	
+	</link>   	
+	<joint name="right_wheel_joint" type="continuous">
+		<origin 
+			xyz="0 -0.131 0.024" 
+			rpy="0 0 0" />
+		<axis xyz="0 1 0"/>
+		<parent link="base_link"/>
+		<child link="right_wheel_link" />
+	</joint> 	
+
+</robot>
