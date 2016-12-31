@@ -10,8 +10,8 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ## Packages Overview
 
-* ***spark_v03*** : spark 0.3 driver which include base driver, camera driver, robot description, teleop package, follow person package and so on.
-* ***tools*** : it contains the 3th part openni2 driver which used in camera driver.
+* ***spark_v03*** : spark 0.3 driver including base driver, camera driver, robot description, teleop package, and follow person package and so on.
+* ***tools*** : it contains the 3rd part openni2 driver which camera driver uses.
 * ***doc*** : it shows that how to compile and use this meta-package.
 
 ## Usage
@@ -23,6 +23,7 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ### Compile
 
+Build this compile with the following steps:
 ```yaml
 #make a workspace
 mkdir sparkws/src
@@ -36,13 +37,13 @@ catkin_make
 #Install
 catkin_make install
 ```
-If everything goes fine, test the follow person example as follow:
+If everything goes fine, test the follow-person example as follow:
 ```yaml
 ./install/follow_run.sh
 ```
 
 # Mirror
 
-We also provide a downloadable mirror where all environments have been configured.
+We also provide a downloadable mirror whose all environments have been configured.
 *  Download address: [spark_mirror](http://pan.baidu.com/s/1i4ZlH4p)
 
