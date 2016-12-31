@@ -47,5 +47,5 @@ If everything goes fine, test the follow person example as follow:
 
 # Mirror
 We also provide a downloadable mirror where all environments have been configured.
-*  Download address: [Spark_mirror](http://pan.baidu.com/s/1i4ZlH4p)
+*  Download address: [spark_mirror](http://pan.baidu.com/s/1i4ZlH4p)
 
