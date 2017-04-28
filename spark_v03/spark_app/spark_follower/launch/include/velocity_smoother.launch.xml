@@ -9,7 +9,7 @@
 	<remap from="follower_velocity_smoother/raw_cmd_vel" to="/raw_cmd_vel"/>
     <remap from="follower_velocity_smoother/smooth_cmd_vel" to="/cmd_vel"/>
     <remap from="follower_velocity_smoother/odometry" to="/odom"/>
-    <remap from="follower_velocity_smoother/robot_cmd_vel" to="/spark_base/commands/velocity"/>
+    <remap from="follower_velocity_smoother/robot_cmd_vel" to="/spark_base/command/velocity"/>
 	
   </node>
 </launch>

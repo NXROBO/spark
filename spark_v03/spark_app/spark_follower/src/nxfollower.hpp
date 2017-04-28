@@ -64,10 +64,12 @@ private:
   double x_scale_; /**< The scaling factor for rotational robot speed */
   double z_thre;
   double x_thre;
-
   double max_vx;	/*max velocity x*/
   double max_vz;	/*max velocity z*/
-
+  double max_depth_, min_depth_; /**< The maximum z position of the points in the box. */
+	double goal_depth_; /**< The distance away from the robot to hold the centroid */
+	double depth_thre;
+	double y_thre;
 public:
   /*
    * 	constructor
@@ -88,9 +90,16 @@ public:
     x_scale_ 	= 2;
     z_thre 		= 0.05;
     x_thre 		= 0.05;
+    y_thre = 0.087222222;
 
     max_vx 		= 0.4;
     max_vz 		= 0.8;
+
+max_depth_ = 2;
+		min_depth_ = 0.4;
+		goal_depth_ = 0.9;
+		depth_thre = 0.1;
+		y_thre = 0.087222222;
 
     //public the cmd_vel message
     cmdvel_pub = nhandle.advertise<geometry_msgs::Twist>("/raw_cmd_vel", 1);
@@ -145,37 +154,9 @@ public:
         return;
       }
 
-      double dist = z - goal_z_;
-      double x_linear = 0;
-      double z_angle = 0;
+      pubCmd(-x,z);
 
-      if (z_thre > dist && dist > -z_thre)
-      {
-        x_linear = 0;
-      }
-      else
-      {
-        x_linear = (dist - z_thre) * z_scale_;
-      }
-
-      if (x_thre > x && x > -x_thre)
-      {
-        z_angle = 0;
-      }
-      else
-      {
-        z_angle = -(x - x_thre) * x_scale_;
-      }
-
-      x_linear = max_vx * x_linear / (z_thre);
-      x_linear = x_linear > max_vx ? (max_vx - 0.04) : x_linear;
-      z_angle = max_vz * z_angle / (x_thre);
-
-      //public cmd_vel
-      geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
-      cmd->linear.x = x_linear;
-      cmd->angular.z = z_angle;
-      cmdvel_pub.publish(cmd);
+      
 
     }
     else
@@ -184,6 +165,38 @@ public:
     }
   }
 
+  /*
+   *  @brief 发布底盘的速度，包括线速度和角速度
+   *  @param [in] y 相对于机器人底盘base_footprint的目标点的y坐标
+   *  @param [in] depth 相对于机器人底盘base_footprint的目标点的x坐标
+   */
+  void pubCmd(float y, float depth) {
+
+	double curr_dist = sqrt(y * y + depth * depth);
+	if (curr_dist == 0) {
+			cmdvel_pub.publish(
+					geometry_msgs::TwistPtr(new geometry_msgs::Twist()));
+		return;
+	}
+
+	float x_linear = 0;
+	float z_angular = 0;
+	float z_scale = 1.2;
+	float x_scale = 6.0;
+	x_linear = (depth - goal_depth_) * z_scale;
+	z_angular = y * x_scale;
+
+	if (depth_thre > fabs(depth - goal_depth_))
+		x_linear = 0;
+	if (y_thre > y && y > -y_thre)
+		z_angular = 0;
+
+	geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
+	cmd->linear.x = x_linear;
+	cmd->angular.z = z_angular;
+
+	cmdvel_pub.publish(cmd);
+}
   /*
    * waiting for the end of the program
    */
