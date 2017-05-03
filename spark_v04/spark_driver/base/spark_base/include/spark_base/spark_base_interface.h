@@ -71,19 +71,22 @@ namespace nxsparkbase
 #define VIRTUAL_WALL 162
 
 // Positions
-#define LEFT 0
-#define RIGHT 1
-#define FRONT_LEFT 2
-#define FRONT_RIGHT 3
-#define CENTER_LEFT 4
-#define CENTER_RIGHT 5
-#define FRONT 6
-#define BACK 7
-#define ENDPOS 8
+#define LEFT                		0
+#define RIGHT				1
+#define FRONT_LEFT			2
+#define FRONT_RIGHT			3
+#define CENTER_LEFT			4
+#define CENTER_RIGHT			5
+#define FRONT				6
+#define BACK                		7
+#define CENTER              		8
+#define BACK_LEFT			9
+#define BACK_RIGHT			10
+#define ENDPOS				11
 
-#define OMNI 2
-#define MAIN_BRUSH 2
-#define SIDE_BRUSH 3
+#define OMNI				2
+#define MAIN_BRUSH			2
+#define SIDE_BRUSH			3
 
 // Buttons
 #define BUTTON_CLOCK 7
@@ -275,6 +278,7 @@ public:
   bool bumper_[ENDPOS];     //! Bumper sensors. Indexes: LEFT RIGHT
   bool ir_bumper_[ENDPOS];  //! IR bumper sensors. Indexes: LEFT FRONT_LEFT
   // CENTER_LEFT CENTER_RIGHT FRONT_RIGHT RIGHT
+  bool wheel_over_current_[2];				//! Wheel current over: Indexes: LEFT RIGHT
   bool wheel_drop_[2];   //! Wheel drop sensors: Indexes: LEFT RIGHT
   bool omni_[ENDPOS];    //! omni wheel sensors: Indexes: FRONT BACK
   int wall_signal_;      //! Wall signal.
@@ -308,8 +312,13 @@ public:
   float charge_;      //! Battery charge in Ah.
   float capacity_;    //! Battery capacity in Ah
 
+  bool search_dock_;              //! search dock 
+  bool touch_charge_;             //! touch charge
+  bool plug_charge_;              //! plug charge
+  bool dock_direction_[ENDPOS];   //! dock direction 
+
   int stasis_;             //! 1 when the robot is going forward, 0 otherwise
-  unsigned int time_diff;  //! diff time.
+  unsigned int current_time;  //! diff time.
 private:
   //! Parse data
   /*!

@@ -58,7 +58,9 @@
 #include "spark_base/kfilter.hpp"
 #include "spark_base/mylock.hpp"
 #include "spark_base/spark_base_interface.h"
-#include "spark_base/SparkBaseIRBumperCliff.h"
+#include "spark_base/SparkBaseSensor.h"
+#include "spark_base/SparkBaseDock.h"
+
 #include "spark_base/GyroMessage.h"
 #include "spark_base/SparkBaseOdom.h"
 
@@ -79,7 +81,8 @@ private:
   std::string base_frame_id;
   std::string odom_frame_id;
   ros::Publisher odom_pub;
-  ros::Publisher irbumpercliff_pub;
+  ros::Publisher rb_sensor_pub;
+  ros::Publisher rb_dock_pub;
   tf::TransformBroadcaster tf_broadcaster;
   ros::Subscriber cmd_vel_sub;
   ros::Publisher gyro_pub;
@@ -232,8 +235,8 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
   double odometry_x_ = sparkbase->odometry_x_;
   double odometry_y_ = sparkbase->odometry_y_;
   sparkbase->parseComInterfaceData(recvbuf, 0);
-  if ((sizeof(float) * 12) == (recvbuf[2] - 21 - 3))
-    pubGyroMessage(recvbuf + 21, sizeof(float) * 12);
+  if ((sizeof(float) * 12) == (recvbuf[2] - 22 - 3))
+    pubGyroMessage(recvbuf + 22, sizeof(float) * 12);
 
   sparkbase->calculateOdometry();
   if (true)
@@ -336,22 +339,43 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
   // publish wheel joint state
   pubWheelJointStates(vel_x, vel_yaw);
 
-  // publish irbumper
-  spark_base::SparkBaseIRBumperCliff irbumpercliff;
-  irbumpercliff.ir_bumper_left = sparkbase->ir_bumper_[LEFT];
-  irbumpercliff.ir_bumper_center_left = sparkbase->ir_bumper_[CENTER_LEFT];
-  irbumpercliff.ir_bumper_front = sparkbase->ir_bumper_[FRONT];
-  irbumpercliff.ir_bumper_center_right = sparkbase->ir_bumper_[CENTER_RIGHT];
-  irbumpercliff.ir_bumper_right = sparkbase->ir_bumper_[RIGHT];
+    //publish irbumper
+    spark_base::SparkBaseSensor sensor_msg;
 
-  irbumpercliff.bumper_left = sparkbase->bumper_[LEFT];
-  irbumpercliff.bumper_right = sparkbase->bumper_[RIGHT];
+    sensor_msg.ir_bumper_left = sparkbase->ir_bumper_[LEFT];
+    sensor_msg.ir_bumper_front_left = sparkbase->ir_bumper_[FRONT_LEFT];
+    sensor_msg.ir_bumper_front = sparkbase->ir_bumper_[FRONT];
+    sensor_msg.ir_bumper_front_right = sparkbase->ir_bumper_[FRONT_RIGHT];
+    sensor_msg.ir_bumper_right = sparkbase->ir_bumper_[RIGHT];
+    sensor_msg.ir_bumper_back_left = sparkbase->ir_bumper_[BACK_LEFT];
+    sensor_msg.ir_bumper_back_right = sparkbase->ir_bumper_[BACK_RIGHT];
 
-  irbumpercliff.cliff_left = sparkbase->cliff_[LEFT];
-  irbumpercliff.cliff_center_left = sparkbase->cliff_[CENTER_LEFT];
-  irbumpercliff.cliff_center_right = sparkbase->cliff_[CENTER_RIGHT];
-  irbumpercliff.cliff_right = sparkbase->cliff_[RIGHT];
-  irbumpercliff_pub.publish(irbumpercliff);
+
+    sensor_msg.cliff_left = sparkbase->cliff_[LEFT];
+    sensor_msg.cliff_front_left = sparkbase->cliff_[FRONT_LEFT];
+    sensor_msg.cliff_front_right = sparkbase->cliff_[FRONT_RIGHT];
+    sensor_msg.cliff_right = sparkbase->cliff_[RIGHT];
+    sensor_msg.cliff_back_left = sparkbase->cliff_[BACK_LEFT];
+    sensor_msg.cliff_back_right = sparkbase->cliff_[BACK_RIGHT];
+
+    sensor_msg.wheel_drop_left = sparkbase->wheel_drop_[LEFT];
+    sensor_msg.wheel_drop_right = sparkbase->wheel_drop_[RIGHT];
+    sensor_msg.wheel_over_current_left = sparkbase->wheel_over_current_[LEFT];
+    sensor_msg.wheel_over_current_right = sparkbase->wheel_over_current_[RIGHT];
+
+    rb_sensor_pub.publish(sensor_msg);
+
+    spark_base::SparkBaseDock dock_msg;
+    dock_msg.search_dock = sparkbase->search_dock_;
+    dock_msg.touch_charge = sparkbase->touch_charge_;
+    dock_msg.plug_charge = sparkbase->plug_charge_;
+
+    dock_msg.dock_dir_left = sparkbase->dock_direction_[LEFT];
+    dock_msg.dock_dir_right = sparkbase->dock_direction_[RIGHT];
+    dock_msg.dock_dir_front = sparkbase->dock_direction_[FRONT];
+    dock_msg.dock_dir_BACK = sparkbase->dock_direction_[BACK];
+
+    rb_dock_pub.publish(dock_msg);
 }
 
 unsigned char checkSum(unsigned char *buf)
@@ -367,9 +391,9 @@ unsigned char checkSum(unsigned char *buf)
 
 void getSparkbaseComData(char *buf, int len)
 {
-	int i,j;
-	static int count=0;
-	long long timediff;
+    int i,j;
+    static int count=0;
+    long long timediff;
     unsigned char tmpbuf[255];
     static unsigned char recvbuf[255];
     ros::Time currenttime;
@@ -382,18 +406,18 @@ void getSparkbaseComData(char *buf, int len)
     }
     currenttime = ros::Time::now();
 
-	if(count == 0)
-	{
+    if(count == 0)
+    {
         headertime = currenttime;
-	}
+    }
     timediff = (currenttime - headertime).toNSec();
 
-	if(timediff > SPARKBASETIMEOUT)
-	{
-		count = 0;
+    if(timediff > SPARKBASETIMEOUT)
+    {
+        count = 0;
         ROS_ERROR("nx-base time out-%lld\n",timediff);
         headertime = currenttime;
-	}
+    }
     if((len+count) > 255)
     {
         count = 0;
@@ -444,55 +468,62 @@ BACKCHECK:
         if(count > 3)
         {
             unsigned int framelen = recvbuf[2];
-            if(count >= framelen)
+            if(recvbuf[2]<6)
             {
-
-                #if 0
-                for(j=0;j<framelen; j++)
-                    printf("%02X ",(unsigned char)recvbuf[j]);
-                printf("\n");
-                #endif
-
-                if((recvbuf[0]==0x53) && (recvbuf[1]==0x4b) &&(recvbuf[framelen-2]==0x0d) && (recvbuf[framelen-1]==0x0a))	//check the header and end
+                count = 0;
+            }
+            else
+            {
+                if(count >= framelen)
                 {
-                    if(checkSum(recvbuf) == recvbuf[framelen-3])
+
+                    #if 0
+                    for(j=0;j<framelen; j++)
+                        printf("%02X ",(unsigned char)recvbuf[j]);
+                    printf("\n");
+                    #endif
+
+                    if((recvbuf[0]==0x53) && (recvbuf[1]==0x4b) &&(recvbuf[framelen-2]==0x0d) && (recvbuf[framelen-1]==0x0a))	//check the header and end
                     {
-                        if((recvbuf[3]==0x00) && (recvbuf[4]==0x59))	//inquire
+                        if(checkSum(recvbuf) == recvbuf[framelen-3])
                         {
-                            cddn->dealMessageSwitch(recvbuf);
+                            if((recvbuf[3]==0x00) && (recvbuf[4]==0x59))	//inquire
+                            {
+                                cddn->dealMessageSwitch(recvbuf);
+                            }
                         }
+                        else
+                        {
+                            ROS_ERROR("sparkbase-check sum error");
+                            #if 0
+                            for(j=0;j<framelen; j++)
+                                printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
+                            printf("\n");
+                            #endif
+                        }
+
                     }
                     else
                     {
-                        ROS_ERROR("sparkbase-check sum error");
+
+
+                        ROS_ERROR("sparkbase-header or ender error error");
                         #if 0
-                        for(j=0;j<framelen; j++)
+                        for(j=0; j<framelen; j++)
                             printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
                         printf("\n");
                         #endif
                     }
-
+                    if(count > framelen)
+                    {
+                        memcpy(tmpbuf, recvbuf+framelen, count-framelen);
+                        memcpy(recvbuf, tmpbuf, count-framelen);
+                        count = count-framelen;
+                        headertime = currenttime;
+                        goto BACKCHECK;
+                    }
+                    count = 0;
                 }
-                else
-                {
-
-		    
-                    ROS_ERROR("sparkbase-header or ender error error");
-                    #if 0
-		    for(j=0; j<framelen; j++)
-                        printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
-                    printf("\n");
-		    #endif
-                }
-                if(count > framelen)
-                {
-                    memcpy(tmpbuf, recvbuf+framelen, count-framelen);
-                    memcpy(recvbuf, tmpbuf, count-framelen);
-                    count = count-framelen;
-                    headertime = currenttime;
-                    goto BACKCHECK;
-                }
-                count = 0;
             }
         }
     }
@@ -529,7 +560,8 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
   this->odom_reset_sub =
       this->n.subscribe<spark_base::SparkBaseOdom>("/spark_base/odom/reset", 1, &ComDealDataNode::resetOdomCb, this);
   this->gyro_pub = n.advertise<spark_base::GyroMessage>("/spark_base/gyro", 1);
-  this->irbumpercliff_pub = this->n.advertise<spark_base::SparkBaseIRBumperCliff>("/spark_base/ir_bumper_cliff", 1);
+  this->rb_sensor_pub = this->n.advertise<spark_base::SparkBaseSensor>("/spark_base/sensor", 1);        //ir_bumper_cliff
+  this->rb_dock_pub = this->n.advertise<spark_base::SparkBaseDock>("/spark_base/dock", 1);
   this->current_time = ros::Time::now();
   this->last_time = ros::Time::now();
   stimer = n.createTimer(ros::Duration(1), &ComDealDataNode::checkSerialGoon, this);

@@ -282,27 +282,40 @@ int nxsparkbase::OpenInterface::getSensorPackets(int timeout)
 
 int nxsparkbase::OpenInterface::parseSenseState(unsigned char *buffer, int index)
 {
-  // Bumps, wheeldrops
-  this->bumper_[RIGHT] = (buffer[index]) & 0x01;
-  this->bumper_[LEFT] = (buffer[index] >> 1) & 0x01;
-  this->cliff_[RIGHT] = (buffer[index] >> 4) & 0x01;
-  this->cliff_[CENTER_RIGHT] = (buffer[index] >> 5) & 0x01;
-  this->cliff_[CENTER_LEFT] = (buffer[index] >> 6) & 0x01;
-  this->cliff_[LEFT] = (buffer[index] >> 7) & 0x01;
-  this->omni_[FRONT] = (buffer[index] >> 6) & 0x01;
-  this->omni_[BACK] = (buffer[index] >> 7) & 0x01;
+    // cliff, Bumps, wheeldrops
+    this->cliff_[RIGHT]                 = (((buffer[index] >> 0) & 0x01) == 0) ? 1 : 0;
+    this->cliff_[FRONT_RIGHT] 		= (((buffer[index] >> 1) & 0x01) == 0) ? 1 : 0;
+    this->cliff_[FRONT_LEFT] 		= (((buffer[index] >> 2) & 0x01) == 0) ? 1 : 0;
+    this->cliff_[LEFT] 			= (((buffer[index] >> 3) & 0x01) == 0) ? 1 : 0;
+    this->cliff_[BACK_RIGHT] 		= (((buffer[index] >> 4) & 0x01) == 0) ? 1 : 0;
+    this->cliff_[BACK_LEFT] 		= (((buffer[index] >> 5) & 0x01) == 0) ? 1 : 0;
 
-  this->ir_bumper_[RIGHT] = (buffer[index + 1]) & 0x01;
-  this->ir_bumper_[CENTER_RIGHT] = (buffer[index + 1] >> 1) & 0x01;
-  this->ir_bumper_[FRONT] = (buffer[index + 1] >> 2) & 0x01;
-  this->ir_bumper_[CENTER_LEFT] = (buffer[index + 1] >> 3) & 0x01;
-  this->ir_bumper_[LEFT] = (buffer[index + 1] >> 4) & 0x01;
+    this->ir_bumper_[RIGHT] 		= (buffer[index+1]) & 0x01;
+    this->ir_bumper_[FRONT_RIGHT]       = (buffer[index+1] >> 1) & 0x01;
+    this->ir_bumper_[FRONT] 		= (buffer[index+1]>> 2) & 0x01;
+    this->ir_bumper_[FRONT_LEFT] 	= (buffer[index+1] >> 3) & 0x01;
+    this->ir_bumper_[LEFT]              = (buffer[index+1] >> 4) & 0x01;
+    this->ir_bumper_[BACK_RIGHT]        = (buffer[index+1]>> 5) & 0x01;
+    this->ir_bumper_[BACK_LEFT] 		= (buffer[index+1] >> 6) & 0x01;
 
-  this->dock_ = ((buffer[index] >> 2) & 0x01);
-  this->control_ = ((buffer[index + 1] >> 5) & 0x07) == CONTROL_STATE ? 1 : 0;
-  this->error_ = ((buffer[index + 1] >> 5) & 0x07) == ERROR_STATE ? 1 : 0;
+    this->wheel_drop_[RIGHT]            = (buffer[index+2] >> 0) & 0x01;
+    this->wheel_drop_[LEFT]             = (buffer[index+2] >> 1) & 0x01;
+    this->wheel_over_current_[RIGHT]    = (buffer[index+2] >> 2) & 0x01;
+    this->wheel_over_current_[LEFT]     = (buffer[index+2] >> 3) & 0x01;
 
-  return (0);
+    this->search_dock_                  = (buffer[index+2] >> 5) & 0x01;
+    this->touch_charge_                 = (buffer[index+2] >> 6) & 0x01;
+    this->plug_charge_                  = (buffer[index+2] >> 7) & 0x01;
+
+    this->dock_direction_[LEFT]         = (buffer[index+3] >> 4) & 0x01;
+    this->dock_direction_[FRONT]        = (buffer[index+3] >> 5) & 0x01;
+    this->dock_direction_[RIGHT]        = (buffer[index+3] >> 6) & 0x01;
+    this->dock_direction_[BACK]         = (buffer[index+3] >> 7) & 0x01;
+
+    this->dock_                         = ((buffer[index] >> 2) & 0x01);
+    this->control_			= (buffer[index+2] >> 4) & 0x01;
+    this->error_			= (buffer[index+1] >> 7) & 0x01;
+    return (0);
 }
 
 int nxsparkbase::OpenInterface::parseRightEncoderCounts(unsigned char *buffer, int index)
@@ -360,21 +373,17 @@ int nxsparkbase::OpenInterface::parseLeftEncoderCounts(unsigned char *buffer, in
 }
 int nxsparkbase::OpenInterface::parseWheelDiffTime(unsigned char *buffer, int index)
 {
-  static unsigned int lasttime = 0;
-  unsigned int currenttime;
-  currenttime = buffer2unsigned_int(buffer, index);
-  time_diff = currenttime - lasttime;
-  //		printf("time diff：%d, %d\n",currenttime, time_diff);
-  lasttime = currenttime;
-  return 0;
+    current_time = buffer2unsigned_int(buffer, index);
+    //printf("current_time:%d",current_time);
+    return 0;
 }
 
 void nxsparkbase::OpenInterface::parseComInterfaceData(unsigned char *buf, int index)
 {
-  parseLeftEncoderCounts(buf, index + 13);
-  parseRightEncoderCounts(buf, index + 9);
+  parseLeftEncoderCounts(buf, index + 14);
+  parseRightEncoderCounts(buf, index + 10);
   parseSenseState(buf, index + 5);
-  parseWheelDiffTime(buf, index + 17);
+  parseWheelDiffTime(buf, index + 18);
 }
 int nxsparkbase::OpenInterface::buffer2signed_int(unsigned char *buffer, int index)
 {

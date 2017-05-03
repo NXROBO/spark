@@ -13,7 +13,8 @@ add_message_files(
   FILES
   GyroMessage.msg
   SparkBaseOdom.msg
-  SparkBaseIRBumperCliff.msg
+  SparkBaseDock.msg
+  SparkBaseSensor.msg
  )
 
 generate_messages(
