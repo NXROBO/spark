@@ -18,7 +18,7 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ### Prequirement
 
-* System:	Ubantu 14.04
+* System:	Ubuntu 14.04
 * ROS Version:	Indigo(Desktop-Full Install) 
 
 ### Compile
