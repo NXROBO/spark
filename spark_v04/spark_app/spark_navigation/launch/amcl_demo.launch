@@ -1,14 +1,24 @@
 <launch>
+
+ <!-- description file -->
+  <include file="$(find spark_description)/launch/spark_description.launch"/>
+
+<!-- base -->
+  <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/ttyUSB0"/>
+  </include>
+
+
   <!-- 3D sensor -->
   <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
-  <include file="$(find ros_astra_launch)/launch/astra.launch">
+  <include file="$(find astra_launch)/launch/astra.launch">
     <arg name="rgb_processing" value="false" />
     <arg name="depth_registration" value="false" />
     <arg name="depth_processing" value="false" />
     
     <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
          Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
-    <arg name="scan_topic" value="/scan" />
+    <!-- <arg name="scan_topic" value="/scan" />--> 
   </include>
 
   <!-- Map server -->
