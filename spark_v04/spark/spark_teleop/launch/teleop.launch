@@ -1,0 +1,3 @@
+<launch>
+	<node pkg="spark_teleop" type="spark_teleop_node" name="spark_teleop_node" args="0.2 1"/>
+</launch>

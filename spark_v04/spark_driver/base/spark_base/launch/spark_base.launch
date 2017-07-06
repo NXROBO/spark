@@ -1,0 +1,4 @@
+<launch>
+  <arg name="serialport"/> 
+  <node pkg="spark_base" type="spark_base_node" name="spark_base_server" args="$(arg serialport)" output="screen"/>
+</launch>

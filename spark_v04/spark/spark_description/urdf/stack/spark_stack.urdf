@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!-- 
+	spark stack    
+
+	Copyright 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot
+  name="spark_stack">
+  <link name="spark_stack">
+    <inertial>
+      <origin 
+      	xyz="0 0 0" 
+      	rpy="0 0 0" />
+      <mass value="1.224592038" />
+      <inertia        
+        ixx="0.052467491"
+        ixy="-0.000000000"
+        ixz="0.001956704"
+        iyy="0.055610919"
+        iyz="0.000000000"
+        izz="0.012118046" />
+    </inertial>
+    <visual>
+      <origin 
+      	xyz="0 0 0" 
+      	rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://spark_description/meshes/spark/stack/spark_stack.DAE" />
+      </geometry>
+      
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://spark_description/meshes/spark/stack/spark_stack.DAE" />
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="spark_stack_joint" type="fixed">
+      <origin 
+      	xyz="0 0 0" 
+      	rpy="0 0 0" />
+      <parent link="base_link"/>
+      <child link="spark_stack" />
+  </joint>
+
+  
+</robot>

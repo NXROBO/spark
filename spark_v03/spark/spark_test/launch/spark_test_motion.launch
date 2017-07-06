@@ -1,3 +1,0 @@
-<launch>
-  <node pkg="spark_test" type="spark_test_motion_node" name="spark_test_motion_node" output="screen"/>
-</launch>
