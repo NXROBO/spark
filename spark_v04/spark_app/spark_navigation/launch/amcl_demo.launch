@@ -12,17 +12,43 @@
   <!-- 3D sensor -->
   <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
   <include file="$(find astra_launch)/launch/astra.launch">
-    <arg name="rgb_processing" value="false" />
-    <arg name="depth_registration" value="false" />
-    <arg name="depth_processing" value="false" />
+    <!-- <arg name="rgb_processing" value="false" />-->
+    <!--<arg name="depth_registration" value="false" />-->
+    <!--<arg name="depth_processing" value="false" />-->
+
+    <arg name="rgb_processing"                  value="true"/>
+    <arg name="depth_processing"                value="true"/>
+    <arg name="depth_registered_processing"     value="false"/>
+    <arg name="depth_registration"              value="false"/>
+    <arg name="disparity_processing"            value="false"/>
+    <arg name="disparity_registered_processing" value="false"/>
     
     <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
          Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
     <!-- <arg name="scan_topic" value="/scan" />--> 
   </include>
 
+
+<!-- Run the depthimage_to_laserscan node -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+    
+
+    <!--<remap from="image" to="/camera/depth/image_raw" />-->
+    <remap from="image" to="/camera/depth/image_raw" />
+
+    <!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
+    <remap from="camera_info" to="/camera/depth/camera_info" />
+
+    <remap from="scan" to="/scan" />
+    <param name="output_frame_id" value="/camera_depth_frame" />
+
+    <!--added by xilai 6/19/2017-->
+    <param name="scan_height" value="50" />
+  </node>
+
+
   <!-- Map server -->
-  <arg name="map_file" default="$(SPARK_MAP_FILE)"/>
+  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall_final.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->
