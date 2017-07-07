@@ -112,7 +112,7 @@ private:
 		int laser_frequency = 5;
 		sensor_msgs::LaserScan scan;
 		scan.header.stamp = ros::Time().now();
-		scan.header.frame_id = "camera_depth_frame";
+		scan.header.frame_id = "/lidar_link";
 		scan.angle_min = 0;
 		scan.angle_max = 6.28;
 		scan.angle_increment = 6.28 / num_readings;
