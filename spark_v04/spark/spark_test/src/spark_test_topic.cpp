@@ -222,7 +222,7 @@ public:
 
 	}
 	void irBumperCliffCb(
-			const spark_base::SparkBaseSensor::ConstPtr &odom_msg) {
+			const spark_base::SparkBaseSensor::ConstPtr &sensor_msg) {
 		ir_bumper_cliff_state = true;
 	}
 };
