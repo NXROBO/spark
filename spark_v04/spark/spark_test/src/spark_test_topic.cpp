@@ -6,7 +6,7 @@
 #include <nav_msgs/Odometry.h>
 
 #include "spark_base/GyroMessage.h"
-#include "spark_base/SparkBaseIRBumperCliff.h"
+#include "spark_base/SparkBaseSensor.h"
 
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
@@ -201,8 +201,8 @@ public:
 	//test ir bumper cliff topic
 	bool testIrBumperCliffTopic() {
 		ros::Subscriber sub = nhandle.subscribe<
-				spark_base::SparkBaseIRBumperCliff>(
-				"/spark_base/ir_bumper_cliff", 1,
+				spark_base::SparkBaseSensor>(
+				"/spark_base/sensor", 1,
 				&TopicSubscribeTest::irBumperCliffCb, this);
 		ir_bumper_cliff_state = false;
 		ros::Rate rate(10);
@@ -222,7 +222,7 @@ public:
 
 	}
 	void irBumperCliffCb(
-			const spark_base::SparkBaseIRBumperCliff::ConstPtr &odom_msg) {
+			const spark_base::SparkBaseSensor::ConstPtr &sensor_msg) {
 		ir_bumper_cliff_state = true;
 	}
 };

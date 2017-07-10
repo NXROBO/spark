@@ -42,6 +42,9 @@
 
     <remap from="scan" to="/scan" />
     <param name="output_frame_id" value="/camera_depth_frame" />
+
+    <!--added by xilai 6/19/2017-->
+    <param name="scan_height" value="50" />
   </node>
 
   <!-- Gmapping -->

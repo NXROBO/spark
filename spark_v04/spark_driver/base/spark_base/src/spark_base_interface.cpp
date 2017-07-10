@@ -60,12 +60,14 @@ nxsparkbase::OpenInterface::OpenInterface(const char *new_serial_port)
   this->resetOdometry();
   this->wheel_dist = 0;
 
-  encoder_counts_[LEFT] = -1;
-  encoder_counts_[RIGHT] = -1;
+  encoder_counts_[LEFT] = 0;
+  encoder_counts_[RIGHT] = 0;
 
   last_encoder_counts_[LEFT] = 0;
   last_encoder_counts_[RIGHT] = 0;
-
+  
+  is_first_time_left = true;
+  is_first_time_right = true;
   serial_port_ = new cereal::CerealPort();
 }
 
@@ -326,10 +328,11 @@ int nxsparkbase::OpenInterface::parseRightEncoderCounts(unsigned char *buffer, i
   //    printf("Right Encoder: %d,%d,%d\n",
   //    right_encoder_counts,last_encoder_counts_[RIGHT],right_encoder_counts-last_encoder_counts_[RIGHT]);
 
-  if (encoder_counts_[RIGHT] == -1 ||
+  if (is_first_time_right ||
       right_encoder_counts == last_encoder_counts_[RIGHT])  // First time, we need 2 to make it work!
   {
     encoder_counts_[RIGHT] = 0;
+    is_first_time_right = false;
   }
   else
   {
@@ -340,6 +343,9 @@ int nxsparkbase::OpenInterface::parseRightEncoderCounts(unsigned char *buffer, i
     if (encoder_counts_[RIGHT] < -SPARKBASE_MAX_ENCODER_COUNTS / 10)
       encoder_counts_[RIGHT] = SPARKBASE_MAX_ENCODER_COUNTS + encoder_counts_[RIGHT];
   }
+/*static double rc_count = 0;
+    rc_count +=   encoder_counts_[RIGHT];
+  std::cout<<"sum rec:"<<rc_count<<rc_count*SPARKBASE_PULSES_TO_M<<std::endl;*/
   last_encoder_counts_[RIGHT] = right_encoder_counts;
   //    printf("Right Encoder: %d\n", encoder_counts_[RIGHT]);
   return 0;
@@ -353,10 +359,11 @@ int nxsparkbase::OpenInterface::parseLeftEncoderCounts(unsigned char *buffer, in
   //    printf("Left Encoder: %d,%d,%d\n", left_encoder_counts,
   //    last_encoder_counts_[LEFT],left_encoder_counts-last_encoder_counts_[LEFT]);
 
-  if (encoder_counts_[LEFT] == -1 ||
+  if (is_first_time_left ||
       left_encoder_counts == last_encoder_counts_[LEFT])  // First time, we need 2 to make it work!
   {
     encoder_counts_[LEFT] = 0;
+    is_first_time_left = false;
   }
   else
   {
@@ -367,6 +374,7 @@ int nxsparkbase::OpenInterface::parseLeftEncoderCounts(unsigned char *buffer, in
     if (encoder_counts_[LEFT] < -SPARKBASE_MAX_ENCODER_COUNTS / 10)
       encoder_counts_[LEFT] = SPARKBASE_MAX_ENCODER_COUNTS + encoder_counts_[LEFT];
   }
+
   last_encoder_counts_[LEFT] = left_encoder_counts;
   //    printf("Left Encoder: %d\n", encoder_counts_[LEFT]);
   return 0;
@@ -403,6 +411,7 @@ unsigned int nxsparkbase::OpenInterface::buffer2unsigned_int(unsigned char *buff
 // Calculate Sparkbase odometry
 void nxsparkbase::OpenInterface::calculateOdometry()
 {
+  
   // double dist = (encoder_counts_[RIGHT]*SPARKBASE_PULSES_TO_M +
   // encoder_counts_[LEFT]*SPARKBASE_PULSES_TO_M) / 2.0;
   // double ang = (encoder_counts_[RIGHT]*SPARKBASE_PULSES_TO_M -
@@ -413,16 +422,16 @@ void nxsparkbase::OpenInterface::calculateOdometry()
   // double ang = (encoder_counts_[RIGHT]*SPARKBASE_PULSES_TO_M -
   // encoder_counts_[LEFT]*SPARKBASE_PULSES_TO_M) / SPARKBASE_AXLE_LENGTH;
   //该版本特性：半弧为向后的方向
-  double dist = (encoder_counts_[RIGHT] * SPARKBASE_PULSES_TO_M + encoder_counts_[LEFT] * SPARKBASE_PULSES_TO_M) / -2.0;
+
+  double dist = ((double)encoder_counts_[RIGHT] * SPARKBASE_PULSES_TO_M + (double)encoder_counts_[LEFT] * SPARKBASE_PULSES_TO_M) / -2.0;
   double ang =
-      (encoder_counts_[RIGHT] * SPARKBASE_PULSES_TO_M - encoder_counts_[LEFT] * SPARKBASE_PULSES_TO_M) / SPARKBASE_AXLE_LENGTH;
+      ((double)encoder_counts_[RIGHT] * SPARKBASE_PULSES_TO_M - (double)encoder_counts_[LEFT] * SPARKBASE_PULSES_TO_M) / SPARKBASE_AXLE_LENGTH;
 
   // Update odometry
   this->odometry_x_ = this->odometry_x_ + dist * cos(odometry_yaw_);  // m
   this->odometry_y_ = this->odometry_y_ + dist * sin(odometry_yaw_);  // m
   this->odometry_yaw_ = NORMALIZE(this->odometry_yaw_ + ang);         // rad
   this->wheel_dist = this->wheel_dist + dist;
-  // std::cout<<dist<<","<<ang<<std::endl;
   // std::cout<<this->odometry_x_<<","<<this->odometry_y_<<","<<this->odometry_yaw_<<std::endl;
 }
 
