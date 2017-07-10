@@ -1,0 +1,20 @@
+<launch>
+  <!-- Run the depthimage_to_laserscan node -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+    
+
+    <!--<remap from="image" to="/camera/depth/image_raw" />-->
+    <remap from="image" to="/camera/depth/image_raw" />
+
+    <!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
+    <remap from="camera_info" to="/camera/depth/camera_info" />
+
+    <remap from="scan" to="/scan" />
+    <param name="output_frame_id" value="/camera_depth_frame" />
+
+    <!--added by xilai 6/19/2017-->
+    <param name="scan_height" value="50" />
+
+  </node>
+
+</launch>

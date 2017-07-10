@@ -113,10 +113,10 @@ namespace nxsparkbase
 #define SPARKBASE_MAX_RADIUS_MM 2000
 
 //! Sparkbase max encoder counts
-#define SPARKBASE_MAX_ENCODER_COUNTS 0xFFFFFFFF
+#define SPARKBASE_MAX_ENCODER_COUNTS 0xFFFFFFF
 //! Sparkbase encoder pulses to meter constant
-#define SPARKBASE_PULSES_TO_M 0.0002167
-#define SPARKBASE_PULSES_TO_MM 0.2167
+#define SPARKBASE_PULSES_TO_M 0.00028885
+#define SPARKBASE_PULSES_TO_MM 0.28885
 #define MAX_PATH 32
 
 #ifndef MIN
@@ -404,6 +404,7 @@ private:
   unsigned int last_encoder_counts_[2];
 
   int parseWheelDiffTime(unsigned char *buffer, int index);
+  bool is_first_time_left,is_first_time_right;
 };
 }
 
