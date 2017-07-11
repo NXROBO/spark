@@ -30,10 +30,13 @@ mkdir -p sparkws/src
 cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
 <<<<<<< HEAD
+<<<<<<< HEAD
 git checkout spark-03  //if your spark is the 0.3 base, please type the command:git checkout spark-04
 =======
 git checkout spark-04  #if your spark is the 0.3 base, please type the command:git checkout spark-03
 >>>>>>> spark-04
+=======
+>>>>>>> 702358c65bd06173cb860470ba4dac5313fc93f9
 cd ..
 #installl dependence package
 ./src/spark/doc/install.sh
