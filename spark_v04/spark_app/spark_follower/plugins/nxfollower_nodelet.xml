@@ -1,0 +1,7 @@
+<library path="lib/libnxfollower_nodelet">
+  	<class name="nxfollower/NxFollowerNodelet" type="nxfollower::NxFollowerNodelet" base_class_type="nodelet::Nodelet">  
+        <description>
+           this is nxfollower nodelet.
+        </description>
+        </class>
+</library>

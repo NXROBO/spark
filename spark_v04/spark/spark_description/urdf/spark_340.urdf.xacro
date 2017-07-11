@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- 
+	spark 340    
+
+	Copyright 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot name="spark" xmlns:xacro="http://ros.org/wiki/xacro">
+  	
+  	<xacro:include filename="$(find spark_description)/urdf/base/spark_base.urdf"/>  	
+  		
+  	<xacro:include filename="$(find spark_description)/urdf/stack/spark_stack.urdf"/>
+	
+	<xacro:include filename="$(find spark_description)/urdf/sensors/spark_camera.urdf"/>
+
+	<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
+		
+</robot>

@@ -1,0 +1,16 @@
+<!-- 
+         Velocity smoother
+-->
+<launch>
+  <node pkg="nodelet" type="nodelet" name="spark_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="navigation_velocity_smoother" args="load follower_velocity_smoother/VelocitySmootherNodelet spark_base_nodelet_manager">
+    
+    <rosparam file="$(find spark_navigation)/param/default/smoother.yaml" command="load"/>
+		<!-- Output -->
+    <!--remap from="navigation_velocity_smoother/raw_cmd_vel" to="/raw_cmd_vel"/-->
+    <remap from="navigation_velocity_smoother/smooth_cmd_vel" to="/cmd_vel"/>
+    <remap from="navigation_velocity_smoother/odometry" to="/odom"/>
+    <remap from="navigation_velocity_smoother/robot_cmd_vel" to="/spark_base/command/velocity"/>
+	
+  </node>
+</launch>

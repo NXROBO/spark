@@ -1,0 +1,5 @@
+1.连接摄像头和地盘的USB线至笔记本
+2.打开终端（Ctrl+Alt+T）,执行以下命令：
+  cd ~/spark/src/spark_app/spark_follower/launch/spark
+  ./follow_run.sh
+3.将笔记本放置spark的卡槽上，人站在spark正前方，spark就可以跟着你了

@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!-- 
+	spark base    
+	© 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot name="spark_base_link">
+
+<link name="base_footprint"/>		
+	<link name="base_link"/>	
+		
+	<joint name="base_footprint_joint" type="fixed">
+		<origin xyz="0 0 0.01" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="base_link" />
+	</joint>
+		
+		
+	<link name="room_base_link">
+		<inertial>
+		  <origin
+		    xyz="-0.0078695 -0.020998 -0.001386"
+		    rpy="0 0 0" />
+		  <mass
+		    value="0.54755" />
+		  <inertia
+		    ixx="0.00346146576565066"
+		    ixy="-6.26423343889596E-06"
+		    ixz="8.2000761035661E-05"
+		    iyy="-1.84932053914363E-05"
+		    iyz="-0.00410723070180017"
+		    izz="1.84932053914367E-05" />
+		</inertial>
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		  </geometry>
+		</collision>	
+	</link>	
+
+	<joint name="room_base_joint" type="fixed">
+		<origin xyz="0 0 0" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="room_base_link" />
+	</joint>
+	
+
+ 	<!--wheel link and joint-->
+	<link name="left_wheel_link">
+		<inertial>
+		  <origin
+		    xyz="-0.0078695 -0.020998 -0.001386"
+		    rpy="0 0 0" />
+		  <mass
+		    value="0.54755" />
+		  <inertia
+		    ixx="0.00346146576565066"
+		    ixy="-6.26423343889596E-06"
+		    ixz="8.2000761035661E-05"
+		    iyy="-1.84932053914363E-05"
+		    iyz="-0.00410723070180017"
+		    izz="1.84932053914367E-05" />
+		</inertial>
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		  </geometry>
+		</collision>	
+	</link>  
+	
+	<joint name="left_wheel_joint" type="continuous">
+		<origin xyz="0 0.131 0.024" rpy="0 0 0" />
+		<axis xyz="0 1 0"/>
+		<parent link="base_link"/>
+		<child link="left_wheel_link" />
+	</joint> 	
+	
+	
+	
+	<link name="right_wheel_link">
+		<inertial>
+		  <origin
+		    xyz="-0.0078695 -0.020998 -0.001386"
+		    rpy="0 0 0" />
+		  <mass
+		    value="0.54755" />
+		  <inertia
+		    ixx="0.00346146576565066"
+		    ixy="-6.26423343889596E-06"
+		    ixz="8.2000761035661E-05"
+		    iyy="-1.84932053914363E-05"
+		    iyz="-0.00410723070180017"
+		    izz="1.84932053914367E-05" />
+		</inertial>
+		<visual>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		  </geometry>
+		  
+		</visual>
+		<collision>
+		  <origin
+		    xyz="0 0 0"
+		    rpy="0 0 0" />
+		  <geometry>
+		    <mesh
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		  </geometry>
+		</collision>	
+	</link>   
+	
+	<joint name="right_wheel_joint" type="continuous">
+		<origin xyz="0 -0.131 0.024" rpy="0 0 0" />
+		<axis xyz="0 1 0"/>
+		<parent link="base_link"/>
+		<child link="right_wheel_link" />
+	</joint> 
+
+
+    <!--cliff link and joint-->	
+	<link name="cliff_left_link"/>		
+	<joint name="cliff_left_joint" type="fixed">
+		<origin xyz="0.0544 0.1402 0.01" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="cliff_left_link" />
+	</joint>				
+	
+	<link name="cliff_right_link"/>		
+	<joint name="cliff_right_joint" type="fixed">
+		<origin xyz="0.0544 -0.1402 0.01" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="cliff_right_link" />
+	</joint>
+
+	<link name="cliff_front_left_link"/>		
+	<joint name="cliff_front_left_joint" type="fixed">
+		<origin xyz="0.1457 0.039 0.01" rpy="0 0 0.2617994" />
+		<parent link="base_link"/>
+		<child link="cliff_front_left_link" />
+	</joint>		
+
+	<link name="cliff_front_right_link"/>		
+	<joint name="cliff_front_right_joint" type="fixed">
+		<origin xyz="0.1457 -0.039 0.01" rpy="0 0 -0.2617994" />
+		<parent link="base_link"/>
+		<child link="cliff_front_right_link" />
+	</joint>
+
+	<link name="cliff_back_left_link"/>		
+	<joint name="cliff_back_left_joint" type="fixed">
+		<origin xyz="-0.1479 0.0355 0.01" rpy="0 0 2.8797933" />
+		<parent link="base_link"/>
+		<child link="cliff_back_left_link" />
+	</joint>		
+
+	<link name="cliff_back_right_link"/>		
+	<joint name="cliff_back_right_joint" type="fixed">
+		<origin xyz="-0.1479 -0.0355 0.01" rpy="0 0 -2.8797933" />
+		<parent link="base_link"/>
+		<child link="cliff_back_right_link" />
+	</joint>				
+
+	<!--bumper link and joint-->		
+	<link name="ir_bumper_front_link"/>		
+	<joint name="ir_bumper_front_joint" type="fixed">
+		<origin xyz="0.1629 0 0.01775" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_front_link" />
+	</joint>	
+	<link name="ir_bumper_front_left_link"/>		
+	<joint name="ir_bumper_front_left_joint" type="fixed">
+		<origin xyz="0.1418 0.0802 0.01775" rpy="0 0 0.5148721" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_front_left_link" />
+	</joint>	
+	<link name="ir_bumper_front_right_link"/>		
+	<joint name="ir_bumper_front_right_joint" type="fixed">
+		<origin xyz="0.1418 -0.0802 0.01775" rpy="0 0 -0.5148721" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_front_right_link" />
+	</joint>
+
+	<link name="ir_bumper_left_link"/>		
+	<joint name="ir_bumper_left_joint" type="fixed">
+		<origin xyz="0.0887 0.1367 0.01775" rpy="0 0 0.9948377" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_left_link" />
+	</joint>	
+	<link name="ir_bumper_right_link"/>		
+	<joint name="ir_bumper_right_joint" type="fixed">
+		<origin xyz="0.0887 -0.1367 0.01775" rpy="0 0 -0.9948377" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_right_link" />
+	</joint>		
+	<link name="ir_bumper_back_left_link"/>		
+	<joint name="ir_bumper_back_left_joint" type="fixed">
+		<origin xyz="-0.123 0.1069 0.01775" rpy="0 0 2.4260077" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_back_left_link" />
+	</joint>	
+	<link name="ir_bumper_back_right_link"/>		
+	<joint name="ir_bumper_back_right_joint" type="fixed">
+		<origin xyz="-0.123 -0.1069 0.01775" rpy="0 0 -2.4260077" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_back_right_link" />
+	</joint>
+
+        <link name="ir_bumper_rear_link"/>		
+	<joint name="ir_bumper_rear_joint" type="fixed">
+		<origin xyz="-0.1629 0 0.01775" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="ir_bumper_rear_link" />
+	</joint>			
+		
+	<!--base gyro link and joint-->		
+	<link name="base_gyro_link"/>		
+	<joint name="base_gyro_joint" type="fixed">
+		<origin xyz="0.0761 0.0307 0.057" rpy="0 0 0" />
+		<parent link="base_link"/>
+		<child link="base_gyro_link" />
+	</joint>			
+
+</robot>
+
+

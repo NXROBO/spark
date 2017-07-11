@@ -1,0 +1,20 @@
+bool ir_bumper_left
+bool ir_bumper_right
+bool ir_bumper_front_left
+bool ir_bumper_front_right
+bool ir_bumper_front
+bool ir_bumper_back_left
+bool ir_bumper_back_right
+
+
+bool cliff_left
+bool cliff_right
+bool cliff_front_left
+bool cliff_front_right
+bool cliff_back_left
+bool cliff_back_right
+
+bool wheel_drop_left
+bool wheel_drop_right
+bool wheel_over_current_left
+bool wheel_over_current_right
