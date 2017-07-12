@@ -117,18 +117,22 @@ private:
 		scan.angle_max = 6.28;
 		scan.angle_increment = 6.28 / num_readings;
 		scan.time_increment = (1.0 / laser_frequency) / (num_readings);
-		scan.range_min = 0.0;
+		scan.range_min = 0.2;
 		scan.range_max = 8;
 
 		scan.ranges.resize(num_readings);
-		scan.intensities.resize(num_readings);
+		scan.ranges.assign(num_readings, std::numeric_limits<double>::infinity());
+		//scan.intensities.resize(num_readings);
 		double ascale = 6.28/(100.0*360);
+		float dist = 0;
 		for (unsigned int i = 0; i < count; i++) {
 			int index = (nodes[i].angle*ascale - scan.angle_min)/scan.angle_increment;
 			//cout<<index<<endl;
-			scan.ranges[index] = nodes[i].distanceValue*0.25/1000.0;
+                        dist = nodes[i].distanceValue*0.25/1000.0;
+			if (dist >= scan.range_min && dist <=scan.range_max)   
+			    scan.ranges[index] = dist;
 
-			scan.intensities[index] = nodes[i].distanceValue*0.25/1000.0;
+			//scan.intensities[index] = nodes[i].distanceValue*0.25/1000.0;
 		}
 		scan_pub.publish(scan);
 		//cout<<(int)count<<endl;
