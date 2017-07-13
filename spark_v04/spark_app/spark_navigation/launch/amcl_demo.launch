@@ -43,12 +43,12 @@
     <param name="output_frame_id" value="/camera_depth_frame" />
 
     <!--added by xilai 6/19/2017-->
-    <param name="scan_height" value="50" />
+    <param name="scan_height" value="100" />
   </node>
 
 
   <!-- Map server -->
-  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall_final.yaml"/>
+  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall2.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->

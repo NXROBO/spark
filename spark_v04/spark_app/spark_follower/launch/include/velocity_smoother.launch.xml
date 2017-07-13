@@ -2,7 +2,7 @@
          Velocity smoother
 -->
 <launch>
-<node pkg="nodelet" type="nodelet" name="spark_base_nodelet_manager" args="manager"/>
+  <!--node pkg="nodelet" type="nodelet" name="spark_base_nodelet_manager" args="manager"/-->
   <node pkg="nodelet" type="nodelet" name="follower_velocity_smoother" args="load follower_velocity_smoother/VelocitySmootherNodelet spark_base_nodelet_manager">
     
     <rosparam file="$(find spark_follower)/param/default/smoother.yaml" command="load"/>
