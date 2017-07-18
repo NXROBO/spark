@@ -81,7 +81,7 @@ class GetLocation(State):
         初始化
         '''
         State.__init__(self, outcomes=['succeeded', 'aborted'], output_keys=['waypoint_out'])     
-        self.nav_pose = [rospy.get_param("~A_Pose"), rospy.get_param("~B_Pose")]
+        self.nav_pose = [rospy.get_param("~b_Pose"), rospy.get_param("~b_Pose")]
         self.pose_idx = 1      
         
     def execute(self, userdata):
@@ -192,18 +192,19 @@ class TurnBody(State):
         State.__init__(self, outcomes=['succeeded', 'aborted'])
         self.task = 'turn body'        
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)  
+        self.min_z = rospy.get_param("~turnbody_min_z",0.2)
+        self.max_z = rospy.get_param("~turnbody_max_z",0.6)
     def execute(self, userdata):        
         '''
         执行状态
         :param userdata:
         '''
         cmd_vel = Twist()
-        cmd_vel.angular.z = random.uniform(0.2, 0.6)
+        cmd_vel.angular.z = random.uniform(self.min_z,self.max_z)
         print cmd_vel.angular.z
         rate = rospy.Rate(25)
-        for i in range(25):
-            
-            self.cmd_vel_pub.publish(cmd_vel)
+        for i in range(25):            
+            self.cmd_vel_pub.publish(cmd_vel)            
             rate.sleep()
             
         #self.cmd_vel_pub.publish(cmd)
