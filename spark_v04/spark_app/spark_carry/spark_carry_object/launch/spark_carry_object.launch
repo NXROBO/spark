@@ -3,7 +3,7 @@
   <!--描述-->
   <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
   <!--show robo with rviz-->  
-  <arg name="rvizconfig" default="$(find spark_fetchtea)/rviz/fetch_tea.rviz" />
+  <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/fetch_tea.rviz" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
   <!--底盘-->
   <include file="$(find spark_base)/launch/spark_base.launch">

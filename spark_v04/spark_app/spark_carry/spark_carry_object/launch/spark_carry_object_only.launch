@@ -1,0 +1,10 @@
+<launch> 	
+  <!--搬运物体-->
+  <node pkg="spark_carry_object" type="s_carry_object.py" name="spark_carry_object_node" output="screen">
+  	<param name ="A_Pose" value = "0,0,0,0,0,0,1"/>
+  	<param name ="B_Pose" value = "1,0,0,0,0,0,1"/>
+	
+  </node>
+  <!--Uarm 启动文件-->
+
+</launch>
