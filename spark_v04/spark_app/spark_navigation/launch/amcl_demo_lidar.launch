@@ -16,7 +16,7 @@
 
 
 <!-- Map server -->
-  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall_lidar.yaml"/>
+  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall_final.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->
