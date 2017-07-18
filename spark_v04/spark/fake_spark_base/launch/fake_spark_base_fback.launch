@@ -1,0 +1,9 @@
+<launch>
+
+<!-- description file -->
+  <include file="$(find spark_description)/launch/spark_description.launch"/>
+
+<!-- fake base -->
+  <node pkg="fake_spark_base" type="fake_spark_base_fback" name="fake_spark_base_fback" output="screen"/>
+
+</launch>

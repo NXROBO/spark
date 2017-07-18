@@ -48,7 +48,7 @@
 
 
   <!-- Map server -->
-  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall2.yaml"/>
+  <arg name="map_file" default="$(find spark_navigation)/maps/meeting_room.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->
