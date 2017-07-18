@@ -1,4 +1,15 @@
 <launch> 	
+	
+
+  <!--相机-->
+  <include file="$(find astra_launch)/launch/astra.launch">
+    <arg name="rgb_processing"                  value="true"/>
+    <arg name="depth_processing"                value="true"/>
+    <arg name="depth_registered_processing"     value="false"/>
+    <arg name="depth_registration"              value="false"/>
+    <arg name="disparity_processing"            value="false"/>
+    <arg name="disparity_registered_processing" value="false"/>
+  </include>
   <!--搬运物体-->
   <node pkg="spark_carry_object" type="s_carry_object.py" name="spark_carry_object_node" output="screen">
   	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
@@ -6,6 +17,7 @@
 	<param name ="turnbody_min_z" value = "0.2"/>
 	<param name ="turnbody_max_z" value = "0.6"/>
   </node>
+  <node pkg="swiftpro" type="swiftpro_write_node" name="swiftpro_write_node" output="screen"/>
   <!--Uarm 启动文件-->
 
 </launch>
