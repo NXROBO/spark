@@ -48,6 +48,8 @@ class GraspObject(State):
         执行状态
         :param userdata:
         '''
+        rate = rospy.Rate(0.5)
+        rate.sleep()
         return 'succeeded'    
 
 class ReleaseObject(State):
@@ -79,7 +81,8 @@ class GetLocation(State):
         初始化
         '''
         State.__init__(self, outcomes=['succeeded', 'aborted'], output_keys=['waypoint_out'])     
-        self.loc_pose = None;    
+        self.nav_pose = [rospy.get_param("~A_Pose"), rospy.get_param("~B_Pose")]
+        self.pose_idx = 1      
         
     def execute(self, userdata):
         '''
@@ -93,12 +96,14 @@ class GetLocation(State):
         return 'succeeded' 
     
     def get_pose(self):
-        pose = None
-        #to generate pose
-         
-        print pose        
-        
-        return self.split_str(pose)
+        '''
+        获得导航点的位置和姿态
+        '''
+        self.pose_idx = (self.pose_idx + 1) % 2
+        # to generate pose
+        pose = self.split_str(self.nav_pose[self.pose_idx])
+        print pose                  
+        return pose
     
     def split_str(self, str):
         
@@ -106,8 +111,7 @@ class GetLocation(State):
         if len(loc_array) != 7:
             return None
         pose = Pose(Point(0, 0, 0), Quaternion(0.0, 0.0, 0.0, 1.0))
-        
-	pose.position.x = float(loc_array[0])
+        pose.position.x = float(loc_array[0])
         pose.position.y = float(loc_array[1])
         pose.position.z = float(loc_array[2])
         pose.orientation.x = float(loc_array[3])
@@ -132,14 +136,12 @@ class Nav2Waypoint(State):
         # self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)        
         # Wait up to 60 seconds for the action server to become available
         global move_base;
-        move_base.wait_for_server(rospy.Duration(5))    
+        # move_base.wait_for_server(rospy.Duration(5))    
         
         rospy.loginfo("Connected to move_base action server")
         
         self.goal = MoveBaseGoal()
         self.goal.target_pose.header.frame_id = "/map"
-    
-        self.sayword_pub = rospy.Publisher("/xfsaywords", String, queue_size=1)
 
     def execute(self, userdata):
         '''
@@ -148,7 +150,7 @@ class Nav2Waypoint(State):
         '''
         self.goal.target_pose.pose = userdata.waypoint_in
         
-        
+        return 'succeeded'
         
         self.goal.target_pose.header.stamp = rospy.Time.now() 
         if self.goal.target_pose.pose is None:
@@ -162,9 +164,6 @@ class Nav2Waypoint(State):
             self.service_preempt()
             return 'preempted'
         rospy.loginfo('wait for result')
-        
-        global location_name
-        self.sayword_pub.publish(loc_name2playword_ontheway[location_name]);
         
         # Allow 1 minute to get there
         finished_within_time = move_base.wait_for_result(rospy.Duration(60)) 
@@ -192,12 +191,22 @@ class TurnBody(State):
         '''
         State.__init__(self, outcomes=['succeeded', 'aborted'])
         self.task = 'turn body'        
-        
+        self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)  
     def execute(self, userdata):        
         '''
         执行状态
         :param userdata:
         '''
+        cmd_vel = Twist()
+        cmd_vel.angular.z = random.uniform(0.2, 0.6)
+        print cmd_vel.angular.z
+        rate = rospy.Rate(25)
+        for i in range(25):
+            
+            self.cmd_vel_pub.publish(cmd_vel)
+            rate.sleep()
+            
+        #self.cmd_vel_pub.publish(cmd)
         return 'succeeded'    
     
 class EndAbort(State):
@@ -283,9 +292,6 @@ class CarryObject():
              return_flag = 0       
         if req.type == req.RUN:
              if self.switch_status == 0:
-                 global location_name
-                 location_name = req.param
-                 print location_name
                  # thread.start_new_thread(self.timer, (1,1)) 
                  self.thr = threading.Thread(target=self.timer, args=(1, 1))
                  self.thr.start()
@@ -293,7 +299,6 @@ class CarryObject():
              return_flag = 1
          
         # self.master_s_pub.publish("",0)
-        rospy.loginfo("req infomaion, type:%s,param:%s" % (req.type, req.param))
         print "s_carry_object status:%d" % return_flag
         return sceneResponse(return_flag) 
     
@@ -354,7 +359,7 @@ class CarryObject():
             self.sm_carry_object = None
         self.sm_carry_object = StateMachine(outcomes=['succeeded', 'aborted', 'preempted'])
         with self.sm_carry_object:
-            StateMachine.add('GRASP_OBJECT', SpeaktoTipStart(), transitions={'succeeded':'GET_LOCATION',
+            StateMachine.add('GRASP_OBJECT', GraspObject(), transitions={'succeeded':'GET_LOCATION',
                                                                                'aborted':'END_ABORT'})
             StateMachine.add('GET_LOCATION', GetLocation(), transitions={'succeeded':'NAV_TO_WAYPOINT',
                                                                                'aborted':'END_ABORT'},
@@ -362,12 +367,12 @@ class CarryObject():
             StateMachine.add('NAV_TO_WAYPOINT', Nav2Waypoint(), transitions={'succeeded':'RELEASE_OBJECT',
                                                                                'aborted':'END_ABORT'},
                              remapping={'waypoint_in':'nav_waypoint'}) 
-            StateMachine.add('RELEASE_OBJECT', SpeaktoTipStart(), transitions={'succeeded':'GET_LOCATION',
+            StateMachine.add('RELEASE_OBJECT', ReleaseObject(), transitions={'succeeded':'TURN_BODY',
                                                                                'aborted':'END_ABORT'})
             StateMachine.add('TURN_BODY', TurnBody(), transitions={'succeeded':'GRASP_OBJECT',
                                                                                'aborted':'END_ABORT'})
-            StateMachine.add('END_ABORT', EndSpeaktoTipAbort(), transitions={'succeeded':'succeeded'}) 
-            StateMachine.add('END_SUCESS', EndSpeaktoTipSucess(), transitions={'succeeded':'succeeded'}) 
+            StateMachine.add('END_ABORT', EndAbort(), transitions={'succeeded':'succeeded'}) 
+            StateMachine.add('END_SUCESS', EndSuccess(), transitions={'succeeded':'succeeded'}) 
     def stop_cb(self, msg):
         '''
         停止回调函数
