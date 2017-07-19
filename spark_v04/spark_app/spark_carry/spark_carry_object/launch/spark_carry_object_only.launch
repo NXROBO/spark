@@ -3,7 +3,7 @@
   <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
   
   <!--UARM机械臂-->
-  <!--node pkg="swiftpro" type="swiftpro_write_node" name="swiftpro_write_node" output="screen"/-->
+  <node pkg="swiftpro" type="swiftpro_write_node" name="swiftpro_write_node" output="screen"/>
   	  
   <!--导航-->
   <include file="$(find spark_navigation)/launch/amcl_lidar.launch"/>

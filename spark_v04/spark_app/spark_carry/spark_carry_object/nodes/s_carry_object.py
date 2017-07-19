@@ -59,7 +59,7 @@ class GraspObject(State):
         self.is_found_object = False
         self.onInit()
         rate = rospy.Rate(10)
-	return 'succeeded'
+
         while not self.is_found_object:
             rate.sleep()
             print("not found\n")
@@ -211,7 +211,7 @@ class ReleaseObject(State):
         pos.z = 0
         pub1.publish(pos)
         r1.sleep()
-        return 'succeeded'
+
         # stop pump
         pub2.publish(0)
         r2.sleep()
