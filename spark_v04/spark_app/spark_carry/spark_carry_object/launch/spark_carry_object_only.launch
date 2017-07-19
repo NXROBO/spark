@@ -1,15 +1,13 @@
 <launch> 	
-	
-
-  <!--相机-->
-  <include file="$(find astra_launch)/launch/astra.launch">
-    <arg name="rgb_processing"                  value="true"/>
-    <arg name="depth_processing"                value="true"/>
-    <arg name="depth_registered_processing"     value="false"/>
-    <arg name="depth_registration"              value="false"/>
-    <arg name="disparity_processing"            value="false"/>
-    <arg name="disparity_registered_processing" value="false"/>
-  </include>
+  <!--spark驱动，机器人描述，相机，底盘-->
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+  
+  <!--UARM机械臂-->
+  <!--node pkg="swiftpro" type="swiftpro_write_node" name="swiftpro_write_node" output="screen"/-->
+  	  
+  <!--导航-->
+  <include file="$(find spark_navigation)/launch/amcl_lidar.launch"/>
+  
   <!--搬运物体-->
   <node pkg="spark_carry_object" type="s_carry_object.py" name="spark_carry_object_node" output="screen">
   	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
@@ -17,7 +15,5 @@
 	<param name ="turnbody_min_z" value = "0.2"/>
 	<param name ="turnbody_max_z" value = "0.6"/>
   </node>
-  <node pkg="swiftpro" type="swiftpro_write_node" name="swiftpro_write_node" output="screen"/>
-  <!--Uarm 启动文件-->
-
+  
 </launch>

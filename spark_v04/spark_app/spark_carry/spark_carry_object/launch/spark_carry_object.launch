@@ -1,7 +1,7 @@
 <launch>
   
   <!--描述-->
-  <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
   <!--show robo with rviz-->  
   <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/fetch_tea.rviz" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />

@@ -56,16 +56,16 @@ class GraspObject(State):
         执行状态
         :param userdata:
         '''
-        self.is_found_object = False
-        self.onInit()
-        rate = rospy.Rate(10)
-        while not self.is_found_object:
-            rate.sleep()
-            print("not found\n")
-        print("unregisting sub\n")
-        self.sub.unregister()
-        print("unregisted sub\n")    
-        self.grasp()
+#         self.is_found_object = False
+#         self.onInit()
+#         rate = rospy.Rate(10)
+#         while not self.is_found_object:
+#             rate.sleep()
+#             print("not found\n")
+#         print("unregisting sub\n")
+#         self.sub.unregister()
+#         print("unregisted sub\n")    
+#         self.grasp()
         return 'succeeded'
     
     def onInit(self):
@@ -200,25 +200,25 @@ class ReleaseObject(State):
         执行状态
         :param userdata:
         '''
-        global pub1, pub2
-        r1 = rospy.Rate(0.1)  # 5s
-        r2 = rospy.Rate(10)  # 0.1s
-        pos = position()
-        # go forward
-        pos.x = 200
-        pos.y = 0
-        pos.z = 0
-        pub1.publish(pos)
-        r1.sleep()
-        # stop pump
-        pub2.publish(0)
-        r2.sleep()
-        # go back home
-        pos.x = 120
-        pos.y = 0
-        pos.z = 35
-        pub1.publish(pos)
-        r1.sleep()
+#         global pub1, pub2
+#         r1 = rospy.Rate(0.1)  # 5s
+#         r2 = rospy.Rate(10)  # 0.1s
+#         pos = position()
+#         # go forward
+#         pos.x = 200
+#         pos.y = 0
+#         pos.z = 0
+#         pub1.publish(pos)
+#         r1.sleep()
+#         # stop pump
+#         pub2.publish(0)
+#         r2.sleep()
+#         # go back home
+#         pos.x = 120
+#         pos.y = 0
+#         pos.z = 35
+#         pub1.publish(pos)
+#         r1.sleep()
         return 'succeeded'
             
 
