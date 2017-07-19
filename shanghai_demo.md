@@ -16,7 +16,15 @@ c.将电脑放在spark卡槽上
 
 3.建图功能
 a.启动建图启动文件
-gmapping_demo_lidar.launch
-b.启动rviz
-rosrun rviz rviz
+roslaunch spark_navigation gmapping_demo_lidar.launch
+b.启动机器人描述文件（在新的终端）
+roslaunch spark_description spark_description.launch
+
+4.导航功能
+a.启动导航启动文件
+roslaunch spark_navigation amcl_demo_lidar.launch
+b.启动机器人描述文件（在新的终端）
+roslaunch spark_description spark_description.launch
+c.在rviz里面添加map话题 增加代价地图效果（costmap)
+
 
