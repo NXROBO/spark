@@ -14,4 +14,9 @@ b.运行随行功能
 ./follow_run.sh
 c.将电脑放在spark卡槽上
 
+3.建图功能
+a.启动建图启动文件
+gmapping_demo_lidar.launch
+b.启动rviz
+rosrun rviz rviz
 

@@ -1,7 +1,7 @@
 <launch>
 
  <!-- description file -->
-  <include file="$(find spark_description)/launch/spark_description.launch"/>
+  <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
 
 <!-- base -->
   <include file="$(find spark_base)/launch/spark_base.launch">
