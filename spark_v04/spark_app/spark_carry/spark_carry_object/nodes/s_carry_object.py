@@ -59,6 +59,7 @@ class GraspObject(State):
         self.is_found_object = False
         self.onInit()
         rate = rospy.Rate(10)
+	return 'succeeded'
         while not self.is_found_object:
             rate.sleep()
             print("not found\n")
@@ -210,6 +211,7 @@ class ReleaseObject(State):
         pos.z = 0
         pub1.publish(pos)
         r1.sleep()
+        return 'succeeded'
         # stop pump
         pub2.publish(0)
         r2.sleep()
@@ -232,8 +234,8 @@ class GetLocation(State):
         初始化
         '''
         State.__init__(self, outcomes=['succeeded', 'aborted'], output_keys=['waypoint_out'])     
-        self.nav_pose = [rospy.get_param("~b_Pose"), rospy.get_param("~b_Pose")]
-        self.pose_idx = 1      
+        self.nav_pose = [rospy.get_param("~a_Pose"), rospy.get_param("~b_Pose")]
+        self.pose_idx = 0      
         
     def execute(self, userdata):
         '''
@@ -287,7 +289,7 @@ class Nav2Waypoint(State):
         # self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)        
         # Wait up to 60 seconds for the action server to become available
         global move_base;
-        # move_base.wait_for_server(rospy.Duration(5))    
+        move_base.wait_for_server(rospy.Duration(5))    
         
         rospy.loginfo("Connected to move_base action server")
         
@@ -301,7 +303,7 @@ class Nav2Waypoint(State):
         '''
         self.goal.target_pose.pose = userdata.waypoint_in
         
-        return 'succeeded'
+        #return 'succeeded'
         
         self.goal.target_pose.header.stamp = rospy.Time.now() 
         if self.goal.target_pose.pose is None:

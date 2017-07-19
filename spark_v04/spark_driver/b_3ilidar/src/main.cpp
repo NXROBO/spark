@@ -85,7 +85,7 @@ private:
 		while (ros::ok()) {
 			rate.sleep();
 			//public laser
-			ROS_INFO("To publish laser");
+			//ROS_INFO("To publish laser");
 			publicLaser();
 		}
 
@@ -99,7 +99,7 @@ private:
 		double t1 = ros::Time().now().toSec();
 		op_result = drv->grabScanData(nodes, count);
 		double t2 = ros::Time().now().toSec();
-		ROS_INFO("cost time:%f",t2-t1);
+		//ROS_INFO("cost time:%f",t2-t1);
 		if (count <= 50) {
 			eflag = 0;
 			drv->getErrorInfo(&eflag);
