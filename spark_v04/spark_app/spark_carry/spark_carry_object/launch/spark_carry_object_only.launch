@@ -10,8 +10,8 @@
   
   <!--搬运物体-->
   <node pkg="spark_carry_object" type="s_carry_object.py" name="spark_carry_object_node" output="screen">
-  	<param name ="a_Pose" value = "1,0,0,0,0,0,1"/>
-  	<param name ="b_Pose" value = "1,0,0,0,0,0,1"/>
+  	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
+  	<param name ="b_Pose" value = "0.5,0.5,0,0,0,0,1"/>
 	<param name ="turnbody_min_z" value = "-0.2"/>
 	<param name ="turnbody_max_z" value = "0.2"/>
   </node>
