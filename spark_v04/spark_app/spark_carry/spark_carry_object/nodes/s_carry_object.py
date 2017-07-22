@@ -89,22 +89,24 @@ class GraspObject(State):
         
         r1 = rospy.Rate(0.05)
         r2 = rospy.Rate(10)
-        a = [0.3115, 0.7378, -0.0023, -0.0003, -0.0074, 203.0687]
-        b = [-0.6279, 3.0261, -0.0027, -0.0001, -0.0162, 152.4454]
-	# a = [0.0325, -1.1880, -0.0000, -0.0002, 0.0004, 439]
-        # b = [-1.1016, -0.0166, 0.0006, 0.0001, -0.0003, 327]
-        pos = position()
+        # a = [0.1791, -0.3121, -0.0013, -0.0002, -0.0021, 256.1421]
+        # b = [-1.0607, -0.4061, 0.0009, 0.0002, 0.0012, 325.9349]
+	# a = [-0.3180, -0.8592, 0.0023, 0.0009, 0.0007, 225]
+	# b = [0.6361, 1.7184, -0.0046, -0.0017, -0.0014, -8.2997]
+        a = [-0.8213, 297.6527]
+	b = [-0.8919, 311.0063]
+	pos = position()
         # start pump
         self.pub2.publish(1)
         r2.sleep()
         # go forward
-        pos.x = a[0] * xc + a[1] * yc + a[2] * xc * yc + a[3] * xc * xc + a[4] * yc * yc + a[5]
-        pos.y = b[0] * xc + b[1] * yc + b[2] * xc * yc + b[3] * xc * xc + b[4] * yc * yc + b[5]
+        pos.x = a[0] * yc + a[1]
+        pos.y = b[0] * xc + b[1]
         pos.z = 20
         self.pub1.publish(pos)
         r2.sleep()
         # go down
-        pos.z = -50
+        pos.z = -83
         self.pub1.publish(pos)
         r2.sleep()
         # go back home
@@ -204,13 +206,13 @@ class ReleaseObject(State):
         :param userdata:
         '''
         global pub1, pub2
-        r1 = rospy.Rate(0.1)  # 5s
-        r2 = rospy.Rate(10)  # 0.1s
+        r1 = rospy.Rate(0.15)  # 5s
+        r2 = rospy.Rate(1)     # 1s
         pos = position()
         # go forward
         pos.x = 200
         pos.y = 0
-        pos.z = 0
+        pos.z = -80
         pub1.publish(pos)
         r1.sleep()
 

@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="spark_teleop" type="spark_teleop_node" name="spark_teleop_node" args="0.15 0.5">
+		<remap from="cmd_vel" to="/navigation_velocity_smoother/raw_cmd_vel"/>
+	</node>
+</launch>

@@ -1,0 +1,62 @@
+一、准备工作
+a.组装机器人，注意插入usb口顺序，先底盘usb，接着雷达usb，然后相机usb，最后机械臂usb
+b.接电源启动路由器，
+c.启动机器人，包括主机和底盘
+d.笔记本通过网线连接我们的路由器
+e.查看本机和远程主机网络是否链接正常：
+ping 192.168.1.101
+f.远程登录
+ssh spark@192.168.1.101  
+
+二、功能演示
+1.随行功能
+a.ssh远程登录机器人的系统
+ssh spark@192.168.1.101
+b.进入目录
+cd ~/sparkws/install
+c.运行随行功能
+./follow_run.sh
+d.在笔记本启动终端，并输入以下命令来打开rviz：
+rviz -d ~/Desktop/follower_demo.rviz
+
+
+2.建图功能：
+a.ssh远程登录机器人的主机系统
+ssh spark@192.168.1.101
+b.ssh远程登录机器人的系统，并输入以下命令来启动建图和导航功能：
+roslaunch spark_navigation gmapping_demo_lidar.launch
+c.在笔记本启动终端，并输入以下命令来打开rviz：
+rviz -d ~/Desktop/gmapping_demo.rviz
+
+
+3.机械臂抓取物体
+a.远程登录
+ssh spark@192.168.1.101
+b.远程主机启动抓取物体功能模块
+cd sparkws
+source devel/setup.bash
+sudo chmod 666 /dev/ttyACM0
+roslaunch spark_carry_object spark_carry_object_only.launch
+c.本机或远程：启动抓取功能
+cd ~/spark
+source devel/setup.bash
+// 一起粘贴
+rosservice call /s_carry_object "type: 1
+param: ''" 
+
+
+三-常见问题
+1.ros无法启动
+方案：确定ros的ip是否有改变，主要查看～/.bashrc中的设置是否正确：
+export ROS_MASTER_URI=http://192.168.1.101:11311
+export ROS_IP=192.168.1.101
+2.查看本机ip
+方法：输入以下命令
+ifconfig
+
+3.无法链接机器人主机系统
+通过以下命令，尝试查看远程ip：
+ping 192.168.1.101
+如果正常会接到反馈的数据和时间。如果不正长就常识其他的ip地址，如：
+192.168.1.102
+

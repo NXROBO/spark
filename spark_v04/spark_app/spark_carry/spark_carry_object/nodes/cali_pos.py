@@ -17,79 +17,20 @@ def talker():
 	r2 = rospy.Rate(0.08) # 13s
 	r3 = rospy.Rate(0.2)  # 5s
 
-	try:
-		r1.sleep()
-		pos.x = 120
-		pos.y = 0
-		pos.z = 35
+	r1.sleep()
+	pos.x = 120
+	pos.y = 0
+	pos.z = 35
+	pub1.publish(pos)
+	r2.sleep()
+		
+	for i in range(20):	
+		pos.x = 150 + i * 5
+		pos.y = 200 - i * 10
+		pos.z = -120
 		pub1.publish(pos)
 		r2.sleep()
-		
-		pos.x = 180
-		pos.y = 210
-		pos.z = -110
-		pub1.publish(pos)
-		r2.sleep()
 		pub2.publish(1)
-		
-		pos.x = 170
-		pos.y = 180
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-	
-		pos.x = 205
-		pos.y = 140
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-	
-		pos.x = 206
-		pos.y = 185
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-		
-		pos.x = 235
-		pos.y = 80
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-	
-		pos.x = 242
-		pos.y = 105
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-		
-		pos.x = 255
-		pos.y = 35
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-
-		pos.x = 250
-		pos.y = 0
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-	
-		pos.x = 240
-		pos.y = -50
-		pos.z = -110
-		pub1.publish(pos)
-		r3.sleep()
-		pub2.publish(1)
-	
-	except:
-		return
 
 
 if __name__ == '__main__': 
