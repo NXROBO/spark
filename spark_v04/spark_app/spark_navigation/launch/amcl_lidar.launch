@@ -1,21 +1,11 @@
 <launch>
 
- <!-- description file -->
-  <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
-
-<!-- base -->
-  <include file="$(find spark_base)/launch/spark_base.launch">
-	<arg name="serialport"                  value="/dev/ttyUSB0"/>
-  </include>
-
-
-<!-- 3D sensor -->
+  <!-- 3D sensor -->
   <arg name="3d_sensor" default="3i_lidar"/>  
   <include file="$(find b_3ilidar)/launch/bringup.launch">
   </include>
-
-
-<!-- Map server -->
+  
+  <!-- Map server -->
   <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall_final.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
