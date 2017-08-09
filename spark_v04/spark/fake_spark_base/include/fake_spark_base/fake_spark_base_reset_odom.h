@@ -19,18 +19,23 @@ private:
  double Odom_y;
  double Odom_theta;
 
+ double Odom_x_reset;
+ double Odom_y_reset;
+ double Odom_theta_reset;
+
  double prev_t;
  double curr_t;
  
  std::string odom, odom2;
  std::string base_footprint,base_footprint2;
 
-
+ std::string odom_reset, odom2_reset;
+ std::string base_footprint_reset,base_footprint2_reset;
  
  ros::Publisher odom_pub;
  ros::Publisher fback_cmd_vel_pub;
- ros::Subscriber odom_reset_sub;
- //ros::Publisher odom_reset_pub;
+ ros::Publisher odom_reset_pub;
+
 
 public:
 
@@ -52,10 +57,7 @@ void pubOdom(void);
 //define cmd_vel callback
 void commandVelocityCallback (const geometry_msgs::Twist::ConstPtr &cmd_vel);
 
-//define reset odom callback
-void resetOdomCallback(const nav_msgs::Odometry::ConstPtr &odom);
+void pubOdom_reset(void);
 
 };
-
-}
-
+} //end namespace

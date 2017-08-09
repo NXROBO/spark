@@ -35,9 +35,7 @@ int SparkStateSimulation::runEverything()
 	//cmd_vel subscriber
 	cmd_vel_sub = nh.subscribe("/cmd_vel", 1, &SparkStateSimulation::commandVelocityCallback,this);  //need to have class name 
 	prev_t = 0;
-	curr_t = 0;
-	//odom subscriber
-	odom_reset_sub = nh.subscribe<nav_msgs::Odometry>("/odom", 1, &SparkStateSimulation::resetOdomCallback,this);
+	curr_t = 0;	
 	return 0;
 }
 
@@ -62,10 +60,45 @@ void SparkStateSimulation::commandVelocityCallback (const geometry_msgs::Twist::
 		return;
 	}
 	pubOdom();
+	pubOdom_reset();
 	prev_t = curr_t;
         return;
 }
 
+void SparkStateSimulation::pubOdom_reset()
+{
+	odom_reset_pub = nh.advertise<nav_msgs::Odometry>("/odom_reset", 1);
+	Odom_x_reset = 0;
+	Odom_y_reset = 0;
+	Odom_theta_reset = 0;
+	// publish the transforms over tf
+	geometry_msgs::TransformStamped odom_reset_trans;
+	odom_reset_trans.header.stamp = ros::Time::now();
+        odom_reset = "odom_reset";
+	base_footprint_reset = "base_footprint_reset";
+	odom_reset_trans.header.frame_id = odom_reset.c_str();
+	odom_reset_trans.child_frame_id = base_footprint_reset.c_str();
+        odom_reset_trans.transform.translation.x = Odom_x_reset;
+	odom_reset_trans.transform.translation.y = Odom_y_reset;
+	odom_reset_trans.transform.translation.z = 0.0;
+        odom_reset_trans.transform.rotation = tf::createQuaternionMsgFromYaw(Odom_theta_reset);        
+	tf_broadcaster.sendTransform(odom_reset_trans); //publish all odom_trans
+	ROS_INFO("test odom_reset_transform");
+        
+	// publish the odometry message over ROS
+	nav_msgs::Odometry odom_reset;
+	odom_reset.header.stamp = ros::Time::now();
+	odom2_reset = "odom_reset";
+	base_footprint2_reset = "base_footprint_reset";
+	odom_reset.header.frame_id = odom2_reset.c_str();
+	odom_reset.pose.pose.position.x = Odom_x_reset;
+	odom_reset.pose.pose.position.y = Odom_y_reset;
+	odom_reset.pose.pose.position.z = 0.0;
+	odom_reset.pose.pose.orientation = tf::createQuaternionMsgFromYaw(Odom_theta_reset);
+	odom_reset.child_frame_id = base_footprint2_reset.c_str();
+
+	odom_pub.publish(odom_reset); //publish all odom
+}
 
 void SparkStateSimulation::pubOdom()
 {

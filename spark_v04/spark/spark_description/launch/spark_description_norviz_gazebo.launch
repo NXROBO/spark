@@ -1,0 +1,13 @@
+<launch>
+
+  <arg name="model" default="$(find spark_description)/robots/spark.urdf.xacro"/>
+  
+  
+  <arg name="publish_default_positions" default="true"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+
+     
+  
+
+</launch>

@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="model" default="$(find spark_description)/robots/spark.urdf.xacro"/>
+  
+  <arg name="use_gui" default="false"/>
+  <arg name="publish_default_positions" default="true"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+      
+  
+
+</launch>

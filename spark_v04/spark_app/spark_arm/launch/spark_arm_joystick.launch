@@ -1,0 +1,12 @@
+<launch>
+	<param name="robot_description" command="cat $(find swiftpro)/urdf/model.xacro" />
+	<param name="use_gui" value= "False" />
+
+        <node name="spark_arm_joystick" pkg="spark_arm" type="spark_arm_joystick" />
+
+	<node name="joy_node" pkg="joy" type="joy_node" />
+
+	<node name="swiftpro_write_node" pkg="swiftpro" type="swiftpro_write_node" />
+	
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+</launch>
