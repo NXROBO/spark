@@ -662,7 +662,7 @@ int main(int argc, char **argv)
   ROS_INFO("spark_base_node for ROS %.2f", NODE_VERSION);
   if (argc != 2)
   {
-    ROS_FATAL("please input : spark_base_node /dev/tty??");
+    ROS_FATAL("please input : spark_base_node /dev/sparkBase");
     ROS_BREAK();
   }
   ROS_INFO("using the %s\n", argv[1]);
