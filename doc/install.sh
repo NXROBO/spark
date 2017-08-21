@@ -1,8 +1,9 @@
 echo 'Spark driver is installing'
 
 echo 'Setting udev rules'
-sudo cp ./rules/spark-usb-serial.rules /etc/udev/rules.d/
-sudo cp ./rules/orbbec-usb.rules /etc/udev/rules.d/556-orbbec-usb.rules
+BASEPATH=$(cd `dirname $0`; pwd)
+sudo cp $BASEPATH/rules/spark-usb-serial.rules /etc/udev/rules.d/
+sudo cp $BASEPATH/rules/orbbec-usb.rules /etc/udev/rules.d/556-orbbec-usb.rules
 sudo udevadm trigger
 
 echo 'Installing required libs'
