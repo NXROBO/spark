@@ -6,13 +6,13 @@
 
   <!-- base -->
  <include file="$(find spark_base)/launch/spark_base.launch">
-	<arg name="serialport"                  value="/dev/ttyUSB0"/>
+	<arg name="serialport"                  value="/dev/sparkBase"/>
  </include>
 
   <!-- 3D sensor -->
   <arg name="3d_sensor" default="3i_lidar"/>  
   <include file="$(find b_3ilidar)/launch/bringup.launch">
-  <!--<arg name="lidar_USB"                  value="/dev/ttyUSB0"/>-->
+  <!--<arg name="lidar_USB"                  value="/dev/sparkBase"/>-->
   </include>
 
 

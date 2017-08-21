@@ -6,7 +6,7 @@
 	
 	<include file="$(find spark_description)/launch/spark_description.launch"/>
 	<include file="$(find spark_base)/launch/spark_base.launch">
-		<arg name="serialport"                  value="/dev/ttyUSB0"/> 
+		<arg name="serialport"                  value="/dev/sparkBase"/> 
 	</include>
 	
 	<include file="$(find astra_launch)/launch/astra.launch">

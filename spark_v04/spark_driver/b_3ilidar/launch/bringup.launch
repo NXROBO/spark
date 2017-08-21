@@ -6,7 +6,7 @@
 		   <param name = "lidar_USB" value = "/dev/ttyUSB1"/>
 		</node>
 
-		 <!--  <param name = "lidar_USB" value = "/dev/ttyUSB0"/>-->
+		 <!--  <param name = "lidar_USB" value = "/dev/sparkBase"/>-->
 		
 		<!--node pkg="tf" type="static_transform_publisher" name="static_transform_publisher"
 			args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 laser_frame base_footprint 1000" output="screen"/-->
