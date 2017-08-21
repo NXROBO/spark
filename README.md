@@ -29,7 +29,7 @@ Build this compile with the following steps:
 mkdir -p sparkws/src
 cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
-git checkout spark-04  #if your spark is the 0.3 base, please type the command:git checkout spark-03
+git checkout spark-04
 cd ..
 #installl dependence package
 ./src/spark/doc/install.sh
