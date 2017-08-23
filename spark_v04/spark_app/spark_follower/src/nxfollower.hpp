@@ -181,7 +181,7 @@ public:
     float z_scale = 1.2;
     float x_scale = 6.0;
     x_linear = (depth - goal_depth_) * z_scale;
-    z_angular = y * x_scale;
+    z_angular = asin(y / curr_dist) * x_scale;
 
     if (depth_thre > fabs(depth - goal_depth_))
       x_linear = 0;
