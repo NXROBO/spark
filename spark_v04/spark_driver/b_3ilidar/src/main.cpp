@@ -83,7 +83,7 @@ public:
   Threeiladar(ros::NodeHandle in_nh)
   {
     nh = in_nh;
-    opt_com_path = "/dev/sparkBase";
+    opt_com_path = "/dev/ttyUSB0";
     if (!nh.getParam("/b_3ilidar_node/lidar_USB", opt_com_path))
       ROS_ERROR("No lidar_USB param found, the serial port will be set as %s", opt_com_path.c_str());
     opt_com_baudrate = 115200;
