@@ -30,7 +30,7 @@ mkdir -p sparkws/src
 cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
 cd ..
-#installl dependence package
+#install dependence package
 ./src/spark/doc/install.sh
 #Compile
 catkin_make
