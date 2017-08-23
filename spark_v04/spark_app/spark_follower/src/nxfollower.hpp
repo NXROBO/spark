@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013, Willow Garage, Inc.
- * Copyright (c) 2016, SHENZHEN NXROBO Co.,LTD.
+  * Copyright (c) 2016, SHENZHEN NXROBO Co.,LTD.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,9 +71,6 @@ private:
   double y_thre;
 
 public:
-  /*
-   * 	constructor
-   */
   NxFollowerNode(ros::NodeHandle nh, ros::NodeHandle pnh)
     : min_y_(0.1), max_y_(0.5), min_x_(-0.2), max_x_(0.2), max_z_(0.8), goal_z_(0.6), z_scale_(1.0), x_scale_(5.0)
   {
@@ -108,17 +104,10 @@ public:
     cloud_sub = nhandle.subscribe<PointCloud>("/camera/depth/points", 1, &NxFollowerNode::pointCloudCb, this);
   }
 
-  /*
-   * 	destructor
-   */
   virtual ~NxFollowerNode()
   {
   }
 
-  /*
-   * callback function of point cound
-   *  @param [in] cloud
-   */
   void pointCloudCb(const PointCloud::ConstPtr &cloud)
   {
     // X,Y,Z of the centroid
@@ -162,12 +151,16 @@ public:
     }
   }
 
+<<<<<<< HEAD
   /*
    *  @brief 发布底盘的速度，包括线速度和角速度
    *  @param [in] y 相对于机器人底盘base_footprint的目标点的y坐标
    *  @param [in] depth 相对于机器人底盘base_footprint的目标点的x坐标
    */
   void pubCmd(float y, float depth)
+=======
+  void pubCmd(const float &y, const float &depth)
+>>>>>>> spark-04
   {
     double curr_dist = sqrt(y * y + depth * depth);
     if (curr_dist == 0)
@@ -179,7 +172,11 @@ public:
     float x_linear = 0;
     float z_angular = 0;
     float z_scale = 1.2;
+<<<<<<< HEAD
     float x_scale = 6.0;
+=======
+    float x_scale = 2.0;
+>>>>>>> spark-04
     x_linear = (depth - goal_depth_) * z_scale;
     z_angular = asin(y / curr_dist) * x_scale;
 
@@ -194,9 +191,13 @@ public:
 
     cmdvel_pub.publish(cmd);
   }
+<<<<<<< HEAD
   /*
    * waiting for the end of the program
    */
+=======
+
+>>>>>>> spark-04
   void spin()
   {
     ros::spin();

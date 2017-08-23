@@ -23,10 +23,17 @@
 //-----------------------------------------
 #define COMM_HEAD_FLAGE 0xAA  // Frame header
 
+<<<<<<< HEAD
 #define COMM_FRAME_TYPE_ATTR 0x20      // attribute frame
 #define COMM_FRAME_TYPE_RSP_ATTR 0x21  // attribute frame
 
 #define COMM_FRAME_TYPE_CMD 0x40      // command farme
+=======
+#define COMM_FRAME_TYPE_ATTR 0x20  // attribute frame
+#define COMM_FRAME_TYPE_RSP_ATTR 0x21  // attribute frame
+
+#define COMM_FRAME_TYPE_CMD 0x40  // command farme
+>>>>>>> spark-04
 #define COMM_FRAME_TYPE_RSP_CMD 0x41  // command farme
 
 #define COMM_FRAME_TYPE_MESSAGE 0x61  // message frame

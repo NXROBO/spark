@@ -1,7 +1,6 @@
 /*
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2011, Willow Garage, Inc.
  *  Copyright (c) 2016, NXROBO Ltd.
  *  Xiankai Chen <xiankai.chen@nxrobo.com>
  *
@@ -67,33 +66,21 @@ public:
 class CMutex
 {
 public:
-  /**
-   * Constructor
-   */
   CMutex()
   {
     pthread_mutex_init(&m_mutex, NULL);
   }
 
-  /**
-   * Destructor
-   */
   ~CMutex()
   {
     pthread_mutex_destroy(&m_mutex);
   }
 
-  /**
-   * Lock
-   */
   void Lock() const
   {
     pthread_mutex_lock(&m_mutex);
   }
 
-  /**
-   *Unlock
-   */
   void Unlock() const
   {
     pthread_mutex_unlock(&m_mutex);

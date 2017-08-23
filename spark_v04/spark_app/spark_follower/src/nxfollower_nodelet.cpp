@@ -5,7 +5,6 @@
 #include <nodelet/nodelet.h>
 
 #include "nxfollower.hpp"
-// this should really be in the implementation (.cpp file)
 
 namespace nxfollower
 {
@@ -37,6 +36,7 @@ public:
 // watch the capitalization carefully
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(nxfollower::NxFollowerNodelet, nodelet::Nodelet)
+<<<<<<< HEAD
 // PLUGINLIB_DECLARE_CLASS(usb_cam, usb_cam_nodelet, usb_cam::usb_cam_nodelet, nodelet::Nodelet);
 
 #endif
@@ -53,3 +53,7 @@ PLUGINLIB_EXPORT_CLASS(nxfollower::NxFollowerNodelet, nodelet::Nodelet)
  return 0;
  }
  */
+=======
+
+#endif
+>>>>>>> spark-04
