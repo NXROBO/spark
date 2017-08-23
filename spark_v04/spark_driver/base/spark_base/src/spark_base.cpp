@@ -1,9 +1,8 @@
 /*
  * Software License Agreement (BSD License)
  *
- *  Copyright (c) 2011, Willow Garage, Inc.
  *  Copyright (c) 2016, NXROBO Ltd.
- *  Litian Zhuang <litian.zhuang@nxrobo.com>
+ *  Litian Zhuang <litian.zhuang@nxrobo.com> and Xiankai Chen <xiankai.chen@nxrobo.com>
  *
  *  All rights reserved.
  *
@@ -247,7 +246,6 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
     g_Lock.Unlock();
   }
 
-  // ******************************************************************************************
   // first, we'll publish the transforms over tf
   geometry_msgs::TransformStamped odom_trans;
   odom_trans.header.stamp = current_time;
@@ -260,19 +258,6 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
   odom_trans.transform.rotation = tf::createQuaternionMsgFromYaw(sparkbase->odometry_yaw_);
   tf_broadcaster.sendTransform(odom_trans);
 
-  // cout<<"yaw:"<<sparkbase->odometry_yaw_<<endl;
-  // TODO: Finish brodcasting the tf for all the ir sensors on the Sparkbase
-  /*geometry_msgs::TransformStamped cliff_left_trans;
-  cliff_left_trans.header.stamp = current_time;
-  cliff_left_trans.header.frame_id = "base_link";
-  cliff_left_trans.child_frame_id = "base_cliff_left";
-  cliff_left_trans.transform.translation.x = 0.0;
-  cliff_left_trans.transform.translation.y = 0.0;
-  cliff_left_trans.transform.translation.z = 0.0;
-  cliff_left_trans.transform.rotation = ;
-  tf_broadcaster.sendTransform(cliff_left_trans);	*/
-
-  // ******************************************************************************************
   // next, we'll publish the odometry message over ROS
   nav_msgs::Odometry odom;
   odom.header.stamp = ros::Time::now();
