@@ -100,9 +100,9 @@ private:
 public:
   SmartCarKeyboardTeleop(float linear = 0.2, float angular = 0.4)
   {
-	kfd = 0;
-	speed_linear_x = linear;
-	speed_angular_z = angular;
+    kfd = 0;
+    speed_linear_x = linear;
+    speed_angular_z = angular;
 
     home_path = getenv("HOME");
     pub_ = n_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
@@ -115,8 +115,8 @@ public:
 
   ~SmartCarKeyboardTeleop()
   {
-	  /* set the terminal's parameters */
-	  tcsetattr(kfd, TCSANOW, &cooked);
+    /* set the terminal's parameters */
+    tcsetattr(kfd, TCSANOW, &cooked);
   }
 
   void stopRobot()
@@ -315,8 +315,6 @@ public:
   }
 };
 
-
-
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "teleop_node");
@@ -332,7 +330,7 @@ int main(int argc, char **argv)
   linear = atof(argv[1]);
   angular = atof(argv[2]);
 
-  SmartCarKeyboardTeleop kbt(linear,angular);
+  SmartCarKeyboardTeleop kbt(linear, angular);
 
   /* create a new thread */
   boost::thread t = boost::thread(boost::bind(&SmartCarKeyboardTeleop::keyboardLoop, &kbt));
@@ -343,9 +341,5 @@ int main(int argc, char **argv)
   t.join();
   kbt.stopRobot();
 
-
-
   return (0);
 }
-
-

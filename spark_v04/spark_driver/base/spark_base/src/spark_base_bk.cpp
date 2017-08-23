@@ -339,43 +339,42 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
   // publish wheel joint state
   pubWheelJointStates(vel_x, vel_yaw);
 
-    //publish irbumper
-    spark_base::SparkBaseSensor sensor_msg;
+  // publish irbumper
+  spark_base::SparkBaseSensor sensor_msg;
 
-    sensor_msg.ir_bumper_left = sparkbase->ir_bumper_[LEFT];
-    sensor_msg.ir_bumper_front_left = sparkbase->ir_bumper_[FRONT_LEFT];
-    sensor_msg.ir_bumper_front = sparkbase->ir_bumper_[FRONT];
-    sensor_msg.ir_bumper_front_right = sparkbase->ir_bumper_[FRONT_RIGHT];
-    sensor_msg.ir_bumper_right = sparkbase->ir_bumper_[RIGHT];
-    sensor_msg.ir_bumper_back_left = sparkbase->ir_bumper_[BACK_LEFT];
-    sensor_msg.ir_bumper_back_right = sparkbase->ir_bumper_[BACK_RIGHT];
+  sensor_msg.ir_bumper_left = sparkbase->ir_bumper_[LEFT];
+  sensor_msg.ir_bumper_front_left = sparkbase->ir_bumper_[FRONT_LEFT];
+  sensor_msg.ir_bumper_front = sparkbase->ir_bumper_[FRONT];
+  sensor_msg.ir_bumper_front_right = sparkbase->ir_bumper_[FRONT_RIGHT];
+  sensor_msg.ir_bumper_right = sparkbase->ir_bumper_[RIGHT];
+  sensor_msg.ir_bumper_back_left = sparkbase->ir_bumper_[BACK_LEFT];
+  sensor_msg.ir_bumper_back_right = sparkbase->ir_bumper_[BACK_RIGHT];
 
+  sensor_msg.cliff_left = sparkbase->cliff_[LEFT];
+  sensor_msg.cliff_front_left = sparkbase->cliff_[FRONT_LEFT];
+  sensor_msg.cliff_front_right = sparkbase->cliff_[FRONT_RIGHT];
+  sensor_msg.cliff_right = sparkbase->cliff_[RIGHT];
+  sensor_msg.cliff_back_left = sparkbase->cliff_[BACK_LEFT];
+  sensor_msg.cliff_back_right = sparkbase->cliff_[BACK_RIGHT];
 
-    sensor_msg.cliff_left = sparkbase->cliff_[LEFT];
-    sensor_msg.cliff_front_left = sparkbase->cliff_[FRONT_LEFT];
-    sensor_msg.cliff_front_right = sparkbase->cliff_[FRONT_RIGHT];
-    sensor_msg.cliff_right = sparkbase->cliff_[RIGHT];
-    sensor_msg.cliff_back_left = sparkbase->cliff_[BACK_LEFT];
-    sensor_msg.cliff_back_right = sparkbase->cliff_[BACK_RIGHT];
+  sensor_msg.wheel_drop_left = sparkbase->wheel_drop_[LEFT];
+  sensor_msg.wheel_drop_right = sparkbase->wheel_drop_[RIGHT];
+  sensor_msg.wheel_over_current_left = sparkbase->wheel_over_current_[LEFT];
+  sensor_msg.wheel_over_current_right = sparkbase->wheel_over_current_[RIGHT];
 
-    sensor_msg.wheel_drop_left = sparkbase->wheel_drop_[LEFT];
-    sensor_msg.wheel_drop_right = sparkbase->wheel_drop_[RIGHT];
-    sensor_msg.wheel_over_current_left = sparkbase->wheel_over_current_[LEFT];
-    sensor_msg.wheel_over_current_right = sparkbase->wheel_over_current_[RIGHT];
+  rb_sensor_pub.publish(sensor_msg);
 
-    rb_sensor_pub.publish(sensor_msg);
+  spark_base::SparkBaseDock dock_msg;
+  dock_msg.search_dock = sparkbase->search_dock_;
+  dock_msg.touch_charge = sparkbase->touch_charge_;
+  dock_msg.plug_charge = sparkbase->plug_charge_;
 
-    spark_base::SparkBaseDock dock_msg;
-    dock_msg.search_dock = sparkbase->search_dock_;
-    dock_msg.touch_charge = sparkbase->touch_charge_;
-    dock_msg.plug_charge = sparkbase->plug_charge_;
+  dock_msg.dock_dir_left = sparkbase->dock_direction_[LEFT];
+  dock_msg.dock_dir_right = sparkbase->dock_direction_[RIGHT];
+  dock_msg.dock_dir_front = sparkbase->dock_direction_[FRONT];
+  dock_msg.dock_dir_BACK = sparkbase->dock_direction_[BACK];
 
-    dock_msg.dock_dir_left = sparkbase->dock_direction_[LEFT];
-    dock_msg.dock_dir_right = sparkbase->dock_direction_[RIGHT];
-    dock_msg.dock_dir_front = sparkbase->dock_direction_[FRONT];
-    dock_msg.dock_dir_BACK = sparkbase->dock_direction_[BACK];
-
-    rb_dock_pub.publish(dock_msg);
+  rb_dock_pub.publish(dock_msg);
 }
 
 unsigned char checkSum(unsigned char *buf)
@@ -391,142 +390,137 @@ unsigned char checkSum(unsigned char *buf)
 
 void getSparkbaseComData(char *buf, int len)
 {
-    int i,j;
-    static int count=0;
-    long long timediff;
-    unsigned char tmpbuf[255];
-    static unsigned char recvbuf[255];
-    ros::Time currenttime;
-    static ros::Time headertime;
-    static int firsttime=1;
-    if(firsttime)
-    {
-        headertime = ros::Time::now();
-        firsttime = 0;
-    }
-    currenttime = ros::Time::now();
+  int i, j;
+  static int count = 0;
+  long long timediff;
+  unsigned char tmpbuf[255];
+  static unsigned char recvbuf[255];
+  ros::Time currenttime;
+  static ros::Time headertime;
+  static int firsttime = 1;
+  if (firsttime)
+  {
+    headertime = ros::Time::now();
+    firsttime = 0;
+  }
+  currenttime = ros::Time::now();
 
-    if(count == 0)
-    {
-        headertime = currenttime;
-    }
-    timediff = (currenttime - headertime).toNSec();
+  if (count == 0)
+  {
+    headertime = currenttime;
+  }
+  timediff = (currenttime - headertime).toNSec();
 
-    if(timediff > SPARKBASETIMEOUT)
-    {
-        count = 0;
-        ROS_ERROR("nx-base time out-%lld\n",timediff);
-        headertime = currenttime;
-    }
-    if((len+count) > 255)
-    {
-        count = 0;
-        ROS_ERROR("nx-base receive data too long!");
-        return;
-    }
-    memcpy(recvbuf+count, buf, len);
-    count += len;
+  if (timediff > SPARKBASETIMEOUT)
+  {
+    count = 0;
+    ROS_ERROR("nx-base time out-%lld\n", timediff);
+    headertime = currenttime;
+  }
+  if ((len + count) > 255)
+  {
+    count = 0;
+    ROS_ERROR("nx-base receive data too long!");
+    return;
+  }
+  memcpy(recvbuf + count, buf, len);
+  count += len;
 BACKCHECK:
-    if(count > 2)
+  if (count > 2)
+  {
+    int checkcount = count - 1;
+    for (i = 0; i < checkcount; i++)
     {
-        int checkcount = count-1;
-        for(i=0; i<checkcount; i++)
+      if ((recvbuf[i] == 0x53) && (recvbuf[i + 1] == 0x4b))
+      {
+        if (i > 0)
         {
-            if((recvbuf[i] == 0x53)&&(recvbuf[i+1] == 0x4b))
-            {
-
-                if(i>0)
-                {
-                    count = count-i;
-                    memcpy(tmpbuf, recvbuf+i, count);
-                    memcpy(recvbuf, tmpbuf, count);
-                }
-                break;
-            }
-
+          count = count - i;
+          memcpy(tmpbuf, recvbuf + i, count);
+          memcpy(recvbuf, tmpbuf, count);
         }
-        #if 0
+        break;
+      }
+    }
+#if 0
         if(i!=0)
         {
             for(j=0;j<count; j++)
                 printf(L_GREEN "%02X " NONE ,(unsigned char)recvbuf[j]);    //
             printf("\n");
         }
-        #endif
-        if(i==checkcount)
+#endif
+    if (i == checkcount)
+    {
+      if (recvbuf[checkcount] == 0x53)
+      {
+        count = 1;
+        recvbuf[0] = 0x53;
+      }
+      else
+      {
+        count = 0;
+      }
+    }
+    if (count > 3)
+    {
+      unsigned int framelen = recvbuf[2];
+      if (recvbuf[2] < 6)
+      {
+        count = 0;
+      }
+      else
+      {
+        if (count >= framelen)
         {
-            if(recvbuf[checkcount] == 0x53)
-            {
-                count = 1;
-                recvbuf[0] = 0x53;
-            }
-            else
-            {
-                count = 0;
-            }
-        }
-        if(count > 3)
-        {
-            unsigned int framelen = recvbuf[2];
-            if(recvbuf[2]<6)
-            {
-                count = 0;
-            }
-            else
-            {
-                if(count >= framelen)
-                {
-
-                    #if 0
+#if 0
                     for(j=0;j<framelen; j++)
                         printf("%02X ",(unsigned char)recvbuf[j]);
                     printf("\n");
-                    #endif
+#endif
 
-                    if((recvbuf[0]==0x53) && (recvbuf[1]==0x4b) &&(recvbuf[framelen-2]==0x0d) && (recvbuf[framelen-1]==0x0a))	//check the header and end
-                    {
-                        if(checkSum(recvbuf) == recvbuf[framelen-3])
-                        {
-                            if((recvbuf[3]==0x00) && (recvbuf[4]==0x59))	//inquire
-                            {
-                                cddn->dealMessageSwitch(recvbuf);
-                            }
-                        }
-                        else
-                        {
-                            ROS_ERROR("sparkbase-check sum error");
-                            #if 0
+          if ((recvbuf[0] == 0x53) && (recvbuf[1] == 0x4b) && (recvbuf[framelen - 2] == 0x0d) &&
+              (recvbuf[framelen - 1] == 0x0a))  // check the header and end
+          {
+            if (checkSum(recvbuf) == recvbuf[framelen - 3])
+            {
+              if ((recvbuf[3] == 0x00) && (recvbuf[4] == 0x59))  // inquire
+              {
+                cddn->dealMessageSwitch(recvbuf);
+              }
+            }
+            else
+            {
+              ROS_ERROR("sparkbase-check sum error");
+#if 0
                             for(j=0;j<framelen; j++)
                                 printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
                             printf("\n");
-                            #endif
-                        }
-
-                    }
-                    else
-                    {
-
-
-                        ROS_ERROR("sparkbase-header or ender error error");
-                        #if 0
+#endif
+            }
+          }
+          else
+          {
+            ROS_ERROR("sparkbase-header or ender error error");
+#if 0
                         for(j=0; j<framelen; j++)
                             printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
                         printf("\n");
-                        #endif
-                    }
-                    if(count > framelen)
-                    {
-                        memcpy(tmpbuf, recvbuf+framelen, count-framelen);
-                        memcpy(recvbuf, tmpbuf, count-framelen);
-                        count = count-framelen;
-                        headertime = currenttime;
-                        goto BACKCHECK;
-                    }
-                    count = 0;
-                }
-            }
+#endif
+          }
+          if (count > framelen)
+          {
+            memcpy(tmpbuf, recvbuf + framelen, count - framelen);
+            memcpy(recvbuf, tmpbuf, count - framelen);
+            count = count - framelen;
+            headertime = currenttime;
+            goto BACKCHECK;
+          }
+          count = 0;
         }
+      }
     }
+  }
 }
 
 void ComDealDataNode::checkSerialGoon(const ros::TimerEvent &event)
@@ -560,7 +554,7 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
   this->odom_reset_sub =
       this->n.subscribe<spark_base::SparkBaseOdom>("/spark_base/odom/reset", 1, &ComDealDataNode::resetOdomCb, this);
   this->gyro_pub = n.advertise<spark_base::GyroMessage>("/spark_base/gyro", 1);
-  this->rb_sensor_pub = this->n.advertise<spark_base::SparkBaseSensor>("/spark_base/sensor", 1);        //ir_bumper_cliff
+  this->rb_sensor_pub = this->n.advertise<spark_base::SparkBaseSensor>("/spark_base/sensor", 1);  // ir_bumper_cliff
   this->rb_dock_pub = this->n.advertise<spark_base::SparkBaseDock>("/spark_base/dock", 1);
   this->current_time = ros::Time::now();
   this->last_time = ros::Time::now();
@@ -649,7 +643,7 @@ int ComDealDataNode::pubWheelJointStates(double linear_speed, double angular_spe
   joint_state.position[1] = right_wheel_position;
 
   wheel_joint_pub.publish(joint_state);
-  
+
   return 0;
 }
 

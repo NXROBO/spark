@@ -9,7 +9,6 @@
 *
 */
 
-
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -19,10 +18,9 @@
 #if !defined(__cplusplus)
 #define _countof(_Array) (sizeof(_Array) / sizeof(_Array[0]))
 #else
-extern "C++"
-{
+extern "C++" {
 template <typename _CountofType, size_t _SizeOfArray>
-char (*__countof_helper( _CountofType (&_Array)[_SizeOfArray]))[_SizeOfArray];
+char (*__countof_helper(_CountofType(&_Array)[_SizeOfArray]))[_SizeOfArray];
 #define _countof(_Array) sizeof(*__countof_helper(_Array))
 }
 #endif
@@ -30,18 +28,17 @@ char (*__countof_helper( _CountofType (&_Array)[_SizeOfArray]))[_SizeOfArray];
 
 /* _offsetof helper */
 #if !defined(offsetof)
-#define offsetof(_structure, _field) ((_word_size_t)&(((_structure *)0x0)->_field))
+#define offsetof(_structure, _field) ((_word_size_t) & (((_structure *)0x0)->_field))
 #endif
 
+#define BEGIN_STATIC_CODE(_blockname_)                                                                                 \
+  static class _static_code_##_blockname_                                                                              \
+  {                                                                                                                    \
+  public:                                                                                                              \
+  _static_code_##_blockname_()
 
-#define BEGIN_STATIC_CODE( _blockname_ ) \
-    static class _static_code_##_blockname_ {   \
-    public:     \
-        _static_code_##_blockname_ () 
-
-
-#define END_STATIC_CODE( _blockname_ ) \
-    }   _instance_##_blockname_;
-
+#define END_STATIC_CODE(_blockname_)                                                                                   \
+  }                                                                                                                    \
+  _instance_##_blockname_;
 
 #endif

@@ -40,8 +40,8 @@
 #include <pcl/point_types.h>
 #include <sstream>
 
-namespace nxfollower{
-
+namespace nxfollower
+{
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 class NxFollowerNode
@@ -64,12 +64,13 @@ private:
   double x_scale_; /**< The scaling factor for rotational robot speed */
   double z_thre;
   double x_thre;
-  double max_vx;	/*max velocity x*/
-  double max_vz;	/*max velocity z*/
+  double max_vx;                 /*max velocity x*/
+  double max_vz;                 /*max velocity z*/
   double max_depth_, min_depth_; /**< The maximum z position of the points in the box. */
-	double goal_depth_; /**< The distance away from the robot to hold the centroid */
-	double depth_thre;
-	double y_thre;
+  double goal_depth_;            /**< The distance away from the robot to hold the centroid */
+  double depth_thre;
+  double y_thre;
+
 public:
   /*
    * 	constructor
@@ -80,30 +81,30 @@ public:
     nhandle = nh;
     pnhandle = pnh;
 
-    min_x_ 	= -0.2;
-    max_x_ 	= 0.2;
-    min_y_ 	= -0.1;
-    max_y_	= 0.3;
-    max_z_ 	= 1.5;
-    goal_z_ 	= 0.7;
-    z_scale_ 	= 0.8;
-    x_scale_ 	= 2;
-    z_thre 		= 0.05;
-    x_thre 		= 0.05;
+    min_x_ = -0.2;
+    max_x_ = 0.2;
+    min_y_ = -0.1;
+    max_y_ = 0.3;
+    max_z_ = 1.5;
+    goal_z_ = 0.7;
+    z_scale_ = 0.8;
+    x_scale_ = 2;
+    z_thre = 0.05;
+    x_thre = 0.05;
     y_thre = 0.087222222;
 
-    max_vx 		= 0.4;
-    max_vz 		= 0.8;
+    max_vx = 0.4;
+    max_vz = 0.8;
 
-max_depth_ = 2;
-		min_depth_ = 0.4;
-		goal_depth_ = 0.9;
-		depth_thre = 0.1;
-		y_thre = 0.087222222;
+    max_depth_ = 2;
+    min_depth_ = 0.4;
+    goal_depth_ = 0.9;
+    depth_thre = 0.1;
+    y_thre = 0.087222222;
 
-    //public the cmd_vel message
+    // public the cmd_vel message
     cmdvel_pub = nhandle.advertise<geometry_msgs::Twist>("/raw_cmd_vel", 1);
-    //subscribe the point clound
+    // subscribe the point clound
     cloud_sub = nhandle.subscribe<PointCloud>("/camera/depth/points", 1, &NxFollowerNode::pointCloudCb, this);
   }
 
@@ -120,7 +121,6 @@ max_depth_ = 2;
    */
   void pointCloudCb(const PointCloud::ConstPtr &cloud)
   {
-
     // X,Y,Z of the centroid
     float x = 0.0;
     float y = 0.0;
@@ -154,10 +154,7 @@ max_depth_ = 2;
         return;
       }
 
-      pubCmd(-x,z);
-
-      
-
+      pubCmd(-x, z);
     }
     else
     {
@@ -170,33 +167,33 @@ max_depth_ = 2;
    *  @param [in] y 相对于机器人底盘base_footprint的目标点的y坐标
    *  @param [in] depth 相对于机器人底盘base_footprint的目标点的x坐标
    */
-  void pubCmd(float y, float depth) {
+  void pubCmd(float y, float depth)
+  {
+    double curr_dist = sqrt(y * y + depth * depth);
+    if (curr_dist == 0)
+    {
+      cmdvel_pub.publish(geometry_msgs::TwistPtr(new geometry_msgs::Twist()));
+      return;
+    }
 
-	double curr_dist = sqrt(y * y + depth * depth);
-	if (curr_dist == 0) {
-			cmdvel_pub.publish(
-					geometry_msgs::TwistPtr(new geometry_msgs::Twist()));
-		return;
-	}
+    float x_linear = 0;
+    float z_angular = 0;
+    float z_scale = 1.2;
+    float x_scale = 6.0;
+    x_linear = (depth - goal_depth_) * z_scale;
+    z_angular = y * x_scale;
 
-	float x_linear = 0;
-	float z_angular = 0;
-	float z_scale = 1.2;
-	float x_scale = 6.0;
-	x_linear = (depth - goal_depth_) * z_scale;
-	z_angular = y * x_scale;
+    if (depth_thre > fabs(depth - goal_depth_))
+      x_linear = 0;
+    if (y_thre > y && y > -y_thre)
+      z_angular = 0;
 
-	if (depth_thre > fabs(depth - goal_depth_))
-		x_linear = 0;
-	if (y_thre > y && y > -y_thre)
-		z_angular = 0;
+    geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
+    cmd->linear.x = x_linear;
+    cmd->angular.z = z_angular;
 
-	geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
-	cmd->linear.x = x_linear;
-	cmd->angular.z = z_angular;
-
-	cmdvel_pub.publish(cmd);
-}
+    cmdvel_pub.publish(cmd);
+  }
   /*
    * waiting for the end of the program
    */
@@ -204,10 +201,7 @@ max_depth_ = 2;
   {
     ros::spin();
   }
-
 };
-
-
 }
 
 /*main*/
