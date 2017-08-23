@@ -151,16 +151,8 @@ public:
     }
   }
 
-<<<<<<< HEAD
-  /*
-   *  @brief 发布底盘的速度，包括线速度和角速度
-   *  @param [in] y 相对于机器人底盘base_footprint的目标点的y坐标
-   *  @param [in] depth 相对于机器人底盘base_footprint的目标点的x坐标
-   */
-  void pubCmd(float y, float depth)
-=======
+
   void pubCmd(const float &y, const float &depth)
->>>>>>> spark-04
   {
     double curr_dist = sqrt(y * y + depth * depth);
     if (curr_dist == 0)
@@ -172,11 +164,7 @@ public:
     float x_linear = 0;
     float z_angular = 0;
     float z_scale = 1.2;
-<<<<<<< HEAD
-    float x_scale = 6.0;
-=======
     float x_scale = 2.0;
->>>>>>> spark-04
     x_linear = (depth - goal_depth_) * z_scale;
     z_angular = asin(y / curr_dist) * x_scale;
 
@@ -191,13 +179,7 @@ public:
 
     cmdvel_pub.publish(cmd);
   }
-<<<<<<< HEAD
-  /*
-   * waiting for the end of the program
-   */
-=======
 
->>>>>>> spark-04
   void spin()
   {
     ros::spin();

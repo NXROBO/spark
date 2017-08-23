@@ -36,24 +36,5 @@ public:
 // watch the capitalization carefully
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(nxfollower::NxFollowerNodelet, nodelet::Nodelet)
-<<<<<<< HEAD
-// PLUGINLIB_DECLARE_CLASS(usb_cam, usb_cam_nodelet, usb_cam::usb_cam_nodelet, nodelet::Nodelet);
 
 #endif
-/*
- int main( int argc, char** argv )
- {
- ros::init(argc,argv,"orbcamera_node");
- ros::NodeHandle nh;
- NxCamera orb_cam(nh);
- orb_cam.Init();
- ros::AsyncSpinner spinner(6); // Use 4 threads
- spinner.start();
- ros::waitForShutdown();
- return 0;
- }
- */
-=======
-
-#endif
->>>>>>> spark-04
