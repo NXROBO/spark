@@ -31,7 +31,7 @@ cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
 git checkout spark-04
 cd ..
-#installl dependence package
+#install dependence package
 ./src/spark/doc/install.sh
 #Compile
 catkin_make
