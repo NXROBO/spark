@@ -23,10 +23,11 @@
 //-----------------------------------------
 #define COMM_HEAD_FLAGE 0xAA  // Frame header
 
-#define COMM_FRAME_TYPE_ATTR 0x20  // attribute frame
+#define COMM_FRAME_TYPE_ATTR 0x20      // attribute frame
 #define COMM_FRAME_TYPE_RSP_ATTR 0x21  // attribute frame
 
-#define COMM_FRAME_TYPE_CMD 0x40  // command farme
+#define COMM_FRAME_TYPE_CMD 0x40      // command farme
+
 #define COMM_FRAME_TYPE_RSP_CMD 0x41  // command farme
 
 #define COMM_FRAME_TYPE_MESSAGE 0x61  // message frame
@@ -70,80 +71,80 @@
 #define NOTE_BUFFER_PING 0x00
 #define NOTE_BUFFER_PONG 0x01
 
-/////////////ÃüÁîÖ¡ÃüÁî×Ö¶¨Òå////////////////////////
+/////////////ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½////////////////////////
 typedef enum _cmd_code
 {
   CMD_STOP = 0x01,              //Í£Ö¹
-  CMD_START_SCAN,               //¿ªÊ¼É¨Ãè
-  CMD_INIT_DLIS2K,              //³õÊ¼»¯DLIS2K
-  CMD_WRITE_CAIL_DATA,          //Ð´±ê¶¨Êý¾Ý //Èý½Ç¼¤¹âÀ×´ï
-  CMD_WRITE_CAIL_DATA_TOF,      //Ð´±ê¶¨Êý¾Ý //TOFÀ×´ï
-  CMD_LASER_CTRL,               //¼¤¹â¿ª¹Ø¿ØÖÆ
-  CMD_DLIS2K_SAMPLE_DATA_8BIT,  //ÉèÖÃÊä³öCCDÔ­Ê¼Êý¾ÝµÍ8bit
-  CMD_DLIS2K_PIXEL_POS,         //Êä³öCCDµÄÏñËØÎ»ÖÃ
-  CMD_LENS_FOCUS_MODE,          //½øÈë¾µÍ·µ÷½¹Ä£Ê½
-  CMD_PIXEL_POS_CAIL,           //¸ù¾ÝÏñËØÎ»ÖÃ±ê¶¨
-  CMD_MOTOR_WORK_CTRL,          //Âí´ï¿ØÖÆ
-  CMD_MOTOR_DUTY_SET,           //ÉèÖÃÂí´ïÇý¶¯ÐÅºÅÕ¼¿Õ±È
-  CMD_MOTOR_RPM_SET,            //ÉèÖÃÂí´ï×ªËÙ
-  CMD_DEBUG_MESSAGE_EN,         //´òÓ¡µ÷ÊÔÐÅÏ¢Ê¹ÄÜ
-  CMD_EARE_CAIL_DATA,           //²Á³ý±ê¶¨Êý¾Ý
-  CMD_REGAIN_DEFAUT_SET,        //»Ö¸´³ö³§ÉèÖÃ
-  CMD_DEVICE_ADDR_SET,          //Éè¶¨Éè±¸µØÖ·
-  CMD_SAMPLE_RATE_SET,          //Éè¶¨²âÁ¿ËÙÂÊ
-  CMD_DISTANCE_OFFSET,          //ÉèÖÃ²âÁ¿¾àÀëÆ«ÒÆÁ¿
-  CMD_HIGH_VOLT_ADJUST,         //Î¢µ÷¸ßÑ¹
-  CMD_MEAS_PRINTF_EN,           //ÉèÖÃ²âÁ¿ÐÅÏ¢´òÓ¡Ê¹ÄÜ
-  CMD_HIGH_VOLT_RATE,           //Éè¶¨¸ßÑ¹ÏµÊý
-  CMD_DISTANCE_RANGE,           //Éè¶¨²âÁ¿µ¥Î»
-  CMD_MEAS_UNIT,                //Éè¶¨²âÁ¿µ¥Î»
-  CMD_CAIL_MEAS,                //ÉèÖÃ²»´ø¡¢´ø±ê¶¨²âÁ¿
-  CMD_WIRELESS_POWER_CTRL,      //ÎÞÏß¹©µç¿ª¹Ø¿ØÖÆ
-  CMD_AUTO_MEAS,                //¿ªÆô¡¢¹Ø±ÕÉÏµç×Ô¶¯²âÁ¿
-  CMD_WRITE_FLASH,              //Ð´Êý¾Ýµ½FLASH
-  CMD_WRITE_DEVICE_INFO,        //Ð´²úÆ·Ïà¹ØÐÅÏ¢
-  CMD_SYSTEM_RST,               //ÏµÍ³¸´Î»
+  CMD_START_SCAN,               //ï¿½ï¿½Ê¼É¨ï¿½ï¿½
+  CMD_INIT_DLIS2K,              //ï¿½ï¿½Ê¼ï¿½ï¿½DLIS2K
+  CMD_WRITE_CAIL_DATA,          //Ð´ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½ //ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½×´ï¿½
+  CMD_WRITE_CAIL_DATA_TOF,      //Ð´ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½ //TOFï¿½×´ï¿½
+  CMD_LASER_CTRL,               //ï¿½ï¿½ï¿½â¿ªï¿½Ø¿ï¿½ï¿½ï¿½
+  CMD_DLIS2K_SAMPLE_DATA_8BIT,  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CCDÔ­Ê¼ï¿½ï¿½ï¿½Ýµï¿½8bit
+  CMD_DLIS2K_PIXEL_POS,         //ï¿½ï¿½ï¿½CCDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+  CMD_LENS_FOCUS_MODE,          //ï¿½ï¿½ï¿½ë¾µÍ·ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+  CMD_PIXEL_POS_CAIL,           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã±ê¶¨
+  CMD_MOTOR_WORK_CTRL,          //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  CMD_MOTOR_DUTY_SET,           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Õ¼ï¿½Õ±ï¿½
+  CMD_MOTOR_RPM_SET,            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
+  CMD_DEBUG_MESSAGE_EN,         //ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢Ê¹ï¿½ï¿½
+  CMD_EARE_CAIL_DATA,           //ï¿½ï¿½ï¿½ï¿½ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½
+  CMD_REGAIN_DEFAUT_SET,        //ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  CMD_DEVICE_ADDR_SET,          //ï¿½è¶¨ï¿½è±¸ï¿½ï¿½Ö·
+  CMD_SAMPLE_RATE_SET,          //ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  CMD_DISTANCE_OFFSET,          //ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½
+  CMD_HIGH_VOLT_ADJUST,         //Î¢ï¿½ï¿½ï¿½ï¿½Ñ¹
+  CMD_MEAS_PRINTF_EN,           //ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ó¡Ê¹ï¿½ï¿½
+  CMD_HIGH_VOLT_RATE,           //ï¿½è¶¨ï¿½ï¿½Ñ¹Ïµï¿½ï¿½
+  CMD_DISTANCE_RANGE,           //ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
+  CMD_MEAS_UNIT,                //ï¿½è¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
+  CMD_CAIL_MEAS,                //ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½
+  CMD_WIRELESS_POWER_CTRL,      //ï¿½ï¿½ï¿½ß¹ï¿½ï¿½ç¿ªï¿½Ø¿ï¿½ï¿½ï¿½
+  CMD_AUTO_MEAS,                //ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½Ïµï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
+  CMD_WRITE_FLASH,              //Ð´ï¿½ï¿½ï¿½Ýµï¿½FLASH
+  CMD_WRITE_DEVICE_INFO,        //Ð´ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+  CMD_SYSTEM_RST,               //ÏµÍ³ï¿½ï¿½Î»
 } CMD_CODE;
 
-/////////////ÊôÐÔÖ¡ºê¶¨Òå////////////////////////
+/////////////ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ê¶¨ï¿½ï¿½////////////////////////
 typedef enum _attr_code
 {
 
-  ATTR_READ_DEVICE_INFO = 0x53,  //»ñÈ¡Éè±¸ÐÅÏ¢
-  ATTR_READ_DLIS2K_REG,          //»ñÈ¡DLIS2K¼Ä´æÆ÷Öµ
-  ATTR_READ_ONCE_MEAS,           //»ñÈ¡µ¥´Î²âÁ¿Öµ
-  ATTR_READ_CAIL_DATA,           //»ñÈ¡±ê¶¨Êý¾Ý
-  ATTR_READ_MOTOR_DUTY,          //»ñÈ¡Âí´ïÇý¶¯ÐÅºÅÕ¼¿Õ±È
-  ATTR_READ_MOTOR_RPM,           //»ñÈ¡Âí´ï×ªËÙÉè¶¨Öµ
-  ATTR_READ_DEVICE_ADDR,         //»ñÈ¡Éè±¸µØÖ·
-  ATTR_READ_SAMPLE_RATE,         //»ñÈ¡²âÁ¿ËÙÂÊ
-  ATTR_READ_DISTANCE_OFFSET,     //»ñÈ¡Æ«ÒÆÁ¿
-  ATTR_READ_HIGH_VOLT,           //»ñÈ¡¸ßÑ¹Öµ
-  ATTR_READ_MEAS_KEYE_MESSAGE,   //»ñÈ¡²âÁ¿¹Ø¼üÐÅÏ¢
-  ATTR_READ_HIGHT_VOLT_RATE,     //»ñÈ¡¸ßÑ¹ÏµÊý
-  ATTR_READ_MEAS_RANGE,          //»ñÈ¡²âÁ¿Á¿³Ì
-  ATTR_READ_MEAS_UNIT,           //»ñÈ¡²âÁ¿µ¥Î»
-  ATTR_READ_MEAS_MODE,           //»ñÈ¡²âÁ¿Ä£Ê½
-  ATTR_READ_FLASH_DATA,          //¶ÁFLASHÊý¾Ý
-  ATTR_READ_DEVICE_HEALTH,       //»ñÈ¡Éè±¸½¡¿µÐÅÏ¢
+  ATTR_READ_DEVICE_INFO = 0x53,  //ï¿½ï¿½È¡ï¿½è±¸ï¿½ï¿½Ï¢
+  ATTR_READ_DLIS2K_REG,          //ï¿½ï¿½È¡DLIS2Kï¿½Ä´ï¿½ï¿½ï¿½Öµ
+  ATTR_READ_ONCE_MEAS,           //ï¿½ï¿½È¡ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½Öµ
+  ATTR_READ_CAIL_DATA,           //ï¿½ï¿½È¡ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½
+  ATTR_READ_MOTOR_DUTY,          //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Õ¼ï¿½Õ±ï¿½
+  ATTR_READ_MOTOR_RPM,           //ï¿½ï¿½È¡ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½è¶¨Öµ
+  ATTR_READ_DEVICE_ADDR,         //ï¿½ï¿½È¡ï¿½è±¸ï¿½ï¿½Ö·
+  ATTR_READ_SAMPLE_RATE,         //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ATTR_READ_DISTANCE_OFFSET,     //ï¿½ï¿½È¡Æ«ï¿½ï¿½ï¿½ï¿½
+  ATTR_READ_HIGH_VOLT,           //ï¿½ï¿½È¡ï¿½ï¿½Ñ¹Öµ
+  ATTR_READ_MEAS_KEYE_MESSAGE,   //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½Ï¢
+  ATTR_READ_HIGHT_VOLT_RATE,     //ï¿½ï¿½È¡ï¿½ï¿½Ñ¹Ïµï¿½ï¿½
+  ATTR_READ_MEAS_RANGE,          //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ATTR_READ_MEAS_UNIT,           //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
+  ATTR_READ_MEAS_MODE,           //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+  ATTR_READ_FLASH_DATA,          //ï¿½ï¿½FLASHï¿½ï¿½ï¿½ï¿½
+  ATTR_READ_DEVICE_HEALTH,       //ï¿½ï¿½È¡ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 } ATTR_CODE;
 
-/////////////ÐÅÏ¢Ö¡ºê¶¨Òå////////////////////////
+/////////////ï¿½ï¿½Ï¢Ö¡ï¿½ê¶¨ï¿½ï¿½////////////////////////
 typedef enum _message_code
 {
 
-  MESSAGE_DEVICE_ERROR = 0xA4,      //±¨¸æÉè±¸¹ÊÕÏ
-  MESSAGE_DLIS2K_SAMPLE_DATA_8BIT,  //±¨¸æCCDÔ­Ê¼Êý¾Ý
-  MESSAGE_DLIS2K_PIXEL_POS,         //±¨¸æCCDÏñËØÎ»ÖÃ
-  MESSAGE_DLIS2K_PIXEL_POS_DIS,     //±¨¸æCCDÏñËØÎ»ÖÃºÍ¾àÀë
-  MESSAGE_TOF_DISTANCE,             //±¨¸æTOF²â¾à
-  MESSAGE_LIDAR_DISTANCE,           //±¨¸æÈý½Ç²â¾à
+  MESSAGE_DEVICE_ERROR = 0xA4,      //ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½
+  MESSAGE_DLIS2K_SAMPLE_DATA_8BIT,  //ï¿½ï¿½ï¿½ï¿½CCDÔ­Ê¼ï¿½ï¿½ï¿½ï¿½
+  MESSAGE_DLIS2K_PIXEL_POS,         //ï¿½ï¿½ï¿½ï¿½CCDï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+  MESSAGE_DLIS2K_PIXEL_POS_DIS,     //ï¿½ï¿½ï¿½ï¿½CCDï¿½ï¿½ï¿½ï¿½Î»ï¿½ÃºÍ¾ï¿½ï¿½ï¿½
+  MESSAGE_TOF_DISTANCE,             //ï¿½ï¿½ï¿½ï¿½TOFï¿½ï¿½ï¿½
+  MESSAGE_LIDAR_DISTANCE,           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½ï¿½
 } MESSAGE_CODE;
 
 // Commonds
 //-----------------------------------------
 
-/////////////´íÎó´úÂëºê¶¨Òå////////////////////////
+/////////////ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê¶¨ï¿½ï¿½////////////////////////
 typedef enum _comm_error_code
 {
   executeSuccess = 0,
@@ -154,7 +155,7 @@ typedef enum _comm_error_code
   SIMPLE_CAIL_Error,
 } COMM_ERROR_CODE;
 
-/////////////Í¨ÐÅÖ¡½á¹¹////////////////////////////
+/////////////Í¨ï¿½ï¿½Ö¡ï¿½á¹¹////////////////////////////
 typedef struct _comm_frame_t
 {
   uint8_t frameStart;
