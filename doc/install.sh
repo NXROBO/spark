@@ -8,10 +8,10 @@ sudo udevadm trigger
 
 echo 'Installing required libs'
 sudo apt-get update
-sudo apt-get install ros-indigo-ecl ros-indigo-ecl-threads ros-indigo-rgbd-launch 
-sudo apt-get install ros-indigo-image-common
-sudo apt-get install ros-indigo-move-base-* 
-sudo apt-get install ros-indigo-depthimage-to-laserscan ros-indigo-map-server ros-indigo-amcl
+sudo apt-get install ros-kinetic-ecl ros-indigo-ecl-threads ros-kinetic-rgbd-launch 
+sudo apt-get install ros-kinetic-image-common
+sudo apt-get install ros-kinetic-move-base-* 
+sudo apt-get install ros-kineitc-depthimage-to-laserscan ros-kientic-map-server ros-kinetic-amcl
 sudo apt-get install libasound2-dev mplayer
 echo 'Spark driver is installed'
 
