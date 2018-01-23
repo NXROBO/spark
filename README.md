@@ -10,7 +10,7 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ## Packages Overview
 
-* ***spark_v04*** : spark 0.4 driver including base driver, camera driver, robot description, teleop package, and follow person package and so on.
+* ***spark_v05*** : spark 0.5 driver including base driver, camera driver, robot description, teleop package, and follow person package and so on.
 * ***tools*** : it contains the 3rd part openni2 driver which camera driver uses.
 * ***doc*** : it shows that how to compile and use this meta-package.
 
@@ -30,7 +30,7 @@ mkdir -p sparkws/src
 cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
 cd spark
-git checkout spark-04
+git checkout spark-05
 
 #install dependence package
 cd ../..

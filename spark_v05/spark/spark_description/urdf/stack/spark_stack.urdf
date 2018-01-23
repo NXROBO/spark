@@ -45,7 +45,7 @@
   <joint name="spark_stack_joint" type="fixed">
       <origin 
       	xyz="0 0 0" 
-      	rpy="0 0 0" />
+      	rpy="0 0 3.141592" />
       <parent link="base_link"/>
       <child link="spark_stack" />
   </joint>
