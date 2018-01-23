@@ -1,4 +1,4 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(spark_v04)
+project(spark_v05)
 find_package(catkin REQUIRED)
 catkin_metapackage()
