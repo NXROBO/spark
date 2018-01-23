@@ -4,9 +4,15 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ## Table of Contents
 
-1. [Packages Overview](#packages-overview)
-2. [Usage](#usage)
-3. [Mirror](#mirror)
+1. [Update Log](#update log)
+2. [Packages Overview](#packages-overview)
+3. [Usage](#usage)
+4. [Mirror](#mirror)
+
+## Update Log
+
+* Raise the stack so that the laidar can be added on it.
+* Update the pre install packages so that the navigation and gmapping can be run.
 
 ## Packages Overview
 
