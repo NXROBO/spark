@@ -26,7 +26,7 @@
       	xyz="0 0 0" 
       	rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" />
+        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" scale="0.001 0.001 0.001" />
       </geometry>
     </visual>
     <collision>
@@ -34,7 +34,7 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" />
+        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
 

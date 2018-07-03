@@ -38,7 +38,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		  
 		</visual>
@@ -48,7 +48,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" />
+		      filename="package://spark_description/meshes/spark/base/spark_base.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		</collision>	
 	</link>	
@@ -82,7 +82,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		  
 		</visual>
@@ -92,7 +92,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" />
+		      filename="package://spark_description/meshes/spark/base/left_wheel.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		</collision>	
 	</link>  
@@ -127,7 +127,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		  
 		</visual>
@@ -137,7 +137,7 @@
 		    rpy="0 0 0" />
 		  <geometry>
 		    <mesh
-		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" />
+		      filename="package://spark_description/meshes/spark/base/right_wheel.DAE" scale="0.001 0.001 0.001" />
 		  </geometry>
 		</collision>	
 	</link>   
