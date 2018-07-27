@@ -35,11 +35,9 @@ Build this compile with the following steps:
 mkdir -p sparkws/src
 cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
-cd spark
-git checkout spark-05
 
 #install dependence package
-cd ../..
+cd ..
 ./src/spark/doc/install.sh
 
 #Compile
