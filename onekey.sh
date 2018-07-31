@@ -81,6 +81,7 @@ install_spark(){
 	if [[ "${Version}" == "18.04" ]]; then
 		git checkout melodic-devel
 	fi
+	source /opt/ros/${ROS_Ver}/setup.bash
 	catkin_make
 	catkin_make install
 }
