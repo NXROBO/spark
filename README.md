@@ -31,14 +31,11 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 Build this compile with the following steps:
 ```yaml
-#make a workspace
-mkdir -p sparkws/src
-cd sparkws/src
 git clone https://github.com/NXROBO/spark.git
 
 #install dependence package
-cd ..
-./src/spark/doc/install.sh
+cd spark
+./doc/install.sh
 
 #Compile
 catkin_make
