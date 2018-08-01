@@ -83,7 +83,7 @@ install_spark(){
 	fi
 	source /opt/ros/${ROS_Ver}/setup.bash
 	catkin_make
-	catkin_make install
+	#catkin_make install
 }
 
 
