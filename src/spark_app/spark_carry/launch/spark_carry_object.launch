@@ -1,0 +1,40 @@
+<launch>
+  
+  <!--描述-->
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+  <!--show robo with rviz-->  
+  <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/fetch_tea.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <!--底盘-->
+  <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/ttyUSB0"/>
+  </include>
+  <!--相机-->
+  <include file="$(find astra_launch)/launch/astra.launch">
+    <arg name="rgb_processing"                  value="true"/>
+    <arg name="depth_processing"                value="true"/>
+    <arg name="depth_registered_processing"     value="false"/>
+    <arg name="depth_registration"              value="false"/>
+    <arg name="disparity_processing"            value="false"/>
+    <arg name="disparity_registered_processing" value="false"/>
+  </include>
+  <!--激光-->
+  <include file="$(find spark_depth2laser)/launch/spark_depth2laser.launch"/>
+  
+  <!--加载地图-->
+  <include file="$(find spark_map_server)/launch/spark_map_load.launch"/>
+  <!--amcl定位-->
+  <include file="$(find spark_amcl)/launch/spark_amcl.launch"/>
+  <!--底盘-->
+  <include file="$(find spark_movebase)/launch/spark_movebase.launch"/>   	
+  	
+  <!--搬运物体-->
+  <node pkg="spark_carry_object" type="s_carry_object.py" name="spark_carry_object_node" output="screen">
+  	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
+  	<param name ="b_Pose" value = "1,0,0,0,0,0,1"/>
+	<param name ="turnbody_min_z" value = "0.2"/>
+	<param name ="turnbody_max_z" value = "0.6"/>
+  </node>  
+  <!--Uarm 启动文件-->
+
+</launch>

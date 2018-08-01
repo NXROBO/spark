@@ -1,0 +1,19 @@
+<!--
+  机械臂与摄像头之间的校准功能。注意摄像头需要反着装，垂直向下。使用一个蓝色圆贴在吸盘的正上方当校准点。
+ -->
+<launch> 	
+
+  <!--UARM机械臂-->
+  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+
+  <!--spark驱动，机器人描述，相机，底盘-->
+  <include file="$(find spark_bringup)/launch/driver_bringup_with_arm.launch"/>
+  
+
+
+  <!--摄像头订阅与视觉定位-->
+  <node pkg="spark_carry_object" type="cali_cam.py" name="cali_cam_node" output="screen"/>
+  <!--控制机械臂的定点移动-->
+  <node pkg="spark_carry_object" type="cali_pos.py" name="cali_pos_node" output="screen"/>  	  
+
+</launch>
