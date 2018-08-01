@@ -32,8 +32,8 @@
 
 #include "astra_camera/astra_driver.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
+
   ros::init(argc, argv, "astra_camera");
   ros::NodeHandle n;
   ros::NodeHandle pnh("~");

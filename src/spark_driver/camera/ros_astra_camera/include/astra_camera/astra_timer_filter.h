@@ -35,10 +35,11 @@
 
 #include <deque>
 
-#include "OpenNI.h"
+#include "openni2/OpenNI.h"
 
 namespace astra_wrapper
 {
+
 class AstraTimerFilter
 {
 public:
@@ -57,6 +58,7 @@ private:
 
   std::deque<double> buffer_;
 };
+
 }
 
 #endif

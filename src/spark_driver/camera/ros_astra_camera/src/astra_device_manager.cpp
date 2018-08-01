@@ -42,14 +42,15 @@
 #include <set>
 #include <string>
 
-#include "OpenNI.h"
+#include "openni2/OpenNI.h"
 
 namespace astra_wrapper
 {
+
 class AstraDeviceInfoComparator
 {
 public:
-  bool operator()(const AstraDeviceInfo &di1, const AstraDeviceInfo &di2)
+  bool operator()(const AstraDeviceInfo& di1, const AstraDeviceInfo& di2)
   {
     return (di1.uri_.compare(di2.uri_) < 0);
   }
@@ -58,14 +59,14 @@ public:
 typedef std::set<AstraDeviceInfo, AstraDeviceInfoComparator> DeviceSet;
 
 class AstraDeviceListener : public openni::OpenNI::DeviceConnectedListener,
-                            public openni::OpenNI::DeviceDisconnectedListener,
-                            public openni::OpenNI::DeviceStateChangedListener
+                             public openni::OpenNI::DeviceDisconnectedListener,
+                             public openni::OpenNI::DeviceStateChangedListener
 {
 public:
-  AstraDeviceListener()
-    : openni::OpenNI::DeviceConnectedListener()
-    , openni::OpenNI::DeviceDisconnectedListener()
-    , openni::OpenNI::DeviceStateChangedListener()
+  AstraDeviceListener() :
+      openni::OpenNI::DeviceConnectedListener(),
+      openni::OpenNI::DeviceDisconnectedListener(),
+      openni::OpenNI::DeviceStateChangedListener()
   {
     openni::OpenNI::addDeviceConnectedListener(this);
     openni::OpenNI::addDeviceDisconnectedListener(this);
@@ -88,7 +89,7 @@ public:
     openni::OpenNI::removeDeviceStateChangedListener(this);
   }
 
-  virtual void onDeviceStateChanged(const openni::DeviceInfo *pInfo, openni::DeviceState state)
+  virtual void onDeviceStateChanged(const openni::DeviceInfo* pInfo, openni::DeviceState state)
   {
     ROS_INFO("Device \"%s\" error state changed to %d\n", pInfo->getUri(), state);
 
@@ -106,7 +107,7 @@ public:
     }
   }
 
-  virtual void onDeviceConnected(const openni::DeviceInfo *pInfo)
+  virtual void onDeviceConnected(const openni::DeviceInfo* pInfo)
   {
     boost::mutex::scoped_lock l(device_mutex_);
 
@@ -119,7 +120,8 @@ public:
     device_set_.insert(device_info_wrapped);
   }
 
-  virtual void onDeviceDisconnected(const openni::DeviceInfo *pInfo)
+
+  virtual void onDeviceDisconnected(const openni::DeviceInfo* pInfo)
   {
     boost::mutex::scoped_lock l(device_mutex_);
 
@@ -182,7 +184,7 @@ AstraDeviceManager::AstraDeviceManager()
 {
   openni::Status rc = openni::OpenNI::initialize();
   if (rc != openni::STATUS_OK)
-    THROW_OPENNI_EXCEPTION("Initialize failed\n%s\n", openni::OpenNI::getExtendedError());
+      THROW_OPENNI_EXCEPTION("Initialize failed\n%s\n", openni::OpenNI::getExtendedError());
 
   device_listener_ = boost::make_shared<AstraDeviceListener>();
 }
@@ -193,7 +195,7 @@ AstraDeviceManager::~AstraDeviceManager()
 
 boost::shared_ptr<AstraDeviceManager> AstraDeviceManager::getSingelton()
 {
-  if (singelton_.get() == 0)
+  if (singelton_.get()==0)
     singelton_ = boost::make_shared<AstraDeviceManager>();
 
   return singelton_;
@@ -201,7 +203,7 @@ boost::shared_ptr<AstraDeviceManager> AstraDeviceManager::getSingelton()
 
 boost::shared_ptr<std::vector<AstraDeviceInfo> > AstraDeviceManager::getConnectedDeviceInfos() const
 {
-  return device_listener_->getConnectedDeviceInfos();
+return device_listener_->getConnectedDeviceInfos();
 }
 
 boost::shared_ptr<std::vector<std::string> > AstraDeviceManager::getConnectedDeviceURIs() const
@@ -214,7 +216,7 @@ std::size_t AstraDeviceManager::getNumOfConnectedDevices() const
   return device_listener_->getNumOfConnectedDevices();
 }
 
-std::string AstraDeviceManager::getSerial(const std::string &Uri) const
+std::string AstraDeviceManager::getSerial(const std::string& Uri) const
 {
   openni::Device openni_device;
   std::string ret;
@@ -237,7 +239,7 @@ std::string AstraDeviceManager::getSerial(const std::string &Uri) const
   }
   else
   {
-    THROW_OPENNI_EXCEPTION("Device open failed: %s", openni::OpenNI::getExtendedError());
+    //THROW_OPENNI_EXCEPTION("Device open failed: %s", openni::OpenNI::getExtendedError());
   }
   return ret;
 }
@@ -246,13 +248,14 @@ boost::shared_ptr<AstraDevice> AstraDeviceManager::getAnyDevice()
 {
   return boost::make_shared<AstraDevice>("");
 }
-boost::shared_ptr<AstraDevice> AstraDeviceManager::getDevice(const std::string &device_URI)
+boost::shared_ptr<AstraDevice> AstraDeviceManager::getDevice(const std::string& device_URI)
 {
   return boost::make_shared<AstraDevice>(device_URI);
 }
 
-std::ostream &operator<<(std::ostream &stream, const AstraDeviceManager &device_manager)
-{
+
+std::ostream& operator << (std::ostream& stream, const AstraDeviceManager& device_manager) {
+
   boost::shared_ptr<std::vector<AstraDeviceInfo> > device_info = device_manager.getConnectedDeviceInfos();
 
   std::vector<AstraDeviceInfo>::const_iterator it;
@@ -260,11 +263,15 @@ std::ostream &operator<<(std::ostream &stream, const AstraDeviceManager &device_
 
   for (it = device_info->begin(); it != it_end; ++it)
   {
-    stream << "Uri: " << it->uri_ << " (Vendor: " << it->vendor_ << ", Name: " << it->name_
-           << ", Vendor ID: " << it->vendor_id_ << ", Product ID: " << it->product_id_ << ")" << std::endl;
+    stream << "Uri: " << it->uri_ << " (Vendor: " << it->vendor_ <<
+                                     ", Name: " << it->name_ <<
+                                     ", Vendor ID: " << it->vendor_id_ <<
+                                     ", Product ID: " << it->product_id_ <<
+                                      ")" << std::endl;
   }
 
   return stream;
 }
 
-}  // namespace openni2_wrapper
+
+} //namespace openni2_wrapper

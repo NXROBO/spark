@@ -1,0 +1,137 @@
+OpenNI
+------
+
+Website: http://structure.io/openni
+
+Building Prerequisites
+======================
+
+OS X
+----
+- Libusb 1.0
+    First, install Homebrew: ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    brew install libusb --universal
+
+Windows
+-------
+- Microsoft Visual Studio 2010
+    From: http://msdn.microsoft.com/en-us/vstudio/bb984878.aspx
+- Microsoft Kinect SDK v1.6
+    From: http://go.microsoft.com/fwlink/?LinkID=262831
+- Python 2.6+/3.x
+    From: http://www.python.org/download/
+- PyWin32
+    From: http://sourceforge.net/projects/pywin32/files/pywin32/
+    Please make sure you download the version that matches your exact python version.
+- JDK 6.0
+    From: http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u32-downloads-1594644.html
+    You must also define an environment variable called "JAVA_HOME" that points to the JDK installation directory.
+    For example: set JAVA_HOME=c:\Program Files (x86)\Java\jdk1.6.0_32
+- WIX 3.5
+    From: http://wix.codeplex.com/releases/view/60102
+- Doxygen
+    From: http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc
+- GraphViz
+    From: http://www.graphviz.org/Download_windows.php
+
+Linux
+-----
+- GCC 4.x
+    From: http://gcc.gnu.org/releases.html
+    Or via apt:
+    sudo apt-get install g++
+- Python 2.6+/3.x
+    From: http://www.python.org/download/
+    Or via apt:
+    sudo apt-get install python
+- LibUSB 1.0.x
+    From: http://sourceforge.net/projects/libusb/files/libusb-1.0/
+    Or via apt:
+    sudo apt-get install libusb-1.0-0-dev
+- LibUDEV
+    sudo apt-get install libudev-dev
+- JDK 6.0
+    From: http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u32-downloads-1594644.html
+    Or via apt:
+    sudo apt-get install openjdk-6-jdk
+- FreeGLUT3
+    From: http://freeglut.sourceforge.net/index.php#download
+    Or via apt:
+    sudo apt-get install freeglut3-dev
+- Doxygen
+    From: http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc
+    Or via apt:
+    sudo apt-get install doxygen
+- GraphViz
+    From: http://www.graphviz.org/Download_linux_ubuntu.php
+    Or via apt:
+    sudo apt-get install graphviz
+
+Android
+-------
+- Android NDK
+    From: http://developer.android.com/tools/sdk/ndk/index.html#Downloads
+    You must also define an environment variable called "NDK_HOME" that points to the NDK installation directory.
+- Android SDK
+    From: http://developer.android.com/sdk/index.html#download
+    You must also define an environment variable called "ANDROID_HOME" that points to the SDK installation directory.
+    Currently requires installing SDK for API level 14 and 18 (via Android SDK Manager)
+- Ant
+    On Ubuntu machine: sudo apt-get install ant
+    For Windows, from: https://code.google.com/p/winant
+- JDK 6.0
+    For Windows:
+      From: http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u32-downloads-1594644.html
+      You must also define an environment variable called "JAVA_HOME" that points to the JDK installation directory.
+      For example: set JAVA_HOME=c:\Program Files (x86)\Java\jdk1.6.0_32
+    For Ubuntu:
+      From: http://www.oracle.com/technetwork/java/javase/downloads/jdk-6u32-downloads-1594644.html
+      Or via apt:
+      sudo apt-get install openjdk-6-jdk
+
+Building
+========
+Building on Windows:
+  Open the solution OpenNI.sln
+  
+Building on Linux / OS X:
+  Run:
+  $ make
+
+Cross-Compiling for ARM on Linux:
+  The following environment variables should be defined:
+  - ARM_CXX=<path to cross-compilation g++>
+  - ARM_STAGING=<path to cross-compilation staging dir>
+  Then, run:
+  $ PLATFORM=Arm make
+  
+Building for Android:
+  - Create a workspace in eclipse
+  - Import all projects under root directory
+
+Creating OpenNI2 Package
+========================
+- Go into the directory 'Packaging'
+- Run ReleaseVersion.py [x86|x64|Arm|Android]
+- Installer will be placed in the 'Final' directory
+
+Building in an armhf qemu-enabled docker container
+==================================================
+- Note: we're building from the osrf fork which has a couple of minor tweaks compared to the orbbec upstream repo (https://github.com/orbbec/OpenNI2/compare/orbbec-dev...osrf:orbbec-dev?expand=1):
+  - don't force soft-float in third-party software (because we're building with hard-float)
+  - disable documentation generation (because we don't need it, and also because doxygen seems to just hang in this environment).
+- Check out the code (because git doesn't work inside qemu):
+  $ git clone https://github.com/osrf/OpenNI2
+  $ cd OpenNI2
+  $ git checkout orbbec-dev
+  $ cd ..
+- Start docker, mounting in the git repo:
+  $ docker run -ti -v `pwd`/OpenNI2:/tmp/OpenNI2 osrf/ubuntu_armhf:trusty bash
+- Now inside docker, install prereqs (we're removing udev because it somehow conflicts with libudev-dev; we're leaving out doxygen and graphviz because we're not going to build docs):
+  # apt-get update
+  # apt-get remove -y --force-yes udev
+  # apt-get install -y build-essential python libusb-1.0-0-dev libudev-dev openjdk-6-jdk freeglut3-dev
+- Still inside docker, build the release package (note that, instead of running `ReleaseVersion.py` inside `Packaging`, you could just run `make HAS_JAVA=1 release` at the top level):
+  # cd /tmp/OpenNI2/Packaging
+  # ./ReleaseVersion.py Arm
+- If all goes well, there will be a file in the docker container called something like `/tmp/OpenNI2/Packaging/Final/OpenNI-Linux-Arm-2.3.tar.bz2`.  It's also in the corresponding place in the host filesystem, so it will survive exiting the container. That file contains the compiled libraries (importantly, `OpenNI-Linux-Arm-2.3/Redist/libOpenNI2.so`).

@@ -1,0 +1,8 @@
+<!-- NXROBO SPARK ARM-->
+<launch>
+
+	<node name="swiftpro_write_node" pkg="swiftpro" type="swiftpro_write_node"/>
+	<!--node name="swiftpro_moveit_node" pkg="swiftpro" type="swiftpro_moveit_node"/-->
+	<node name="swiftpro_rviz_node" pkg="swiftpro" type="swiftpro_rviz_node"/>
+
+</launch>

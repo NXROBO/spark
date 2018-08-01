@@ -8,9 +8,13 @@
   <arg name="depth_frame_id" default="$(arg camera)_depth_optical_frame" />
 
   <!-- device_id can have the following formats:
-         "#1"  : the first device found
-         "2@X" : the Xth device on USB bus 2 -->
+         "#n"            : the nth device found, starts from 1
+         "2@n"           : the nth device on USB bus 2, n starts from 1
+         "2bc5/0401@1/6" : uri in format <vendor ID>/<product ID>@<bus number>/<device number>
+         "15120410023"   : serial number -->
   <arg name="device_id" default="#1" />
+  <arg name="bootorder" default="0" />
+  <arg name="devnums" default="1" />
 
   <!-- By default, calibrations are stored to file://${ROS_HOME}/camera_info/${NAME}.yaml,
        where ${NAME} is of the form "[rgb|depth]_[serial#]", e.g. "depth_B00367707227042B".
@@ -35,7 +39,7 @@
        tree. Useful if you are playing back recorded raw data from a bag, or are
        supplying a more accurate tf tree from calibration. -->
   <arg name="load_driver" default="true" />
-  <arg name="publish_tf" default="false" />
+  <arg name="publish_tf" default="true" />
   <!-- Processing Modules -->
   <arg name="rgb_processing"                  default="true"  />
   <arg name="debayer_processing"              default="false" />
@@ -72,6 +76,8 @@
 	     file="$(find astra_launch)/launch/includes/device.launch.xml">
       <arg name="manager"                         value="$(arg manager)" />
       <arg name="device_id"                       value="$(arg device_id)" />
+      <arg name="bootorder"                       value="$(arg bootorder)" />
+      <arg name="devnums"                       value="$(arg devnums)" />
       <arg name="rgb_frame_id"                    value="$(arg rgb_frame_id)" />
       <arg name="depth_frame_id"                  value="$(arg depth_frame_id)" />
       <arg name="rgb_camera_info_url"             value="$(arg rgb_camera_info_url)" />
@@ -108,7 +114,7 @@
 
   <!-- Load reasonable defaults for the relative pose between cameras -->
   <include if="$(arg publish_tf)"
-	   file="$(find rgbd_launch)/launch/kinect_frames.launch">
+	   file="$(find astra_launch)/launch/includes/astra_frames.launch">
     <arg name="camera" value="$(arg camera)" />
   </include>
 

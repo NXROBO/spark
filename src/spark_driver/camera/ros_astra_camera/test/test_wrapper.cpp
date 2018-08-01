@@ -69,7 +69,7 @@ int main()
 
   boost::shared_ptr<std::vector<std::string> > device_uris = device_manager.getConnectedDeviceURIs();
 
-  BOOST_FOREACH (const std::string &uri, *device_uris)
+  BOOST_FOREACH(const std::string& uri, *device_uris)
   {
     boost::shared_ptr<AstraDevice> device = device_manager.getDevice(uri);
 
@@ -90,12 +90,13 @@ int main()
 
     device->stopAllStreams();
 
-    std::cout << std::endl;
+    std::cout<<std::endl;
 
-    std::cout << "Number of called to IRCallback: " << ir_counter_ << std::endl;
-    std::cout << "Number of called to ColorCallback: " << color_counter_ << std::endl;
-    std::cout << "Number of called to DepthCallback: " << depth_counter_ << std::endl;
+    std::cout<<"Number of called to IRCallback: "<< ir_counter_ << std::endl;
+    std::cout<<"Number of called to ColorCallback: "<< color_counter_ << std::endl;
+    std::cout<<"Number of called to DepthCallback: "<< depth_counter_ << std::endl;
   }
+
 
   return 0;
 }

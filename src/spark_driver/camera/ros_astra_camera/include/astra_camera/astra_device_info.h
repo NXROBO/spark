@@ -39,6 +39,7 @@
 
 namespace astra_wrapper
 {
+
 struct AstraDeviceInfo
 {
   std::string uri_;
@@ -48,7 +49,8 @@ struct AstraDeviceInfo
   uint16_t product_id_;
 };
 
-std::ostream &operator<<(std::ostream &stream, const AstraDeviceInfo &device_info);
+std::ostream& operator << (std::ostream& stream, const AstraDeviceInfo& device_info);
+
 }
 
 #endif /* DRIVER_H_ */

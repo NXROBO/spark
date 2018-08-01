@@ -1,0 +1,10 @@
+<launch>
+	<param name="robot_description" command="cat $(find swiftpro)/urdf/pro_model.xacro" />
+	<param name="use_gui" value= "False" />
+
+	<node name="swiftpro_rviz_node" pkg="swiftpro" type="swiftpro_rviz_node" />
+	<node name="swiftpro_read_node" pkg="swiftpro" type="swiftpro_read_node" />
+	
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+	<node name="rviz" pkg="rviz" type="rviz" />
+</launch>

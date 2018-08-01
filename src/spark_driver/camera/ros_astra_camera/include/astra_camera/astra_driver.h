@@ -58,10 +58,11 @@
 
 namespace astra_wrapper
 {
+
 class AstraDriver
 {
 public:
-  AstraDriver(ros::NodeHandle &n, ros::NodeHandle &pnh);
+  AstraDriver(ros::NodeHandle& n, ros::NodeHandle& pnh) ;
 
 private:
   typedef astra_camera::AstraConfig Config;
@@ -76,37 +77,36 @@ private:
   sensor_msgs::CameraInfoPtr getColorCameraInfo(int width, int height, ros::Time time) const;
   sensor_msgs::CameraInfoPtr getIRCameraInfo(int width, int height, ros::Time time) const;
   sensor_msgs::CameraInfoPtr getDepthCameraInfo(int width, int height, ros::Time time) const;
+  sensor_msgs::CameraInfoPtr getProjectorCameraInfo(int width, int height, ros::Time time) const;
 
   void readConfigFromParameterServer();
 
-  // resolves non-URI device IDs to URIs, e.g. '#1' is resolved to the URI of
-  // the first device
-  std::string resolveDeviceURI(const std::string &device_id) throw(AstraException);
+  // resolves non-URI device IDs to URIs, e.g. '#1' is resolved to the URI of the first device
+  std::string resolveDeviceURI(const std::string& device_id) throw(AstraException);
   void initDevice();
 
   void advertiseROSTopics();
 
-  void colorConnectCb();
+  void imageConnectCb();
   void depthConnectCb();
-  void irConnectCb();
 
-  bool getSerialCb(astra_camera::GetSerialRequest &req, astra_camera::GetSerialResponse &res);
+  bool getSerialCb(astra_camera::GetSerialRequest& req, astra_camera::GetSerialResponse& res);
 
   void configCb(Config &config, uint32_t level);
 
   void applyConfigToOpenNIDevice();
 
   void genVideoModeTableMap();
-  int lookupVideoModeFromDynConfig(int mode_nr, AstraVideoMode &video_mode);
+  int lookupVideoModeFromDynConfig(int mode_nr, AstraVideoMode& video_mode);
 
   sensor_msgs::ImageConstPtr rawToFloatingPointConversion(sensor_msgs::ImageConstPtr raw_image);
 
-  void setIRVideoMode(const AstraVideoMode &ir_video_mode);
-  void setColorVideoMode(const AstraVideoMode &color_video_mode);
-  void setDepthVideoMode(const AstraVideoMode &depth_video_mode);
+  void setIRVideoMode(const AstraVideoMode& ir_video_mode);
+  void setColorVideoMode(const AstraVideoMode& color_video_mode);
+  void setDepthVideoMode(const AstraVideoMode& depth_video_mode);
 
-  ros::NodeHandle &nh_;
-  ros::NodeHandle &pnh_;
+  ros::NodeHandle& nh_;
+  ros::NodeHandle& pnh_;
 
   boost::shared_ptr<AstraDeviceManager> device_manager_;
   boost::shared_ptr<AstraDevice> device_;
@@ -120,6 +120,7 @@ private:
   boost::shared_ptr<ReconfigureServer> reconfigure_server_;
   bool config_init_;
 
+  std::set<std::string>  alreadyOpen;
   boost::mutex connect_mutex_;
   // published topics
   image_transport::CameraPublisher pub_color_;
@@ -137,7 +138,7 @@ private:
 
   std::string ir_frame_id_;
   std::string color_frame_id_;
-  std::string depth_frame_id_;
+  std::string depth_frame_id_ ;
 
   std::string color_info_url_, ir_info_url_;
 
@@ -162,6 +163,8 @@ private:
   int data_skip_color_counter_;
   int data_skip_depth_counter_;
 
+  bool rgb_preferred_;
+
   bool auto_exposure_;
   bool auto_white_balance_;
 
@@ -169,11 +172,13 @@ private:
   bool color_subscribers_;
   bool depth_subscribers_;
   bool depth_raw_subscribers_;
+  bool projector_info_subscribers_;
 
   bool use_device_time_;
 
   Config old_config_;
 };
+
 }
 
 #endif

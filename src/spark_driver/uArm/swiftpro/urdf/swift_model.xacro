@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="swiftpro" >
+
+<link name="Base">
+	<inertial>
+		<origin xyz="0.010476 0.000747 0.035226" rpy="0 0 0"/>
+		<mass value="1.886"/>
+		<inertia ixx="0.001196219" ixy="-0.000029358" ixz="0.000014859" 
+				 iyy="0.001147997" iyz="0.000016274"  izz="0.001425617"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Base.STL"/>
+		</geometry>
+		<origin xyz = "0 0 0 " rpy = "0 0 0"/>
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+
+<link name="Link1">
+	<inertial>
+		<origin xyz="-0.002175 0 0.029097" rpy="0 0 0"/>
+		<mass value="0.2141"/>
+		<inertia ixx="0.000496945" ixy="-0.000000082" ixz="-0.000002744" 
+				 iyy="0.000150389" iyz="-0.000000002" izz="0.000522487"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link1.STL"/>
+		</geometry>
+		<origin xyz = "0 0 -0.0723" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint1" type="revolute">
+	<axis xyz="0 0 1"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Base"/>
+    <child link="Link1"/>
+	<origin xyz= "0 0 0.0723" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link2">
+	<inertial>
+		<origin xyz="-0.001071 0.001101 0.053193" rpy="0 0 0"/>
+		<mass value="0.026"/>
+		<inertia ixx="0.000061744" ixy="-0.000000025" ixz="-0.000000763" 
+				 iyy="0.000062096" iyz="-0.000001053" izz="0.000002942"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link2.STL"/>
+		</geometry>
+		<origin xyz = "-0.0132 0 -0.1056" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint2" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link1"/>
+    <child link="Link2"/>
+	<origin xyz= "0.0132 0 0.0333" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link3">
+	<inertial>
+		<origin xyz="0.101948 -0.00022 0.011917" rpy="0 0 0"/>
+		<mass value="0.023"/>
+		<inertia ixx="0.000001982" ixy="0.000000483" ixz="-0.000005373" 
+				 iyy="0.000081264" iyz="0.000000008" izz="0.000080538"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link3.STL"/>
+		</geometry>
+		<origin xyz="-0.0132 0 -0.24767"/>
+		<material name="">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+	</visual>
+</link>
+
+<joint name="Joint3" type="revolute">
+	<axis xyz="0 1 0"/>
+	<parent link="Link2" />
+	<child link="Link3" />
+	<limit effort="1000" lower="-1.45" upper="1.45" velocity="0"/>
+	<origin xyz="0 0 0.14207 " rpy="0 0 0"/>
+</joint>
+
+
+
+
+<link name="Link4">
+	<inertial>
+		<origin xyz="-0.00235 0.013618 0.015458" rpy="0 0 0"/>
+		<mass value="0.003"/>
+		<inertia ixx="0.000000316" ixy="0.000000001"  ixz="0.000000177" 
+				 iyy="0.000001679" iyz="-0.000000007" izz="0.000001378"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link4.STL"/>
+		</geometry>
+		<origin xyz = "-0.0132 0 -0.24767" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint4" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link2"/>
+    <child link="Link4"/>
+	<origin xyz= "0 0 0.14207" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link5">
+	<inertial>
+		<origin xyz="0.000287 0.0157 0.072444" rpy="0 0 0"/>
+		<mass value="0.003"/>
+		<inertia ixx="0.000004841" ixy="0.000000000" ixz="0.000000023" 
+				 iyy="0.000004863" iyz="0.000000000" izz="0.000000023"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link5.STL"/>
+		</geometry>
+		<origin xyz = "0.0215 0 -0.1223" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint5" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link1"/>
+    <child link="Link5"/>
+	<origin xyz= "-0.0215 0 0.05001" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link6">
+	<inertial>
+		<origin xyz="-0.014 -0.01391 -0.001062" rpy="0 0 0"/>
+		<mass value="0.003"/>
+		<inertia ixx="0.000000074" ixy="-0.000000060" ixz="0.000000055" 
+				 iyy="0.000000951" iyz="-0.000000004" izz="0.000000923"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link6.STL"/>
+		</geometry>
+		<origin xyz = "-0.0132 0 -0.1056" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint6" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link1"/>
+    <child link="Link6"/>
+	<origin xyz= "0.0132 0 0.0333" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link7">
+	<inertial>
+		<origin xyz="-0.001242 -0.013867 0.083246" rpy="0 0 0"/>
+		<mass value="0.003"/>
+		<inertia ixx="0.000007052" ixy="0.000000003" ixz="0.000000055" 
+				 iyy="0.000007058" iyz="0.000000117" izz="0.000000039"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link7.STL"/>
+		</geometry>
+		<origin xyz = "0.0323 0 -0.10258" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint7" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link6"/>
+    <child link="Link7"/>
+	<origin xyz= "-0.0455 0 -0.00301" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link8">
+	<inertial>
+		<origin xyz="0.027288 0.001085 -0.007344" rpy="0 0 0"/>
+		<mass value="0.012"/>
+		<inertia ixx="0.000002184" ixy="0.000000020" ixz="-0.000000207" 
+				 iyy="0.000002992" iyz="0.000000371" izz="0.000001832"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Gripper.STL"/>
+		</geometry>
+		<origin xyz = "-0.17201 0 -0.24651" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint8" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link3"/>
+    <child link="Link8"/>
+	<origin xyz= "0.15852 0 0" rpy = " 0 0 0" />
+</joint>
+
+
+<link name="Link9">
+	<inertial>
+		<origin xyz="-0.079305 0.0157 -0.000043" rpy="0 0 0"/>
+		<mass value="0.003"/>
+		<inertia ixx="0.000000022" ixy="0.000000000" ixz="-0.000000002" 
+				 iyy="0.000006517" iyz="0.000000000" izz="0.000006497"/>
+	</inertial>
+	<visual>
+		<geometry>
+			<mesh filename="package://swiftpro/urdf/swift_links/Link9.STL"/>
+		</geometry>
+		<origin xyz = "-0.19941 0 -0.27471" rpy = "0 0 0" />
+		<material name = "">
+			<color rgba = "0.3 0.3 0.3 1" />
+		</material>
+    </visual>
+</link>
+
+<joint name="Joint9" type="revolute">
+	<axis xyz="0 1 0"/>
+	<limit effort = "1000.0" lower = "-3" upper = "3" velocity = "0" />
+    <parent link="Link8"/>
+    <child link="Link9"/>
+	<origin xyz= "0.02741 0 0.02703" rpy = " 0 0 0" />
+</joint>
+
+
+</robot>

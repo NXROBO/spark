@@ -33,9 +33,12 @@
 #include "astra_camera/astra_timer_filter.h"
 #include <algorithm>
 
+
 namespace astra_wrapper
 {
-AstraTimerFilter::AstraTimerFilter(std::size_t filter_len) : filter_len_(filter_len)
+
+AstraTimerFilter::AstraTimerFilter(std::size_t filter_len):
+    filter_len_(filter_len)
 {
 }
 
@@ -46,21 +49,20 @@ AstraTimerFilter::~AstraTimerFilter()
 void AstraTimerFilter::addSample(double sample)
 {
   buffer_.push_back(sample);
-  if (buffer_.size() > filter_len_)
+  if (buffer_.size()>filter_len_)
     buffer_.pop_front();
 }
 
 double AstraTimerFilter::getMedian()
 {
-  if (buffer_.size() > 0)
+  if (buffer_.size()>0)
   {
     std::deque<double> sort_buffer = buffer_;
 
     std::sort(sort_buffer.begin(), sort_buffer.end());
 
-    return sort_buffer[sort_buffer.size() / 2];
-  }
-  else
+    return sort_buffer[sort_buffer.size()/2];
+  } else
     return 0.0;
 }
 
@@ -79,14 +81,15 @@ double AstraTimerFilter::getMovingAvg()
     }
 
     return sum / static_cast<double>(buffer_.size());
-  }
-  else
+  } else
     return 0.0;
 }
+
 
 void AstraTimerFilter::clear()
 {
   buffer_.clear();
 }
 
-}  // namespace openni2_wrapper
+
+} //namespace openni2_wrapper

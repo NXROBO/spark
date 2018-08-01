@@ -10,6 +10,7 @@ qtcreator-*
 *.g
 *.ldata
 *.log
+.catkin_workspace
 
 >>>>>>> fsm_ngh_beta
 build-simple_goals-Desktop-Default/

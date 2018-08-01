@@ -35,14 +35,13 @@
 
 namespace astra_camera
 {
+
 class AstraDriverNodelet : public nodelet::Nodelet
 {
 public:
-  AstraDriverNodelet(){};
+  AstraDriverNodelet()  {};
 
-  ~AstraDriverNodelet()
-  {
-  }
+  ~AstraDriverNodelet() {}
 
 private:
   virtual void onInit()
@@ -52,7 +51,8 @@ private:
 
   boost::shared_ptr<astra_wrapper::AstraDriver> lp;
 };
+
 }
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(astra_camera::AstraDriverNodelet, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(astra_camera::AstraDriverNodelet, nodelet::Nodelet)

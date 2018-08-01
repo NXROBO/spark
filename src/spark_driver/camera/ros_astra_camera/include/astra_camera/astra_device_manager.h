@@ -43,6 +43,7 @@
 
 namespace astra_wrapper
 {
+
 class AstraDeviceListener;
 class AstraDevice;
 
@@ -59,9 +60,9 @@ public:
   std::size_t getNumOfConnectedDevices() const;
 
   boost::shared_ptr<AstraDevice> getAnyDevice();
-  boost::shared_ptr<AstraDevice> getDevice(const std::string &device_URI);
+  boost::shared_ptr<AstraDevice> getDevice(const std::string& device_URI);
 
-  std::string getSerial(const std::string &device_URI) const;
+  std::string getSerial(const std::string& device_URI) const;
 
 protected:
   boost::shared_ptr<AstraDeviceListener> device_listener_;
@@ -69,7 +70,9 @@ protected:
   static boost::shared_ptr<AstraDeviceManager> singelton_;
 };
 
-std::ostream &operator<<(std::ostream &stream, const AstraDeviceManager &device_manager);
+
+std::ostream& operator <<(std::ostream& stream, const AstraDeviceManager& device_manager);
+
 }
 
 #endif

@@ -1,6 +1,6 @@
 <package>
   <name>astra_launch</name>
-  <version>0.1.0</version>
+  <version>0.2.2</version>
   <description>Drivers for Orbbec Astra Devices. </description>
   <author email="liuhua@orbbec.com">Tim Liu</author>
   <license>BSD</license>

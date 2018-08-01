@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: swiftpro
+    relative_path: urdf/pro_model.xacro
+  SRDF:
+    relative_path: config/swiftpro.srdf
+  CONFIG:
+    author_name: roger
+    author_email: roger@ufactory.cc
+    generated_timestamp: 1508989522

@@ -30,11 +30,12 @@
  *      Author: Tim Liu (liuhua@orbbec.com)
  */
 
-#include "OpenNI.h"
+#include "openni2/OpenNI.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
+#include "astra_camera/astra_driver.h"
 #include "astra_camera/astra_device.h"
 #include "astra_camera/astra_exception.h"
 #include "astra_camera/astra_convert.h"
@@ -47,13 +48,14 @@
 
 namespace astra_wrapper
 {
-AstraDevice::AstraDevice(const std::string &device_URI) throw(AstraException)
-  : openni_device_()
-  , ir_video_started_(false)
-  , color_video_started_(false)
-  , depth_video_started_(false)
-  , image_registration_activated_(false)
-  , use_device_time_(false)
+
+AstraDevice::AstraDevice(const std::string& device_URI) throw (AstraException) :
+    openni_device_(),
+    ir_video_started_(false),
+    color_video_started_(false),
+    depth_video_started_(false),
+    image_registration_activated_(false),
+    use_device_time_(false)
 {
   openni::Status rc = openni::OpenNI::initialize();
   if (rc != openni::STATUS_OK)
@@ -79,6 +81,7 @@ AstraDevice::AstraDevice(const std::string &device_URI) throw(AstraException)
   ir_frame_listener = boost::make_shared<AstraFrameListener>();
   color_frame_listener = boost::make_shared<AstraFrameListener>();
   depth_frame_listener = boost::make_shared<AstraFrameListener>();
+
 }
 
 AstraDevice::~AstraDevice()
@@ -170,7 +173,12 @@ float AstraDevice::getDepthFocalLength(int output_y_resolution) const
   return focal_length;
 }
 
-bool AstraDevice::isIRVideoModeSupported(const AstraVideoMode &video_mode) const
+float AstraDevice::getBaseline() const
+{
+  return 0.075f;
+}
+
+bool AstraDevice::isIRVideoModeSupported(const AstraVideoMode& video_mode) const
 {
   getSupportedIRVideoModes();
 
@@ -188,7 +196,7 @@ bool AstraDevice::isIRVideoModeSupported(const AstraVideoMode &video_mode) const
   return supported;
 }
 
-bool AstraDevice::isColorVideoModeSupported(const AstraVideoMode &video_mode) const
+bool AstraDevice::isColorVideoModeSupported(const AstraVideoMode& video_mode) const
 {
   getSupportedColorVideoModes();
 
@@ -206,7 +214,7 @@ bool AstraDevice::isColorVideoModeSupported(const AstraVideoMode &video_mode) co
   return supported;
 }
 
-bool AstraDevice::isDepthVideoModeSupported(const AstraVideoMode &video_mode) const
+bool AstraDevice::isDepthVideoModeSupported(const AstraVideoMode& video_mode) const
 {
   getSupportedDepthVideoModes();
 
@@ -222,6 +230,7 @@ bool AstraDevice::isDepthVideoModeSupported(const AstraVideoMode &video_mode) co
   }
 
   return supported;
+
 }
 
 bool AstraDevice::hasIRSensor() const
@@ -231,7 +240,7 @@ bool AstraDevice::hasIRSensor() const
 
 bool AstraDevice::hasColorSensor() const
 {
-  return openni_device_->hasSensor(openni::SENSOR_COLOR);
+  return (getUsbProductId()!=0x0403)?openni_device_->hasSensor(openni::SENSOR_COLOR):0;
 }
 
 bool AstraDevice::hasDepthSensor() const
@@ -250,6 +259,7 @@ void AstraDevice::startIRStream()
     stream->addNewFrameListener(ir_frame_listener.get());
     ir_video_started_ = true;
   }
+
 }
 
 void AstraDevice::startColorStream()
@@ -328,6 +338,7 @@ void AstraDevice::shutdown()
 
   if (depth_video_stream_.get() != 0)
     depth_video_stream_->destroy();
+
 }
 
 bool AstraDevice::isIRStreamStarted()
@@ -343,7 +354,7 @@ bool AstraDevice::isDepthStreamStarted()
   return depth_video_started_;
 }
 
-const std::vector<AstraVideoMode> &AstraDevice::getSupportedIRVideoModes() const
+const std::vector<AstraVideoMode>& AstraDevice::getSupportedIRVideoModes() const
 {
   boost::shared_ptr<openni::VideoStream> stream = getIRVideoStream();
 
@@ -351,7 +362,7 @@ const std::vector<AstraVideoMode> &AstraDevice::getSupportedIRVideoModes() const
 
   if (stream)
   {
-    const openni::SensorInfo &sensor_info = stream->getSensorInfo();
+    const openni::SensorInfo& sensor_info = stream->getSensorInfo();
 
     ir_video_modes_ = astra_convert(sensor_info.getSupportedVideoModes());
   }
@@ -359,7 +370,7 @@ const std::vector<AstraVideoMode> &AstraDevice::getSupportedIRVideoModes() const
   return ir_video_modes_;
 }
 
-const std::vector<AstraVideoMode> &AstraDevice::getSupportedColorVideoModes() const
+const std::vector<AstraVideoMode>& AstraDevice::getSupportedColorVideoModes() const
 {
   boost::shared_ptr<openni::VideoStream> stream = getColorVideoStream();
 
@@ -367,7 +378,7 @@ const std::vector<AstraVideoMode> &AstraDevice::getSupportedColorVideoModes() co
 
   if (stream)
   {
-    const openni::SensorInfo &sensor_info = stream->getSensorInfo();
+    const openni::SensorInfo& sensor_info = stream->getSensorInfo();
 
     color_video_modes_ = astra_convert(sensor_info.getSupportedVideoModes());
   }
@@ -375,7 +386,7 @@ const std::vector<AstraVideoMode> &AstraDevice::getSupportedColorVideoModes() co
   return color_video_modes_;
 }
 
-const std::vector<AstraVideoMode> &AstraDevice::getSupportedDepthVideoModes() const
+const std::vector<AstraVideoMode>& AstraDevice::getSupportedDepthVideoModes() const
 {
   boost::shared_ptr<openni::VideoStream> stream = getDepthVideoStream();
 
@@ -383,7 +394,7 @@ const std::vector<AstraVideoMode> &AstraDevice::getSupportedDepthVideoModes() co
 
   if (stream)
   {
-    const openni::SensorInfo &sensor_info = stream->getSensorInfo();
+    const openni::SensorInfo& sensor_info = stream->getSensorInfo();
 
     depth_video_modes_ = astra_convert(sensor_info.getSupportedVideoModes());
   }
@@ -396,7 +407,7 @@ bool AstraDevice::isImageRegistrationModeSupported() const
   return openni_device_->isImageRegistrationModeSupported(openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR);
 }
 
-void AstraDevice::setImageRegistrationMode(bool enabled) throw(AstraException)
+void AstraDevice::setImageRegistrationMode(bool enabled) throw (AstraException)
 {
   if (isImageRegistrationModeSupported())
   {
@@ -416,14 +427,14 @@ void AstraDevice::setImageRegistrationMode(bool enabled) throw(AstraException)
   }
 }
 
-void AstraDevice::setDepthColorSync(bool enabled) throw(AstraException)
+void AstraDevice::setDepthColorSync(bool enabled) throw (AstraException)
 {
   openni::Status rc = openni_device_->setDepthColorSyncEnabled(enabled);
   if (rc != openni::STATUS_OK)
     THROW_OPENNI_EXCEPTION("Enabling depth color synchronization failed: \n%s\n", openni::OpenNI::getExtendedError());
 }
 
-const AstraVideoMode AstraDevice::getIRVideoMode() throw(AstraException)
+const AstraVideoMode AstraDevice::getIRVideoMode() throw (AstraException)
 {
   AstraVideoMode ret;
 
@@ -441,7 +452,7 @@ const AstraVideoMode AstraDevice::getIRVideoMode() throw(AstraException)
   return ret;
 }
 
-const AstraVideoMode AstraDevice::getColorVideoMode() throw(AstraException)
+const AstraVideoMode AstraDevice::getColorVideoMode() throw (AstraException)
 {
   AstraVideoMode ret;
 
@@ -459,7 +470,7 @@ const AstraVideoMode AstraDevice::getColorVideoMode() throw(AstraException)
   return ret;
 }
 
-const AstraVideoMode AstraDevice::getDepthVideoMode() throw(AstraException)
+const AstraVideoMode AstraDevice::getDepthVideoMode() throw (AstraException)
 {
   AstraVideoMode ret;
 
@@ -477,7 +488,7 @@ const AstraVideoMode AstraDevice::getDepthVideoMode() throw(AstraException)
   return ret;
 }
 
-void AstraDevice::setIRVideoMode(const AstraVideoMode &video_mode) throw(AstraException)
+void AstraDevice::setIRVideoMode(const AstraVideoMode& video_mode) throw (AstraException)
 {
   boost::shared_ptr<openni::VideoStream> stream = getIRVideoStream();
 
@@ -490,7 +501,7 @@ void AstraDevice::setIRVideoMode(const AstraVideoMode &video_mode) throw(AstraEx
   }
 }
 
-void AstraDevice::setColorVideoMode(const AstraVideoMode &video_mode) throw(AstraException)
+void AstraDevice::setColorVideoMode(const AstraVideoMode& video_mode) throw (AstraException)
 {
   boost::shared_ptr<openni::VideoStream> stream = getColorVideoStream();
 
@@ -503,7 +514,7 @@ void AstraDevice::setColorVideoMode(const AstraVideoMode &video_mode) throw(Astr
   }
 }
 
-void AstraDevice::setDepthVideoMode(const AstraVideoMode &video_mode) throw(AstraException)
+void AstraDevice::setDepthVideoMode(const AstraVideoMode& video_mode) throw (AstraException)
 {
   boost::shared_ptr<openni::VideoStream> stream = getDepthVideoStream();
 
@@ -516,34 +527,36 @@ void AstraDevice::setDepthVideoMode(const AstraVideoMode &video_mode) throw(Astr
   }
 }
 
-void AstraDevice::setAutoExposure(bool enable) throw(AstraException)
+void AstraDevice::setAutoExposure(bool enable) throw (AstraException)
 {
   boost::shared_ptr<openni::VideoStream> stream = getColorVideoStream();
 
   if (stream)
   {
-    openni::CameraSettings *camera_seeting = stream->getCameraSettings();
+    openni::CameraSettings* camera_seeting = stream->getCameraSettings();
     if (camera_seeting)
     {
       const openni::Status rc = camera_seeting->setAutoExposureEnabled(enable);
       if (rc != openni::STATUS_OK)
         THROW_OPENNI_EXCEPTION("Couldn't set auto exposure: \n%s\n", openni::OpenNI::getExtendedError());
     }
+
   }
 }
-void AstraDevice::setAutoWhiteBalance(bool enable) throw(AstraException)
+void AstraDevice::setAutoWhiteBalance(bool enable) throw (AstraException)
 {
   boost::shared_ptr<openni::VideoStream> stream = getColorVideoStream();
 
   if (stream)
   {
-    openni::CameraSettings *camera_seeting = stream->getCameraSettings();
+    openni::CameraSettings* camera_seeting = stream->getCameraSettings();
     if (camera_seeting)
     {
       const openni::Status rc = camera_seeting->setAutoWhiteBalanceEnabled(enable);
       if (rc != openni::STATUS_OK)
         THROW_OPENNI_EXCEPTION("Couldn't set auto white balance: \n%s\n", openni::OpenNI::getExtendedError());
     }
+
   }
 }
 
@@ -555,7 +568,7 @@ bool AstraDevice::getAutoExposure() const
 
   if (stream)
   {
-    openni::CameraSettings *camera_seeting = stream->getCameraSettings();
+    openni::CameraSettings* camera_seeting = stream->getCameraSettings();
     if (camera_seeting)
       ret = camera_seeting->getAutoExposureEnabled();
   }
@@ -570,7 +583,7 @@ bool AstraDevice::getAutoWhiteBalance() const
 
   if (stream)
   {
-    openni::CameraSettings *camera_seeting = stream->getCameraSettings();
+    openni::CameraSettings* camera_seeting = stream->getCameraSettings();
     if (camera_seeting)
       ret = camera_seeting->getAutoWhiteBalanceEnabled();
   }
@@ -605,7 +618,7 @@ void AstraDevice::setDepthFrameCallback(FrameCallbackFunction callback)
   depth_frame_listener->setCallback(callback);
 }
 
-boost::shared_ptr<openni::VideoStream> AstraDevice::getIRVideoStream() const throw(AstraException)
+boost::shared_ptr<openni::VideoStream> AstraDevice::getIRVideoStream() const throw (AstraException)
 {
   if (ir_video_stream_.get() == 0)
   {
@@ -621,7 +634,7 @@ boost::shared_ptr<openni::VideoStream> AstraDevice::getIRVideoStream() const thr
   return ir_video_stream_;
 }
 
-boost::shared_ptr<openni::VideoStream> AstraDevice::getColorVideoStream() const throw(AstraException)
+boost::shared_ptr<openni::VideoStream> AstraDevice::getColorVideoStream() const throw (AstraException)
 {
   if (color_video_stream_.get() == 0)
   {
@@ -637,7 +650,7 @@ boost::shared_ptr<openni::VideoStream> AstraDevice::getColorVideoStream() const 
   return color_video_stream_;
 }
 
-boost::shared_ptr<openni::VideoStream> AstraDevice::getDepthVideoStream() const throw(AstraException)
+boost::shared_ptr<openni::VideoStream> AstraDevice::getDepthVideoStream() const throw (AstraException)
 {
   if (depth_video_stream_.get() == 0)
   {
@@ -653,19 +666,19 @@ boost::shared_ptr<openni::VideoStream> AstraDevice::getDepthVideoStream() const 
   return depth_video_stream_;
 }
 
-std::ostream &operator<<(std::ostream &stream, const AstraDevice &device)
+std::ostream& operator <<(std::ostream& stream, const AstraDevice& device)
 {
+
   stream << "Device info (" << device.getUri() << ")" << std::endl;
   stream << "   Vendor: " << device.getVendor() << std::endl;
   stream << "   Name: " << device.getName() << std::endl;
   stream << "   USB Vendor ID: " << device.getUsbVendorId() << std::endl;
-  stream << "   USB Product ID: " << device.getUsbVendorId() << std::endl
-         << std::endl;
+  stream << "   USB Product ID: " << device.getUsbVendorId() << std::endl << std::endl;
 
   if (device.hasIRSensor())
   {
     stream << "IR sensor video modes:" << std::endl;
-    const std::vector<AstraVideoMode> &video_modes = device.getSupportedIRVideoModes();
+    const std::vector<AstraVideoMode>& video_modes = device.getSupportedIRVideoModes();
 
     std::vector<AstraVideoMode>::const_iterator it = video_modes.begin();
     std::vector<AstraVideoMode>::const_iterator it_end = video_modes.end();
@@ -680,7 +693,7 @@ std::ostream &operator<<(std::ostream &stream, const AstraDevice &device)
   if (device.hasColorSensor())
   {
     stream << "Color sensor video modes:" << std::endl;
-    const std::vector<AstraVideoMode> &video_modes = device.getSupportedColorVideoModes();
+    const std::vector<AstraVideoMode>& video_modes = device.getSupportedColorVideoModes();
 
     std::vector<AstraVideoMode>::const_iterator it = video_modes.begin();
     std::vector<AstraVideoMode>::const_iterator it_end = video_modes.end();
@@ -695,7 +708,7 @@ std::ostream &operator<<(std::ostream &stream, const AstraDevice &device)
   if (device.hasDepthSensor())
   {
     stream << "Depth sensor video modes:" << std::endl;
-    const std::vector<AstraVideoMode> &video_modes = device.getSupportedDepthVideoModes();
+    const std::vector<AstraVideoMode>& video_modes = device.getSupportedDepthVideoModes();
 
     std::vector<AstraVideoMode>::const_iterator it = video_modes.begin();
     std::vector<AstraVideoMode>::const_iterator it_end = video_modes.end();
@@ -709,4 +722,5 @@ std::ostream &operator<<(std::ostream &stream, const AstraDevice &device)
 
   return stream;
 }
+
 }
