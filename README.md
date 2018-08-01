@@ -11,12 +11,12 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ## Update Log
 
-* Raise the stack so that the laidar can be added on it.
+* Raise the stack so that the lidar can be added on it.
 * Update the pre install packages so that the navigation and gmapping can be run.
 
 ## Packages Overview
 
-* ***spark_v05*** : spark 0.5 driver including base driver, camera driver, robot description, teleop package, and follow person package and so on.
+* ***src*** : spark driver including base driver, camera driver, robot description, teleop package, and follow person package and so on.
 * ***tools*** : it contains the 3rd part openni2 driver which camera driver uses.
 * ***doc*** : it shows that how to compile and use this meta-package.
 
@@ -24,7 +24,7 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 
 ### Prequirement
 
-* System:	Ubantu 14.04
+* System:	Ubantu 14.04+
 * ROS Version:	Indigo(Desktop-Full Install) 
 
 ### Compile
@@ -33,14 +33,9 @@ Build this compile with the following steps:
 ```yaml
 git clone https://github.com/NXROBO/spark.git
 
-#install dependence package
+#install
 cd spark
-./doc/install.sh
-
-#Compile
-catkin_make
-#Install
-catkin_make install
+./onekey.sh
 ```
 If everything goes fine, test the follow-person example as follow:
 ```yaml
