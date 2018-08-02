@@ -1,3 +1,4 @@
+<!--spark camera slam-->
 <launch>
   <!-- Arguments -->
   <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>

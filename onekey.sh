@@ -179,6 +179,43 @@ cal_camera_arm(){
 	roslaunch spark_carry_object spark_carry_cal.launch	
 }
 
+
+#让SPARK使用激光雷达进行导航
+spark_navigation_2d(){
+	echo -e "${Info}" 
+	echo -e "${Info}让SPARK使用激光雷达进行导航" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}请确定："
+	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
+	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
+	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_navigation amcl_demo_lidar.launch	
+}
+#让SPARK使用深度摄像头进行导航
+spark_navigation_3d(){
+	echo -e "${Info}" 
+	echo -e "${Info}让SPARK使用深度摄像头进行导航" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}请确定："
+	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
+	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
+	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_navigation amcl_demo.launch	
+}
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
 	echo -e "${Info}" 
@@ -199,6 +236,107 @@ spark_carry_obj(){
 	
 }
 
+#让SPARK使用激光雷达绘制地图(gmapping)
+spark_build_map_2d(){
+	echo -e "${Info}" 
+	echo -e "${Info}让SPARK使用激光雷达绘制地图" 
+	echo -e "${Info}" 
+	echo -e "${Info}请选择SLAM的方式：
+	  ${Green_font_prefix}1.${Font_color_suffix} gmapping
+	  ${Green_font_prefix}2.${Font_color_suffix} hector
+	  ${Green_font_prefix}3.${Font_color_suffix} frontier_exploration
+	  ${Green_font_prefix}4.${Font_color_suffix} karto
+	  ${Green_font_prefix}5.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	echo && stty erase '^H' && read -p "请输入数字 [1-4]：" slamnum
+	case "$slamnum" in
+		1)
+		SLAMTYPE="gmapping"
+		;;
+		2)
+		SLAMTYPE="hector"
+		;;
+		3)
+		SLAMTYPE="frontier_exploration"
+		;;
+		4)
+		SLAMTYPE="karto"
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用gmapping"
+		SLAMTYPE="gmapping"
+		;;
+	esac
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}    请在新的终端窗口操作"
+	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
+	echo -e "${Info}                           " 
+	echo -e "${Info}           w前进           "
+	echo -e "${Info}    a左转         d右转    "
+	echo -e "${Info}           s后退           " 
+	echo -e "${Info}                           " 
+	echo -e "${Info}退出请输入：Ctrl + c        " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
+	
+}
+
+#让SPARK使用深度摄像头绘制地图
+spark_build_map_3d(){
+	echo -e "${Info}" 
+	echo -e "${Info}让SPARK使用深度摄像头绘制地图" 
+	echo -e "${Info}" 
+	echo -e "${Info}请选择SLAM的方式：
+	  ${Green_font_prefix}1.${Font_color_suffix} gmapping
+	  ${Green_font_prefix}2.${Font_color_suffix} hector
+	  ${Green_font_prefix}3.${Font_color_suffix} frontier_exploration
+	  ${Green_font_prefix}4.${Font_color_suffix} karto
+	  ${Green_font_prefix}5.${Font_color_suffix} rtab_map
+	  ${Green_font_prefix}6.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	echo && stty erase '^H' && read -p "请输入数字 [1-5]：" slamnum
+	case "$slamnum" in
+		1)
+		SLAMTYPE="gmapping"
+		;;
+		2)
+		SLAMTYPE="hector"
+		;;
+		3)
+		SLAMTYPE="frontier_exploration"
+		;;
+		4)
+		SLAMTYPE="karto"
+		;;
+		5)
+		SLAMTYPE="rtab_map"
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用gmapping"
+		SLAMTYPE="gmapping"
+		;;
+	esac
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}    请在新的终端窗口操作"
+	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
+	echo -e "${Info}                           " 
+	echo -e "${Info}           w前进           "
+	echo -e "${Info}    a左转         d右转    "
+	echo -e "${Info}           s后退           " 
+	echo -e "${Info}                           " 
+	echo -e "${Info}退出请输入：Ctrl + c        " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
+	
+}
 
 #printf
 menu_status(){
@@ -217,14 +355,17 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}5.${Font_color_suffix} 让机器人动起来
   ${Green_font_prefix}6.${Font_color_suffix} 远程（手机APP）控制SPARK
   ${Green_font_prefix}7.${Font_color_suffix} 让SPARK跟着你走
-  ${Green_font_prefix}8.${Font_color_suffix} 让SPARK学会绘制地图
-  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK通过地图进行导航
-  ${Green_font_prefix}10.${Font_color_suffix} 机械臂与摄像头标定
-  ${Green_font_prefix}11.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix}12.${Font_color_suffix} 其它
+  ${Green_font_prefix}8.${Font_color_suffix} 让SPARK使用激光雷达绘制地图
+  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK使用深度摄像头绘制地图
+  ${Green_font_prefix}10.${Font_color_suffix} 让SPARK使用激光雷达进行导航
+  ${Green_font_prefix}11.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
+  ${Green_font_prefix}12.${Font_color_suffix} 机械臂与摄像头标定
+  ${Green_font_prefix}13.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
+  ${Green_font_prefix}14.${Font_color_suffix} 其它
+
  "
 menu_status
-echo && stty erase '^H' && read -p "请输入数字 [1-9]：" num
+echo && stty erase '^H' && read -p "请输入数字 [1-14]：" num
 case "$num" in
 	1)
 	install_all
@@ -248,24 +389,27 @@ case "$num" in
 	people_follow
 	;;
 	8)
-	menu_status
+	spark_build_map_2d
 	;;
 	9)
-	menu_status
+	spark_build_map_3d
 	;;
 	10)
-	cal_camera_arm
+	spark_navigation_2d
 	;;
 	11)
-	spark_carry_obj
+	spark_navigation_3d
 	;;
 	12)
-	menu_status
+	cal_camera_arm
 	;;
 	13)
+	spark_carry_obj
+	;;
+	14)
 	menu_status
 	;;
 	*)
-	echo -e "${Error} 请输入正确的数字 [1-15]"
+	echo -e "${Error} 请输入正确的数字 [1-14]"
 	;;
 esac

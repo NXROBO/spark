@@ -1,3 +1,4 @@
+<!--spark camera slam-->
 <launch>
   <!-- Arguments -->
   <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
@@ -61,5 +62,6 @@
     <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods).rviz"/>
   </group>
-
+  <!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  <node pkg="spark_teleop" type="keyboard_control.sh" name="kc" />
 </launch>
