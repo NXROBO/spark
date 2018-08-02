@@ -73,6 +73,8 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-move-base-* 
 	sudo apt-get install -y ros-${ROS_Ver}-serial
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation*
+	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
+	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
 	sudo apt-get install -y libasound2-dev mplayer
 	echo -e "${Info} 依赖库安装成功……"
 }
@@ -95,6 +97,109 @@ install_all(){
 	install_spark
 }
 
+
+#让机器人动起来
+let_robot_go(){
+	echo -e "${Info}                  " 
+	echo -e "${Info} 让机器人动起来" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}                  " 
+	echo -e "${Info}    请在新的终端窗口操作"
+	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
+	echo -e "${Info}                           " 
+	echo -e "${Info}           w前进           "
+	echo -e "${Info}    a左转         d右转    "
+	echo -e "${Info}           s后退           " 
+	echo -e "${Info}                           " 
+	echo -e "${Info}    退出请输入：Ctrl + c    " 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_teleop teleop.launch
+}
+
+
+#远程（手机APP）控制SPARK
+remote_control_robot(){
+	echo -e "${Info}                  " 
+	echo -e "${Info} 远程（手机APP）控制SPARK" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+
+	echo -e "${Info}" 
+	echo -e "${Info}    请在新的终端窗口操作"
+	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
+	echo -e "${Info}                           " 
+	echo -e "${Info}           w前进           "
+	echo -e "${Info}    a左转         d右转    "
+	echo -e "${Info}           s后退           " 
+	echo -e "${Info}                           " 
+	echo -e "${Info}退出请输入：Ctrl + c        " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_teleop teleop.launch
+}
+
+#让SPARK跟着你走
+people_follow(){
+	echo -e "${Info}                  " 
+	echo -e "${Info}让SPARK跟着你走" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}                  " 
+	echo -e "${Info}请站在SPARK的正前方，与SPARK保持一米左右的距离，然后走动"
+	echo -e "${Info}                  " 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_follower bringup.launch
+}
+
+#机械臂与摄像头匹对标定
+cal_camera_arm(){
+	echo -e "${Info}" 
+	echo -e "${Info}机械臂与摄像头匹对标定" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}请确定："
+	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
+	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
+	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_carry_object spark_carry_cal.launch	
+}
+
+#让SPARK通过机械臂进行视觉抓取
+spark_carry_obj(){
+	echo -e "${Info}" 
+	echo -e "${Info}让SPARK通过机械臂进行视觉抓取" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}请确定："
+	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
+	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
+	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase '^H' && read -p "按任意键开始：" 
+
+	roslaunch spark_carry_object spark_carry_object_only.launch 
+	
+}
+
+
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
@@ -109,11 +214,14 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}3.${Font_color_suffix} 单独安装SPARK依赖
   ${Green_font_prefix}4.${Font_color_suffix} 单独编译SPARK
 ————————————
-  ${Green_font_prefix}5.${Font_color_suffix} 其他功能
-  ${Green_font_prefix}6.${Font_color_suffix} 其他功能
-  ${Green_font_prefix}7.${Font_color_suffix} 其他功能
-  ${Green_font_prefix}8.${Font_color_suffix} 其他功能
-  ${Green_font_prefix}9.${Font_color_suffix} 升级脚本
+  ${Green_font_prefix}5.${Font_color_suffix} 让机器人动起来
+  ${Green_font_prefix}6.${Font_color_suffix} 远程（手机APP）控制SPARK
+  ${Green_font_prefix}7.${Font_color_suffix} 让SPARK跟着你走
+  ${Green_font_prefix}8.${Font_color_suffix} 让SPARK学会绘制地图
+  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK通过地图进行导航
+  ${Green_font_prefix}10.${Font_color_suffix} 机械臂与摄像头标定
+  ${Green_font_prefix}11.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
+  ${Green_font_prefix}12.${Font_color_suffix} 其它
  "
 menu_status
 echo && stty erase '^H' && read -p "请输入数字 [1-9]：" num
@@ -131,18 +239,30 @@ case "$num" in
 	install_spark
 	;;
 	5)
-	menu_status
+	let_robot_go
 	;;
 	6)
 	menu_status
 	;;
 	7)
-	menu_status
+	people_follow
 	;;
 	8)
 	menu_status
 	;;
 	9)
+	menu_status
+	;;
+	10)
+	cal_camera_arm
+	;;
+	11)
+	spark_carry_obj
+	;;
+	12)
+	menu_status
+	;;
+	13)
 	menu_status
 	;;
 	*)

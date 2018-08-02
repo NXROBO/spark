@@ -1,0 +1,31 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="configuration_basename" default="spark_lds_2d.lua"/>
+  <arg name="open_rviz" default="true"/>
+
+
+ <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
+ <!--include file="$(find spark_description)/launch/spark_description.launch"/-->
+
+
+   <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/sparkBase"/>
+ </include> 
+
+
+
+ <!-- 3D sensor -->
+  <arg name="3d_sensor" default="3i_lidar"/>  
+  <include file="$(find b_3ilidar)/launch/slam.launch">
+  <!--<arg name="lidar_USB"                  value="/dev/sparkBase"/>-->
+  </include>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find spark_slam)/launch/spark_$(arg slam_methods).launch">
+    <!--arg name="model" value="$(arg model)"/-->
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+
+</launch>

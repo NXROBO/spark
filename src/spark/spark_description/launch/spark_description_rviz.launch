@@ -1,4 +1,4 @@
-<!--spark description without rviz-->
+<!--spark description with rviz-->
 <launch>
 
   <arg name="model" default="$(find spark_description)/robots/spark.urdf.xacro"/>
@@ -16,8 +16,8 @@
   
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
       
-  <!--show robo with rviz 
+  <!--show robo with rviz -->
   <arg name="rvizconfig" default="$(find spark_description)/rviz/urdf.rviz" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />--> 
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
 </launch>

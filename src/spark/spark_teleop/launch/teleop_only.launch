@@ -1,0 +1,6 @@
+<!--让SPARK跑起来-->
+<launch>
+
+	<node pkg="spark_teleop" type="spark_teleop_node" name="spark_teleop_node" args="0.14 0.5"/>
+
+</launch>

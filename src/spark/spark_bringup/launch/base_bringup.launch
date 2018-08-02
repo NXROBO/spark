@@ -1,0 +1,7 @@
+<!--just spark base and description-->
+<launch>
+  <include file="$(find spark_description)/launch/spark_description.launch"/>
+  <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/sparkBase"/>
+  </include>
+</launch>

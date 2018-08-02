@@ -1,0 +1,12 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="configuration_basename" default="spark_lds_2d.lua"/>
+
+ <!-- slam_karto -->
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
+    <rosparam command="load" file="$(find spark_slam)/config/karto_mapper_params.yaml" />
+  </node>
+
+  <!--node pkg="tf" type="static_transform_publisher" name="static_transform_publisher"
+			args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 odom_combined odom 1000" output="screen"/-->
+</launch>

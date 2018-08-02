@@ -1,0 +1,59 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="configuration_basename" default="spark_lds_2d.lua"/>
+  <arg name="open_rviz" default="true"/>
+
+
+ <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
+ <!--include file="$(find spark_description)/launch/spark_description.launch"/-->
+
+   <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/sparkBase"/>
+ </include> 
+
+
+   <!-- 3D sensor -->
+  <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
+  <include file="$(find astra_launch)/launch/astra.launch">
+  <!--  <arg name="rgb_processing"                 value="false" /> -->
+  <!--  <arg name="depth_registration"             value="false" /> -->
+  <!--  <arg name="depth_processing"                value="false" /> -->
+
+    <arg name="rgb_processing"                  value="true"/>
+    <arg name="depth_processing"                value="true"/>
+    <arg name="depth_registered_processing"     value="false"/>
+    <arg name="depth_registration"              value="false"/>
+    <arg name="disparity_processing"            value="false"/>
+    <arg name="disparity_registered_processing" value="false"/>
+    
+    <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
+         Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
+    
+  </include>
+
+
+  <!-- Run the depthimage_to_laserscan node -->
+  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+    
+
+    <!--<remap from="image" to="/camera/depth/image_raw" />-->
+    <remap from="image" to="/camera/depth/image_raw" />
+
+    <!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
+    <remap from="camera_info" to="/camera/depth/camera_info" />
+
+    <remap from="scan" to="/scan" />
+    <param name="output_frame_id" value="/camera_depth_frame" />
+
+    <!--added by xilai 6/19/2017-->
+    <param name="scan_height" value="50" />
+  </node>
+
+  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  <include file="$(find spark_slam)/launch/spark_$(arg slam_methods).launch">
+    <!--arg name="model" value="$(arg model)"/-->
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+</launch>
