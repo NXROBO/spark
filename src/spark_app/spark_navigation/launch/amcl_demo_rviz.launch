@@ -49,7 +49,7 @@
 
 
   <!-- Map server -->
-  <arg name="map_file" default="$(find spark_navigation)/maps/lecture_hall2.yaml"/>
+  <arg name="map_file" default="$(find spark_slam)/scripts/test_map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->
@@ -68,5 +68,8 @@
   <include file="$(find spark_navigation)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
+  <!--在rviz显示-->
+  <arg name="rvizconfig" default="$(find spark_navigation)/rviz/amcl_camera.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 </launch>
 

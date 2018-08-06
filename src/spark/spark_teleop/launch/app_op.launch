@@ -1,0 +1,11 @@
+<!--让SPARK跑起来-->
+<launch>
+
+	<!--spark底盘驱动，机器人描述,底盘,相机-->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+
+	<!--在rviz显示-->
+  	<arg name="rvizconfig" default="$(find spark_teleop)/rviz/teleop.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+</launch>

@@ -5,6 +5,7 @@ import rospy
 import cv2
 import numpy as np
 import math
+import os
 #import pandas as pd
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
@@ -56,12 +57,12 @@ def image_callback(data):
 	# detect contour
 	# cv2.imshow("win2", cv_image5)
 	# cv2.waitKey(1)
-	contours, hier = cv2.findContours(cv_image5, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	_, contours, hier = cv2.findContours(cv_image5, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	size = []
 	size_max = 0
 	for i, c in enumerate(contours):
 		rect = cv2.minAreaRect(c)
-		box = cv2.cv.BoxPoints(rect)
+		box = cv2.boxPoints(rect)
 		box = np.int0(box)
 		x_mid = (box[0][0] + box[2][0] + box[1][0] + box[3][0]) / 4
 		y_mid = (box[0][1] + box[2][1] + box[1][1] + box[3][1]) / 4
@@ -109,9 +110,11 @@ def command_callback(data):
 		k2 = Reg_y_xc.coef_[0][0]
 		b2 = Reg_y_xc.intercept_[0]
 		s = '' + str(k1) + ' ' + str(b1) + ' ' + str(k2) + ' ' + str(b2) + '\n'
-		file_pix = open('thefile.txt', 'w')
+		filename = os.environ['HOME'] + "/thefile.txt"
+		file_pix = open(filename, 'w')
 		file_pix.write(s)
 		file_pix.close()
+		print(filename)
 		print("Linear Regression for x and yc is :  x = %.5fyc + (%.5f)" % (k1, b1))
 		print("Linear Regression for y and xc is :  y = %.5fxc + (%.5f)" % (k2, b2))
 		index = 0

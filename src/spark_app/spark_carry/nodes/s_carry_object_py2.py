@@ -87,8 +87,8 @@ class GraspObject(State):
         global xc, yc, found_count
         # stop function
 
-
-	file_pix = open('/home/zlt/spark_ws/thefile.txt', 'r')
+	filename = os.environ['HOME'] + "/thefile.txt"
+	file_pix = open(filename, 'r')
 	s = file_pix.read()
 	file_pix.close()
 	print(s);
@@ -669,7 +669,8 @@ if __name__ == '__main__':
     try:
         rospy.loginfo("Init carry object")   
 
-	file_pix = open('/home/zlt/spark_ws/thefile.txt', 'r')
+	filename = os.environ['HOME'] + "/thefile.txt"
+	file_pix = open(filename, 'r')
 	s = file_pix.read()
 	file_pix.close()
 	print(s);

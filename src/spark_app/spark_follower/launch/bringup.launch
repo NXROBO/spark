@@ -19,4 +19,7 @@
 	</include>
 	
 	<include file="$(find spark_follower)/launch/nxfollower_bringup_nodelet.launch"/>
+	<!--在rviz显示-->
+  	<arg name="rvizconfig" default="$(find spark_follower)/rviz/follow.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 </launch>

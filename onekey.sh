@@ -11,7 +11,7 @@ export PATH
 #=================================================
 
 
-sh_ver="1.0.21"
+sh_ver="1.1.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
@@ -72,6 +72,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-image-common
 	sudo apt-get install -y ros-${ROS_Ver}-move-base-* 
 	sudo apt-get install -y ros-${ROS_Ver}-serial
+	sudo apt-get install -y python-pip python-sklearn 
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation*
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
@@ -97,15 +98,35 @@ install_all(){
 	install_spark
 }
 
+#远程设置
+master_uri_setup(){
+	eth_ip=`/sbin/ifconfig eth0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlp2s_ip=`/sbin/ifconfig wlp2s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+
+	if [ $eth_ip ]; then
+		echo -e "${Info}使用有线网络eth0" 
+		local_ip=$eth_ip
+	elif [ $wlp2s_ip ]; then
+		echo -e "${Info}使用无线网络wlp2s0" 
+	  	local_ip=$wlp2s_ip
+	elif [ $wlan_ip ]; then
+		echo -e "${Info}使用无线网络wlan0" 
+	  	local_ip=$wlan_ip
+	fi
+	export ROS_HOSTNAME=$local_ip
+	export ROS_MASTER_URI="http://${local_ip}:11311"
+	echo Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME
+}
 
 #让机器人动起来
 let_robot_go(){
-	echo -e "${Info}                  " 
-	echo -e "${Info} 让机器人动起来" 
+	echo -e "${Info}" 
+	echo -e "${Info}      让机器人动起来" 
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
 
-	echo -e "${Info}                  " 
+	echo -e "${Info}" 
 	echo -e "${Info}    请在新的终端窗口操作"
 	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
 	echo -e "${Info}                           " 
@@ -122,6 +143,7 @@ let_robot_go(){
 
 #远程（手机APP）控制SPARK
 remote_control_robot(){
+	master_uri_setup
 	echo -e "${Info}                  " 
 	echo -e "${Info} 远程（手机APP）控制SPARK" 
 	PROJECTPATH=$(cd `dirname $0`; pwd)
@@ -129,18 +151,13 @@ remote_control_robot(){
 
 
 	echo -e "${Info}" 
-	echo -e "${Info}    请在新的终端窗口操作"
-	echo -e "${Info}键盘“wsad”分别对应“前后左右”"
-	echo -e "${Info}                           " 
-	echo -e "${Info}           w前进           "
-	echo -e "${Info}    a左转         d右转    "
-	echo -e "${Info}           s后退           " 
-	echo -e "${Info}                           " 
-	echo -e "${Info}退出请输入：Ctrl + c        " 
+	echo -e "${Info}请打开手机APP进行控制   "
+	echo -e "${Info}" 
+	echo -e "${Info}退出请输入：Ctrl + c" 
 	echo -e "${Info}" 
 	echo && stty erase '^H' && read -p "按任意键开始：" 
 
-	roslaunch spark_teleop teleop.launch
+	roslaunch spark_teleop app_op.launch
 }
 
 #让SPARK跟着你走
@@ -188,15 +205,15 @@ spark_navigation_2d(){
 	source ${PROJECTPATH}/devel/setup.bash
 
 	echo -e "${Info}" 
-	echo -e "${Info}请确定："
-	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
-	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
-	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}请注意："
+	echo -e "${Info}       A.激光雷达已上电连接"
+	echo -e "${Info}       B.导航正常启动后，点击‘2D Pose Estimate’后在地图上进行手动定位。"
+	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase '^H' && read -p "按任意键开始：" 
 
-	roslaunch spark_navigation amcl_demo_lidar.launch	
+	roslaunch spark_navigation amcl_demo_lidar_rviz.launch	
 }
 #让SPARK使用深度摄像头进行导航
 spark_navigation_3d(){
@@ -206,15 +223,15 @@ spark_navigation_3d(){
 	source ${PROJECTPATH}/devel/setup.bash
 
 	echo -e "${Info}" 
-	echo -e "${Info}请确定："
-	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
-	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
-	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}请注意："
+	echo -e "${Info}       A.摄像头已连接"
+	echo -e "${Info}       B.导航正常启动后，点击‘2D Pose Estimate’后在地图上进行手动定位。"
+	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase '^H' && read -p "按任意键开始：" 
 
-	roslaunch spark_navigation amcl_demo.launch	
+	roslaunch spark_navigation amcl_demo_rviz.launch	
 }
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
@@ -232,7 +249,7 @@ spark_carry_obj(){
 	echo -e "${Info}" 
 	echo && stty erase '^H' && read -p "按任意键开始：" 
 
-	roslaunch spark_carry_object spark_carry_object_only.launch 
+	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
 	
 }
 
@@ -259,7 +276,9 @@ spark_build_map_2d(){
 		SLAMTYPE="frontier_exploration"
 		;;
 		4)
-		SLAMTYPE="karto"
+		coming_soon
+		exit
+		#SLAMTYPE="karto"
 		;;
 		*)
 		echo -e "${Error} 错误，默认使用gmapping"
@@ -309,10 +328,14 @@ spark_build_map_3d(){
 		SLAMTYPE="frontier_exploration"
 		;;
 		4)
-		SLAMTYPE="karto"
+		coming_soon
+		exit
+		#SLAMTYPE="karto"
 		;;
 		5)
-		SLAMTYPE="rtab_map"
+		coming_soon
+		exit
+		#SLAMTYPE="rtab_map"
 		;;
 		*)
 		echo -e "${Error} 错误，默认使用gmapping"
@@ -337,6 +360,11 @@ spark_build_map_3d(){
 	roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
 }
+
+coming_soon(){
+	echo -e "${Tip} coming_soon!" 
+}
+
 
 #printf
 menu_status(){
@@ -383,7 +411,7 @@ case "$num" in
 	let_robot_go
 	;;
 	6)
-	menu_status
+	remote_control_robot
 	;;
 	7)
 	people_follow

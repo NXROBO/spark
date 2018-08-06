@@ -1,5 +1,5 @@
 <launch>
-  <!-- Updated version tuned with support for Intel(R) RealSense R200 3d camera, copied from amcl.launch.xml file (turtlebot_navigation) -->
+  <!-- Updated version tuned with support for Intel(R) RealSense R200 3d camera, copied from amcl.launch.xml file (spark_navigation) -->
   <arg name="use_map_topic"   default="false"/>
   <arg name="scan_topic"      default="scan"/> 
   <arg name="initial_pose_x"  default="0.0"/>
