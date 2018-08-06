@@ -151,7 +151,7 @@ remote_control_robot(){
 
 
 	echo -e "${Info}" 
-	echo -e "${Info}请打开手机APP进行控制   "
+	echo -e "${Info}远程控制的APP地址: https://github.com/ros-autom/RobotCA/tree/kinetic/Release 安装完成后，请打开手机APP进行控制"
 	echo -e "${Info}" 
 	echo -e "${Info}退出请输入：Ctrl + c" 
 	echo -e "${Info}" 
