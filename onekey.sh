@@ -375,69 +375,70 @@ check_sys
 echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   ---- J.xiao | www.nxrobo.com ----
 
-  ${Green_font_prefix}1.${Font_color_suffix} 完整安装
-  ${Green_font_prefix}2.${Font_color_suffix} 单独安装ROS环境
-  ${Green_font_prefix}3.${Font_color_suffix} 单独安装SPARK依赖
-  ${Green_font_prefix}4.${Font_color_suffix} 单独编译SPARK
-————————————
-  ${Green_font_prefix}5.${Font_color_suffix} 让机器人动起来
-  ${Green_font_prefix}6.${Font_color_suffix} 远程（手机APP）控制SPARK
-  ${Green_font_prefix}7.${Font_color_suffix} 让SPARK跟着你走
-  ${Green_font_prefix}8.${Font_color_suffix} 让SPARK使用激光雷达绘制地图
-  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK使用深度摄像头绘制地图
-  ${Green_font_prefix}10.${Font_color_suffix} 让SPARK使用激光雷达进行导航
-  ${Green_font_prefix}11.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
-  ${Green_font_prefix}12.${Font_color_suffix} 机械臂与摄像头标定
-  ${Green_font_prefix}13.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix}14.${Font_color_suffix} 其它
 
+  ${Green_font_prefix}0.${Font_color_suffix} 单独编译SPARK
+————————————
+  ${Green_font_prefix}1.${Font_color_suffix} 让机器人动起来
+  ${Green_font_prefix}2.${Font_color_suffix} 远程（手机APP）控制SPARK
+  ${Green_font_prefix}3.${Font_color_suffix} 让SPARK跟着你走
+  ${Green_font_prefix}4.${Font_color_suffix} 让SPARK使用激光雷达绘制地图
+  ${Green_font_prefix}5.${Font_color_suffix} 让SPARK使用深度摄像头绘制地图
+  ${Green_font_prefix}6.${Font_color_suffix} 让SPARK使用激光雷达进行导航
+  ${Green_font_prefix}7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
+  ${Green_font_prefix}8.${Font_color_suffix} 机械臂与摄像头标定
+  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
+  ${Green_font_prefix}10.${Font_color_suffix} 其它
+————————————
+  ${Green_font_prefix}101.${Font_color_suffix} 完整安装
+  ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
+  ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
  "
 menu_status
-echo && stty erase '^H' && read -p "请输入数字 [1-14]：" num
+echo && stty erase '^H' && read -p "请输入数字：" num
 case "$num" in
-	1)
-	install_all
-	;;
-	2)
-	install_ros_full
-	;;
-	3)
-	install_spark_require
-	;;
-	4)
+	0)
 	install_spark
 	;;
-	5)
+	1)
 	let_robot_go
 	;;
-	6)
+	2)
 	remote_control_robot
 	;;
-	7)
+	3)
 	people_follow
 	;;
-	8)
+	4)
 	spark_build_map_2d
 	;;
-	9)
+	5)
 	spark_build_map_3d
 	;;
-	10)
+	6)
 	spark_navigation_2d
 	;;
-	11)
+	7)
 	spark_navigation_3d
 	;;
-	12)
+	8)
 	cal_camera_arm
 	;;
-	13)
+	9)
 	spark_carry_obj
 	;;
-	14)
+	10)
 	menu_status
 	;;
+	101)
+	install_all
+	;;
+	102)
+	install_ros_full
+	;;
+	103)
+	install_spark_require
+	;;
 	*)
-	echo -e "${Error} 请输入正确的数字 [1-14]"
+	echo -e "${Error} 请输入正确的数字 "
 	;;
 esac
