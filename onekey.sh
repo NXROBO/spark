@@ -52,6 +52,7 @@ install_ros_full(){
 		rosdep update
 		echo "source /opt/ros/${ROS_Ver}/setup.bash" >> ~/.bashrc
 		source /opt/ros/${ROS_Ver}/setup.bash
+		sudo apt-get install -y python-rosinstall python-rosinstall-generator python-wstool build-essential
 }
 
 #安装SPARK依赖库
@@ -116,7 +117,7 @@ master_uri_setup(){
 	fi
 	export ROS_HOSTNAME=$local_ip
 	export ROS_MASTER_URI="http://${local_ip}:11311"
-	echo Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME
+	echo -e "${Info}Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME"
 }
 
 #让机器人动起来
@@ -135,7 +136,7 @@ let_robot_go(){
 	echo -e "${Info}           s后退           " 
 	echo -e "${Info}                           " 
 	echo -e "${Info}    退出请输入：Ctrl + c    " 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_teleop teleop.launch
 }
@@ -144,18 +145,17 @@ let_robot_go(){
 #远程（手机APP）控制SPARK
 remote_control_robot(){
 	master_uri_setup
-	echo -e "${Info}                  " 
-	echo -e "${Info} 远程（手机APP）控制SPARK" 
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
-
-
+	echo -e "${Info}                  " 
+	echo -e "${Info} 远程（手机APP）控制SPARK" 
 	echo -e "${Info}" 
-	echo -e "${Info}远程控制的APP地址: https://github.com/ros-autom/RobotCA/tree/kinetic/Release 安装完成后，请打开手机APP进行控制"
-	echo -e "${Info}" 
+	echo -e "${Info}远程控制的APP地址: https://github.com/ros-autom/RobotCA/tree/kinetic/Release "
+	echo -e "${Info}下载安装完成后，打开app，设置Master URI:http://${local_ip}:11311" 
+	echo -e "${Info}接着就可以开始远程控制机器人了" 
 	echo -e "${Info}退出请输入：Ctrl + c" 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_teleop app_op.launch
 }
@@ -172,7 +172,7 @@ people_follow(){
 	echo -e "${Info}                  " 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_follower bringup.launch
 }
@@ -191,7 +191,7 @@ cal_camera_arm(){
 	echo -e "${Info}       C.机械臂正常上电。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_carry_object spark_carry_cal.launch	
 }
@@ -229,7 +229,7 @@ spark_navigation_3d(){
 	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_navigation amcl_demo_rviz.launch	
 }
@@ -247,7 +247,7 @@ spark_carry_obj(){
 	echo -e "${Info}       C.机械臂正常上电。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
 	
@@ -264,7 +264,7 @@ spark_build_map_2d(){
 	  ${Green_font_prefix}3.${Font_color_suffix} frontier_exploration
 	  ${Green_font_prefix}4.${Font_color_suffix} karto
 	  ${Green_font_prefix}5.${Font_color_suffix} 退出请输入：Ctrl + c" 
-	echo && stty erase '^H' && read -p "请输入数字 [1-4]：" slamnum
+	echo && stty erase ^? && read -p "请输入数字 [1-4]：" slamnum
 	case "$slamnum" in
 		1)
 		SLAMTYPE="gmapping"
@@ -298,7 +298,7 @@ spark_build_map_2d(){
 	echo -e "${Info}                           " 
 	echo -e "${Info}退出请输入：Ctrl + c        " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
@@ -316,7 +316,7 @@ spark_build_map_3d(){
 	  ${Green_font_prefix}4.${Font_color_suffix} karto
 	  ${Green_font_prefix}5.${Font_color_suffix} rtab_map
 	  ${Green_font_prefix}6.${Font_color_suffix} 退出请输入：Ctrl + c" 
-	echo && stty erase '^H' && read -p "请输入数字 [1-5]：" slamnum
+	echo && stty erase ^? && read -p "请输入数字 [1-5]：" slamnum
 	case "$slamnum" in
 		1)
 		SLAMTYPE="gmapping"
@@ -355,7 +355,7 @@ spark_build_map_3d(){
 	echo -e "${Info}                           " 
 	echo -e "${Info}退出请输入：Ctrl + c        " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按任意键开始：" 
 
 	roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
@@ -394,7 +394,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
  "
 menu_status
-echo && stty erase '^H' && read -p "请输入数字：" num
+echo && stty erase ^? && read -p "请输入数字：" num
 case "$num" in
 	0)
 	install_spark
