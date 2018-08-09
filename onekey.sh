@@ -181,6 +181,7 @@ people_follow(){
 cal_camera_arm(){
 	echo -e "${Info}" 
 	echo -e "${Info}机械臂与摄像头匹对标定" 
+	ROSVER=`/usr/bin/rosversion -d`
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
 
@@ -192,8 +193,17 @@ cal_camera_arm(){
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按任意键开始：" 
-
-	roslaunch spark_carry_object spark_carry_cal.launch	
+	if [ $ROSVER = "kinetic" ]; then
+		echo -e "${Info}It is kinetic." 
+	  	roslaunch spark_carry_object spark_carry_cal_py3.launch
+	elif [ $ROSVER = "indigo" ]; then
+		echo -e "${Info}It is indigo." 
+	  	roslaunch spark_carry_object spark_carry_cal_py2.launch
+	elif [ $ROSVER = "melodic" ]; then
+		echo -e "${Info}It is melodic." 
+	  	roslaunch spark_carry_object spark_carry_cal_py3.launch
+	fi
+		
 }
 
 
@@ -237,6 +247,7 @@ spark_navigation_3d(){
 spark_carry_obj(){
 	echo -e "${Info}" 
 	echo -e "${Info}让SPARK通过机械臂进行视觉抓取" 
+	ROSVER=`/usr/bin/rosversion -d`
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
 
@@ -248,8 +259,16 @@ spark_carry_obj(){
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按任意键开始：" 
-
-	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
+	if [ $ROSVER = "kinetic" ]; then
+		echo -e "${Info}It is kinetic." 
+	  	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
+	elif [ $ROSVER = "indigo" ]; then
+		echo -e "${Info}It is indigo." 
+	  	roslaunch spark_carry_object spark_carry_object_only_py2.launch 
+	elif [ $ROSVER = "melodic" ]; then
+		echo -e "${Info}It is melodic." 
+	  	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
+	fi
 	
 }
 
