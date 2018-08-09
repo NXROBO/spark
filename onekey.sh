@@ -73,7 +73,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-image-common
 	sudo apt-get install -y ros-${ROS_Ver}-move-base-* 
 	sudo apt-get install -y ros-${ROS_Ver}-serial
-	sudo apt-get install -y python-pip python-sklearn 
+	sudo apt-get install -y python-pip python-sklearn libudev-dev
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation*
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
