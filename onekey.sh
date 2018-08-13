@@ -384,7 +384,7 @@ coming_soon(){
 	echo -e "${Tip} coming_soon!" 
 }
 
-
+ 
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
