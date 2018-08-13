@@ -388,6 +388,8 @@ coming_soon(){
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
+	ROSVER=`/usr/bin/rosversion -d`
+	echo -e "${Tip} 当前ROS版本 ${ROSVER} !" 
 }
 
 check_sys
@@ -411,6 +413,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
   ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
+
  "
 menu_status
 echo && stty erase ^? && read -p "请输入数字：" num
