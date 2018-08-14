@@ -25,22 +25,25 @@ This repository contains the ROS wrapper of Sparks's driver plus various ROS app
 ### Prequirement
 
 * System:	Ubuntu 14.04+
-* ROS Version:	Indigo(Desktop-Full Install) 
+* ROS Version:	indigo or kinetic (Desktop-Full Install) 
 
 ### Compile
 
 Build this compile with the following steps:
 ```yaml
 git clone https://github.com/NXROBO/spark.git
-
-#install
+```
+compile
+```yaml
 cd spark
+catkin_make
+```
+If you compiled it successfully , test the examples as follow:
+```yaml
 ./onekey.sh
 ```
-If everything goes fine, test the follow-person example as follow:
-```yaml
-./install/follow_run.sh
-```
+then choose the number that you want to test.
+
 
 # Mirror
 

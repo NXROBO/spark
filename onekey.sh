@@ -136,7 +136,7 @@ let_robot_go(){
 	echo -e "${Info}           s后退           " 
 	echo -e "${Info}                           " 
 	echo -e "${Info}    退出请输入：Ctrl + c    " 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_teleop teleop.launch
 }
@@ -155,7 +155,7 @@ remote_control_robot(){
 	echo -e "${Info}接着就可以开始远程控制机器人了" 
 	echo -e "${Info}退出请输入：Ctrl + c" 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_teleop app_op.launch
 }
@@ -172,7 +172,7 @@ people_follow(){
 	echo -e "${Info}                  " 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_follower bringup.launch
 }
@@ -192,16 +192,16 @@ cal_camera_arm(){
 	echo -e "${Info}       C.机械臂正常上电。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_cal_py3.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_cal_py2.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv2.launch
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_cal_py3.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch
 	fi
 		
 }
@@ -221,7 +221,7 @@ spark_navigation_2d(){
 	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase '^H' && read -p "按任意键开始：" 
+	echo && stty erase '^H' && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_navigation amcl_demo_lidar_rviz.launch	
 }
@@ -239,7 +239,7 @@ spark_navigation_3d(){
 	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_navigation amcl_demo_rviz.launch	
 }
@@ -258,16 +258,16 @@ spark_carry_obj(){
 	echo -e "${Info}       C.机械臂正常上电。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch 
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_object_only_py2.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv2.launch 
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_py3.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch 
 	fi
 	
 }
@@ -295,9 +295,7 @@ spark_build_map_2d(){
 		SLAMTYPE="frontier_exploration"
 		;;
 		4)
-		coming_soon
-		exit
-		#SLAMTYPE="karto"
+		SLAMTYPE="karto"
 		;;
 		*)
 		echo -e "${Error} 错误，默认使用gmapping"
@@ -317,7 +315,7 @@ spark_build_map_2d(){
 	echo -e "${Info}                           " 
 	echo -e "${Info}退出请输入：Ctrl + c        " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
@@ -347,9 +345,7 @@ spark_build_map_3d(){
 		SLAMTYPE="frontier_exploration"
 		;;
 		4)
-		coming_soon
-		exit
-		#SLAMTYPE="karto"
+		SLAMTYPE="karto"
 		;;
 		5)
 		coming_soon
@@ -374,7 +370,7 @@ spark_build_map_3d(){
 	echo -e "${Info}                           " 
 	echo -e "${Info}退出请输入：Ctrl + c        " 
 	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按任意键开始：" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
@@ -384,12 +380,13 @@ coming_soon(){
 	echo -e "${Tip} coming_soon!" 
 }
 
- 
+
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
 	ROSVER=`/usr/bin/rosversion -d`
 	echo -e "${Tip} 当前ROS版本 ${ROSVER} !" 
+
 }
 
 check_sys

@@ -1,0 +1,23 @@
+<!-- NXROBO SPARK -->
+<launch> 	
+  <!--spark驱动，机器人描述，相机，底盘-->
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+  
+  <!--UARM机械臂-->
+  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+	  
+  <!--导航-->
+  <!--include file="$(find spark_navigation)/launch/amcl_lidar.launch"/-->
+  
+  <!--搬运物体-->
+  <node pkg="spark_carry_object" type="s_carry_object_cv2.py" name="spark_carry_object_node" output="screen">
+  	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
+  	<param name ="b_Pose" value = "0.5,0.5,0,0,0,0,1"/>
+	<param name ="turnbody_min_z" value = "-0.2"/>
+	<param name ="turnbody_max_z" value = "0.2"/>
+  </node>
+   <!--在rviz显示-->
+  <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+</launch>
