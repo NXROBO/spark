@@ -8,6 +8,7 @@ export PATH
 #	Version: 1.0.21
 #	Author: J.xiao
 #	Site: http://www.nxrobo.com/
+#	SPARK技术讨论与反馈群：8346256
 #=================================================
 
 
@@ -389,6 +390,14 @@ menu_status(){
 
 }
 
+tell_us(){
+	echo -e ""
+	echo -e "${Tip} ------------分隔线--------------" 
+	echo -e "${Tip} 网址：www.nxrobo.com" 
+	echo -e "${Tip} SPARK技术讨论与反馈群：8346256" 
+	echo -e "${Tip} ------------分隔线--------------"
+	echo -e ""
+}
 check_sys
 echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   ---- J.xiao | www.nxrobo.com ----
@@ -405,7 +414,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
   ${Green_font_prefix}8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix}10.${Font_color_suffix} 其它
+  ${Green_font_prefix}10.${Font_color_suffix} 问题反馈
 ————————————
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
@@ -446,7 +455,7 @@ case "$num" in
 	spark_carry_obj
 	;;
 	10)
-	menu_status
+	tell_us
 	;;
 	101)
 	install_all

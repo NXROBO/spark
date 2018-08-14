@@ -1,4 +1,5 @@
 #!/bin/bash
+#!SPARK技术讨论与反馈群：8346256
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 echo -e "${Info} 是否开始保存当前的地图？"
