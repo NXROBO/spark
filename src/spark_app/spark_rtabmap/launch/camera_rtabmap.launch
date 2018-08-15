@@ -1,0 +1,15 @@
+<!--spark rtabmap-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+
+	<!-- astra_camera driver -->
+	<include file="$(find spark_rtabmap)/launch/astra_camera.launch"/>
+
+	<!-- rtabmap -->
+  	<include file="$(find spark_rtabmap)/launch/spark_mapping.launch"/>
+	
+	<!-- rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map.rviz"/>
+      	<!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  	<node pkg="spark_teleop" type="keyboard_control.sh" name="rtab_3d" />
+</launch>

@@ -232,17 +232,39 @@ spark_navigation_3d(){
 	echo -e "${Info}让SPARK使用深度摄像头进行导航" 
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
+	echo -e "${Info}请选择导航方式："
+	echo -e "${Info}1.使用2D地图"
+	echo -e "${Info}2.使用rtab_map地图"
+	echo && stty erase ^? && read -p "请输入数字 [1-2]：" slamnum
 
 	echo -e "${Info}" 
 	echo -e "${Info}请注意："
-	echo -e "${Info}       A.摄像头已连接"
-	echo -e "${Info}       B.导航正常启动后，点击‘2D Pose Estimate’后在地图上进行手动定位。"
-	echo -e "${Info}       C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
+	echo -e "${Info}A.摄像头已连接"
+	case "$slamnum" in
+		1)
+		SLAMTYPE="2d"
+		echo -e "${Info}B.导航正常启动后，点击‘2D Pose Estimate’后在地图上进行手动定位。"
+		;;
+		2)
+		SLAMTYPE="rtab_map"
+		echo -e "${Info}B.把机器人放到原来建图的原点。导航正常启动后，如需查看原来建立的３Ｄ地图，点击rviz的Display->Rtabmap cloud->Download map加载３Ｄ地图。"
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用2D地图"
+		SLAMTYPE="2d"
+		echo -e "${Info}B.导航正常启动后，点击‘2D Pose Estimate’后在地图上进行手动定位。"
+		;;
+	esac
+
+	echo -e "${Info}C.手动定位成功后，点击‘2D Nav Goal’后在地图上指定导航的目标点，机器人将进入自主导航。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
-
-	roslaunch spark_navigation amcl_demo_rviz.launch	
+	if [[ "${SLAMTYPE}" == "2d" ]]; then
+		roslaunch spark_navigation amcl_demo_rviz.launch
+	else
+		roslaunch spark_rtabmap spark_rtabmap_nav.launch
+	fi	
 }
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
@@ -349,9 +371,7 @@ spark_build_map_3d(){
 		SLAMTYPE="karto"
 		;;
 		5)
-		coming_soon
-		exit
-		#SLAMTYPE="rtab_map"
+		SLAMTYPE="rtab_map"
 		;;
 		*)
 		echo -e "${Error} 错误，默认使用gmapping"
@@ -373,7 +393,19 @@ spark_build_map_3d(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
+	if [[ "${SLAMTYPE}" == "rtab_map" ]]; then
+		echo -e "${Tip}" 
+		echo -e "${Tip}现在使用rtab_map建图，将会删除之前保存的地图，选择‘y’继续建图，其它键直接退出。" 
+		echo -e "${Tip}" 
+		echo && stty erase ^? && read -p "请选择是否继续y/n：" choose
+		if [[ "${choose}" == "y" ]]; then
+                	roslaunch spark_rtabmap spark_rtabmap_teleop.launch 
+		else
+			exit
+		fi
+        else
+		roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
+	fi
 	
 }
 

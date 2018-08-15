@@ -1,4 +1,5 @@
 <!--spark 2d slam-->
+<!--SPARK技术讨论与反馈群：8346256-->
 <launch>
 	<!--spark slam-->
   	<arg name="slam_methods_tel" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>

@@ -1,11 +1,11 @@
 <package>
-  <name>spark_navigation</name>
+  <name>spark_rtabmap</name>
   <version>2.3.7</version>
   <description>spark_navigation</description>
   <maintainer email="litian.zhuang@nxrobo.com">litian.zhuang</maintainer>
   <license>BSD</license>
   <url type="website">http://wiki.ros.org/Robots/Spark</url>
-  <author>litian.zhuang</author>
+  <author>yutong.xie</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   
