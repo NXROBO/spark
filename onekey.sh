@@ -106,7 +106,7 @@ master_uri_setup(){
 	eth_ip=`/sbin/ifconfig eth0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	wlp2s_ip=`/sbin/ifconfig wlp2s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
-
+        enp3s_ip=`/sbin/ifconfig enp3s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	if [ $eth_ip ]; then
 		echo -e "${Info}使用有线网络eth0" 
 		local_ip=$eth_ip
@@ -116,7 +116,10 @@ master_uri_setup(){
 	elif [ $wlan_ip ]; then
 		echo -e "${Info}使用无线网络wlan0" 
 	  	local_ip=$wlan_ip
-	fi
+        elif [ $enp3s_ip ]; then
+                echo -e "${Info}使用无线网络enp3s0" 
+                local_ip=$enp3s_ip	
+fi
 	export ROS_HOSTNAME=$local_ip
 	export ROS_MASTER_URI="http://${local_ip}:11311"
 	echo -e "${Info}Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME"
@@ -435,6 +438,8 @@ check_sys
 echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   ---- J.xiao | www.nxrobo.com ----
 
+  请根据右侧的功能说明选择相应的序号。
+  注意：101～103为相关环境的安装与设置，如果已执行过，不要再重复执行。
 
   ${Green_font_prefix}0.${Font_color_suffix} 单独编译SPARK
 ————————————
@@ -452,7 +457,6 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
   ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
-
  "
 menu_status
 echo && stty erase ^? && read -p "请输入数字：" num
