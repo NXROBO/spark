@@ -42,6 +42,7 @@ check_sys(){
         fi
 }
 
+
 #安装ROS完整版
 install_ros_full(){
 		sudo sh -c 'echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'
@@ -54,6 +55,23 @@ install_ros_full(){
 		echo "source /opt/ros/${ROS_Ver}/setup.bash" >> ~/.bashrc
 		source /opt/ros/${ROS_Ver}/setup.bash
 		sudo apt-get install -y python-rosinstall python-rosinstall-generator python-wstool build-essential
+}
+
+#检测是否需要安装完整版
+check_install_ros_full(){
+	if [ -d "/usr/bin/rosversion" ]; then
+		ROSVER=`/usr/bin/rosversion -d`
+		if [ $ROSVER ]; then
+			echo -e "${Tip} 检测到当前系统已安装了ROS的${ROSVER}版本!" 
+			echo && stty erase ^? && read -p "请选择是否继续安装？ y/n：" choose
+			if [[ "${choose}" == "y" ]]; then
+				echo -e "${Info}准备安装ROS系统！" 
+			else
+				exit
+			fi
+		fi
+	fi
+	install_ros_full 
 }
 
 #安装SPARK依赖库
@@ -96,7 +114,7 @@ install_spark(){
 
 #完全安装
 install_all(){
-	install_ros_full
+	check_install_ros_full
 	install_spark_require
 	install_spark
 }
@@ -119,7 +137,7 @@ master_uri_setup(){
         elif [ $enp3s_ip ]; then
                 echo -e "${Info}使用无线网络enp3s0" 
                 local_ip=$enp3s_ip	
-fi
+	fi
 	export ROS_HOSTNAME=$local_ip
 	export ROS_MASTER_URI="http://${local_ip}:11311"
 	echo -e "${Info}Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME"
@@ -266,7 +284,7 @@ spark_navigation_3d(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [[ "${SLAMTYPE}" == "2d" ]]; then
 		roslaunch spark_navigation amcl_demo_rviz.launch
-	else
+	elseif [ $ROS
 		roslaunch spark_rtabmap spark_rtabmap_nav.launch
 	fi	
 }
@@ -405,7 +423,7 @@ spark_build_map_3d(){
 		if [[ "${choose}" == "y" ]]; then
                 	roslaunch spark_rtabmap spark_rtabmap_teleop.launch 
 		else
-			exit
+			return
 		fi
         else
 		roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
@@ -421,16 +439,21 @@ coming_soon(){
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
-	ROSVER=`/usr/bin/rosversion -d`
-	echo -e "${Tip} 当前ROS版本 ${ROSVER} !" 
-
+	if [ -d "/usr/bin/rosversion" ]; then
+		ROSVER=`/usr/bin/rosversion -d`
+		if [ $ROSVER ]; then
+			echo -e "${Tip} 当前ROS版本 ${ROSVER} !"
+			return
+		fi 
+	fi
+	echo -e "${Error} 未检测到ROS版本，请先安装ROS！可以选择102直接安装。" 
 }
 
 tell_us(){
 	echo -e ""
 	echo -e "${Tip} ------------分隔线--------------" 
 	echo -e "${Tip} 网址：www.nxrobo.com" 
-	echo -e "${Tip} SPARK技术讨论与反馈群：8346256" 
+	echo -e "${Tip} SPARK技术讨论与反馈QQ群：8346256" 
 	echo -e "${Tip} ------------分隔线--------------"
 	echo -e ""
 }
@@ -441,18 +464,18 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   请根据右侧的功能说明选择相应的序号。
   注意：101～103为相关环境的安装与设置，如果已执行过，不要再重复执行。
 
-  ${Green_font_prefix}0.${Font_color_suffix} 单独编译SPARK
+  ${Green_font_prefix}  0.${Font_color_suffix} 单独编译SPARK
 ————————————
-  ${Green_font_prefix}1.${Font_color_suffix} 让机器人动起来
-  ${Green_font_prefix}2.${Font_color_suffix} 远程（手机APP）控制SPARK
-  ${Green_font_prefix}3.${Font_color_suffix} 让SPARK跟着你走
-  ${Green_font_prefix}4.${Font_color_suffix} 让SPARK使用激光雷达绘制地图
-  ${Green_font_prefix}5.${Font_color_suffix} 让SPARK使用深度摄像头绘制地图
-  ${Green_font_prefix}6.${Font_color_suffix} 让SPARK使用激光雷达进行导航
-  ${Green_font_prefix}7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
-  ${Green_font_prefix}8.${Font_color_suffix} 机械臂与摄像头标定
-  ${Green_font_prefix}9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix}10.${Font_color_suffix} 问题反馈
+  ${Green_font_prefix}  1.${Font_color_suffix} 让机器人动起来
+  ${Green_font_prefix}  2.${Font_color_suffix} 远程（手机APP）控制SPARK
+  ${Green_font_prefix}  3.${Font_color_suffix} 让SPARK跟着你走
+  ${Green_font_prefix}  4.${Font_color_suffix} 让SPARK使用激光雷达绘制地图
+  ${Green_font_prefix}  5.${Font_color_suffix} 让SPARK使用深度摄像头绘制地图
+  ${Green_font_prefix}  6.${Font_color_suffix} 让SPARK使用激光雷达进行导航
+  ${Green_font_prefix}  7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
+  ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
+  ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
+  ${Green_font_prefix} 10.${Font_color_suffix} 问题反馈
 ————————————
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
@@ -498,7 +521,7 @@ case "$num" in
 	install_all
 	;;
 	102)
-	install_ros_full
+	check_install_ros_full
 	;;
 	103)
 	install_spark_require
