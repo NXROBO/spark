@@ -59,7 +59,7 @@ install_ros_full(){
 
 #检测是否需要安装完整版
 check_install_ros_full(){
-	if [ -d "/usr/bin/rosversion" ]; then
+	if [ -f "/usr/bin/rosversion" ]; then
 		ROSVER=`/usr/bin/rosversion -d`
 		if [ $ROSVER ]; then
 			echo -e "${Tip} 检测到当前系统已安装了ROS的${ROSVER}版本!" 
@@ -439,7 +439,7 @@ coming_soon(){
 #printf
 menu_status(){
 	echo -e "${Tip} 当前系统版本 ${OSDescription} !" 
-	if [ -d "/usr/bin/rosversion" ]; then
+	if [ -f "/usr/bin/rosversion" ]; then
 		ROSVER=`/usr/bin/rosversion -d`
 		if [ $ROSVER ]; then
 			echo -e "${Tip} 当前ROS版本 ${ROSVER} !"
