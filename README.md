@@ -1,5 +1,5 @@
 # NXROBO Spark
-<img src="http://wiki.ros.org/Robots/Spark?action=AttachFile&do=get&target=spark.png" width="300">
+<img src="http://wiki.ros.org/Robots/Spark?action=AttachFile&do=get&target=spark1.png" width="300">
 
 ## 说明 Description
 - This is a tutorial for beginners, and [Detailed version](https://github.com/NXROBO/spark/blob/master/README_Detailed.md) is here. 
