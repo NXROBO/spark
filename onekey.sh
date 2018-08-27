@@ -173,7 +173,7 @@ remote_control_robot(){
 	echo -e "${Info}                  " 
 	echo -e "${Info} 远程（手机APP）控制SPARK" 
 	echo -e "${Info}" 
-	echo -e "${Info}远程控制的APP地址: https://github.com/ros-autom/RobotCA/tree/kinetic/Release "
+	echo -e "${Info}远程控制的APP地址: https://raw.githubusercontent.com/iamzhuang/RobotCA/kinetic/Release/control_app-debug.apk"
 	echo -e "${Info}下载安装完成后，打开app，设置Master URI:http://${local_ip}:11311" 
 	echo -e "${Info}接着就可以开始远程控制机器人了" 
 	echo -e "${Info}退出请输入：Ctrl + c" 
