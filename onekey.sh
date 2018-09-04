@@ -98,8 +98,8 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y libasound2-dev mplayer
-	sudo apt-get install ros-${ROS_Ver}-usb_cam ros-${ROS_Ver}-openni2-launch
-	sudo apt-get install python-dev python-virtualenv
+	sudo apt-get install -y ros-${ROS_Ver}-usb-cam ros-${ROS_Ver}-openni2-launch
+	sudo apt-get install -y python-dev python-virtualenv
 	virtualenv --system-site-packages $BASEPATH/tensorflow
 
 	source $BASEPATH/tensorflow/bin/activate
@@ -297,6 +297,14 @@ spark_navigation_3d(){
 		roslaunch spark_rtabmap spark_rtabmap_nav.launch
 	fi	
 }
+
+spark_tensorflow(){
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/tensorflow/bin/activate
+	source ${PROJECTPATH}/devel/setup.bash	
+	roslaunch tensorflow_object_detector object_detect.launch
+	
+}
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
 	echo -e "${Info}" 
@@ -484,8 +492,10 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix} 10.${Font_color_suffix} 问题反馈
+  ${Green_font_prefix} 10.${Font_color_suffix} tensorflow
+
 ————————————
+  ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
   ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
@@ -524,6 +534,9 @@ case "$num" in
 	spark_carry_obj
 	;;
 	10)
+	spark_tensorflow
+	;;
+	100)
 	tell_us
 	;;
 	101)
