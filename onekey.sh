@@ -98,6 +98,15 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y libasound2-dev mplayer
+	sudo apt-get install ros-${ROS_Ver}-usb_cam ros-${ROS_Ver}-openni2-launch
+	sudo apt-get install python-dev python-virtualenv
+	virtualenv --system-site-packages $BASEPATH/tensorflow
+
+	source $BASEPATH/tensorflow/bin/activate
+
+	easy_install -U pip
+	pip install --upgrade tensorflow==1.5.0
+	source $BASEPATH/tensorflow/bin/activate
 	echo -e "${Info} 依赖库安装成功……"
 }
 
