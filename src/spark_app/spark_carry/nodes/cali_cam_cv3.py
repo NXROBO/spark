@@ -38,10 +38,29 @@ def image_callback(data):
 	cv_image2 = cv2.cvtColor(cv_image1, cv2.COLOR_BGR2HSV)
 
 	# extract blue
-	LowerBlue = np.array([100, 90, 80])
-	UpperBlue = np.array([130, 255, 255])
-	mask = cv2.inRange(cv_image2, LowerBlue, UpperBlue)
-	cv_image3 = cv2.bitwise_and(cv_image2, cv_image2, mask=mask)
+	# LowerBlue = np.array([100, 90, 80])
+	# UpperBlue = np.array([130, 255, 255])
+	# mask = cv2.inRange(cv_image2, LowerBlue, UpperBlue)
+	# cv_image3 = cv2.bitwise_and(cv_image2, cv_image2, mask=mask)
+	# extract red
+
+	# lower mask (0-10)
+	lower_red = np.array([0,50,50])
+	upper_red = np.array([10,255,255])
+	mask0 = cv2.inRange(cv_image2, lower_red, upper_red)
+
+	# upper mask (170-180)
+	lower_red = np.array([160,50,50])
+	upper_red = np.array([180,255,255])
+	mask1 = cv2.inRange(cv_image2, lower_red, upper_red)
+
+	# join my masks
+	mask = mask0+mask1
+
+
+	cv_image3 = cv_image2.copy()
+	cv_image3[np.where(mask==0)] = 0
+
 
 	# gray process
 	cv_image4 = cv_image3[:,:,0]
@@ -93,7 +112,7 @@ def command_callback(data):
 		
 		xc_array[index] = xc
 		yc_array[index] = yc
-		xarray[index] = 170 + index * 5
+		xarray[index] = 180 + index * 5
 		yarray[index] = 200 - index * 10
 		print("%d/20,pose x,y: %d,%d. cam x,y: %d,%d" % (index+1, xarray[index], yarray[index], xc, yc))
 		# reshape to 2D array for linear regression

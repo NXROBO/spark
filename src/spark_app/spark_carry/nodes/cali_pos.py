@@ -28,7 +28,7 @@ def talker():
 		if rospy.is_shutdown():
 			break
 		r1.sleep()
-		pos.x = 170 + i * 5
+		pos.x = 180 + i * 5
 		pos.y = 200 - i * 10
 		pos.z = -110
 		pub1.publish(pos)

@@ -81,6 +81,7 @@ install_spark_require(){
 	echo -e "${Info} 设置udev规则……"
 	BASEPATH=$(cd `dirname $0`; pwd)
 	sudo cp $BASEPATH/doc/rules/3ilidar-usb-serial.rules /etc/udev/rules.d/
+	sudo cp $BASEPATH/doc/rules/uarm-usb-serial.rules /etc/udev/rules.d/
 	sudo cp $BASEPATH/doc/rules/spark-usb-serial.rules /etc/udev/rules.d/
 	sudo cp $BASEPATH/doc/rules/orbbec-usb.rules /etc/udev/rules.d/556-orbbec-usb.rules
 	sudo udevadm trigger
@@ -98,17 +99,19 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y libasound2-dev mplayer
+
+        echo -e "${Info} 安装tensorflow依赖库……"
 	sudo apt-get install -y ros-${ROS_Ver}-usb-cam ros-${ROS_Ver}-openni2-launch
 	sudo apt-get install -y python-dev python-virtualenv
 	virtualenv --system-site-packages $BASEPATH/tensorflow
-
 	source $BASEPATH/tensorflow/bin/activate
-
 	easy_install -U pip
 	pip install --upgrade tensorflow==1.5.0
 	source $BASEPATH/tensorflow/bin/activate
+
 	echo -e "${Info} 安装语音依赖库……"
 	pip install pocketsphinx webrtcvad pyaudio
+
 	echo -e "${Info} 依赖库安装成功……"
 }
 
@@ -210,7 +213,6 @@ people_follow(){
 
 	roslaunch spark_follower bringup.launch
 }
-
 #语音控制SPARK移动
 voice_nav(){
 	echo -e "${Info}                  " 
@@ -511,7 +513,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix} 10.${Font_color_suffix} tensorflow
+  ${Green_font_prefix} 10.${Font_color_suffix} 使用tensorflow进行物品检测
   ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
@@ -556,7 +558,7 @@ case "$num" in
 	10)
 	spark_tensorflow
 	;;
-        11)
+	11)
 	voice_nav
 	;;
 	100)
