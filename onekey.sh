@@ -107,6 +107,8 @@ install_spark_require(){
 	easy_install -U pip
 	pip install --upgrade tensorflow==1.5.0
 	source $BASEPATH/tensorflow/bin/activate
+	echo -e "${Info} 安装语音依赖库……"
+	pip install pocketsphinx webrtcvad pyaudio
 	echo -e "${Info} 依赖库安装成功……"
 }
 
@@ -207,6 +209,23 @@ people_follow(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
 	roslaunch spark_follower bringup.launch
+}
+
+#语音控制SPARK移动
+voice_nav(){
+	echo -e "${Info}                  " 
+	echo -e "${Info}语音控制SPARK移动" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}                  " 
+	echo -e "${Info}请确认连接线并设定正确的默认麦克风"
+	echo -e "${Info}                  " 
+	echo -e "${Info}退出请输入：Ctrl + c " 
+	echo -e "${Info}" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
+
+	roslaunch spark_voice voice_nav.launch
 }
 
 #机械臂与摄像头匹对标定
@@ -493,6 +512,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
   ${Green_font_prefix} 10.${Font_color_suffix} tensorflow
+  ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
@@ -535,6 +555,9 @@ case "$num" in
 	;;
 	10)
 	spark_tensorflow
+	;;
+        11)
+	voice_nav
 	;;
 	100)
 	tell_us
