@@ -110,7 +110,9 @@ install_spark_require(){
 	source $BASEPATH/tensorflow/bin/activate
 
 	echo -e "${Info} 安装语音依赖库……"
-	pip install pocketsphinx webrtcvad pyaudio
+        sudo apt-get install swig portaudio19-dev
+        sudo easy_install -U pip
+	sudo pip install pocketsphinx webrtcvad pyaudio
 
 	echo -e "${Info} 依赖库安装成功……"
 }
