@@ -1,0 +1,7 @@
+respeaker /1e-20/
+alexa /1e-20/
+wake up /1e-30/
+dingdangdingdang /1e-30/
+how are you /1e-30/
+open the door /1e-30/
+turn left /1e-30/

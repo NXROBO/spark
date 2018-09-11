@@ -1,0 +1,36 @@
+abort	AH B AO R T
+back	B AE K
+backward	B AE K W ER D
+cancel	K AE N S AH L
+come	K AH M
+continue	K AH N T IH N Y UW
+down	D AW N
+faster	F AE S T ER
+forward	F AO R W ER D
+freeze	F R IY Z
+full	F UH L
+go	G OW
+half	HH AE F
+halt	HH AO L T
+help	HH EH L P
+kill	K IH L
+left	L EH F T
+me	M IY
+move	M UW V
+now	N AW
+off	AO F
+panic	P AE N IH K
+pause	P AO Z
+quarter	K W AO R T ER
+quarter(2)	K AO R T ER
+right	R AY T
+rotate	R OW T EY T
+shut	SH AH T
+slow	S L OW
+slower	S L OW ER
+speech	S P IY CH
+speed	S P IY D
+stop	S T AA P
+straight	S T R EY T
+turn	T ER N
+up	AH P
