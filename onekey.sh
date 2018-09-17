@@ -98,6 +98,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
+	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
 	sudo apt-get install -y libasound2-dev mplayer
 
         echo -e "${Info} 安装tensorflow依赖库……"
@@ -105,13 +106,13 @@ install_spark_require(){
 	sudo apt-get install -y python-dev python-virtualenv
 	virtualenv --system-site-packages $BASEPATH/tensorflow
 	source $BASEPATH/tensorflow/bin/activate
-	easy_install -U pip
+	sudo easy_install -U pip
 	pip install --upgrade tensorflow==1.5.0
 	source $BASEPATH/tensorflow/bin/activate
 
 	echo -e "${Info} 安装语音依赖库……"
-        sudo apt-get install swig portaudio19-dev
-        sudo easy_install -U pip
+        sudo apt-get install -y swig portaudio19-dev
+        #sudo easy_install -U pip
 	sudo pip install pocketsphinx webrtcvad pyaudio
 
 	echo -e "${Info} 依赖库安装成功……"
