@@ -88,7 +88,7 @@ install_spark_require(){
 
 	echo -e "${Info} 安装所需要的依赖库……"
 	#sudo sh -c 'echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'
-	#sudo apt-get update
+	sudo apt-get update
 	sudo apt-get install -y ros-${ROS_Ver}-ecl ros-${ROS_Ver}-ecl-threads ros-${ROS_Ver}-rgbd-launch 
 	sudo apt-get install -y ros-${ROS_Ver}-image-common
 	sudo apt-get install -y ros-${ROS_Ver}-move-base-* 
