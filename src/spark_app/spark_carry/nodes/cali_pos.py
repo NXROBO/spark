@@ -16,6 +16,7 @@ def talker():
 	r1 = rospy.Rate(1)  # 1s
 	r2 = rospy.Rate(0.08) # 13s
 	r3 = rospy.Rate(0.2)  # 5s
+	r4 = rospy.Rate(0.4)  # 2.5s
 
 	r1.sleep()
 	pos.x = 120
@@ -35,11 +36,12 @@ def talker():
 		r1.sleep()
 		if i == 0:
 			r2.sleep()
+			
 		else:
-			r3.sleep()
+			r4.sleep()
 		print(pos.x, pos.y)
 		pub2.publish(1)
-		r1.sleep()
+		r4.sleep()
 
 	r3.sleep()
 
