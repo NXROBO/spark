@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import rospy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
@@ -35,11 +36,11 @@ class VoiceNav:
         rospy.Subscriber('/voice/stt', String, self.speech_callback)
         
         # A mapping from keywords or phrases to commands
-        self.keywords_to_command = {'stop': ['stop'],
-                                    'forward': ['forward'],
-                                    'backward': ['backward'],
-                                    'turn left': ['turn left'],
-                                    'turn right': ['turn right']}
+        self.keywords_to_command = {'stop': ['stop','停止'],
+                                    'forward': ['forward','前进'],
+                                    'backward': ['backward','后退'],
+                                    'turn left': ['turn left','左转'],
+                                    'turn right': ['turn right','右转']}
         
         rospy.loginfo("Ready to receive voice commands")
         

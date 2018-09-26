@@ -1,0 +1,9 @@
+<!--voice_nav-->
+<launch>
+
+	<!--spark底盘驱动，机器人描述,底盘,相机-->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+	<!--spark控制 ”-->
+	<node pkg="spark_voice" type="wx_bot.py" name="wx_bot" />
+        <node pkg="spark_voice" type="voice_nav.py" name="voice_nav" />
+</launch>
