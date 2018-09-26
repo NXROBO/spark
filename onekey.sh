@@ -113,7 +113,7 @@ install_spark_require(){
 	echo -e "${Info} 安装语音依赖库……"
         sudo apt-get install -y swig portaudio19-dev
         #sudo easy_install -U pip
-	sudo pip install pocketsphinx webrtcvad pyaudio
+	sudo pip install pocketsphinx webrtcvad pyaudio wxpy
 
 	echo -e "${Info} 依赖库安装成功……"
 }
