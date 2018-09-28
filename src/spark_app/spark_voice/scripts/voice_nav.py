@@ -22,6 +22,8 @@ class VoiceNav:
         # We don't have to run the script very fast
         self.rate = rospy.get_param("~rate", 5)
         r = rospy.Rate(self.rate)
+        self.STEPS = rospy.get_param("~steps", 20)
+        self.stp_counts=0
         
         # A flag to determine whether or not voice control is paused
         self.paused = False
@@ -46,6 +48,10 @@ class VoiceNav:
         
         # We have to keep publishing the cmd_vel message if we want the robot to keep moving.
         while not rospy.is_shutdown():
+            self.stp_counts+=1
+            if(self.stp_counts>=self.STEPS):
+                self.cmd_vel = Twist()
+                self.stp_counts=0
             self.cmd_vel_pub.publish(self.cmd_vel)
             r.sleep()                       
             
@@ -61,6 +67,7 @@ class VoiceNav:
     def speech_callback(self, msg):
         # Get the motion command from the recognized phrase
         command = self.get_command(msg.data)
+        self.stp_counts=0
         
         # Log the command to the screen
         rospy.loginfo("Command: " + str(command))
