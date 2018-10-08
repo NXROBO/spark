@@ -2,7 +2,7 @@
  * Software License Agreement (BSD License)
  *
  *  Copyright (c) 2016, NXROBO Ltd.
- *  Xiankai Chen <xiankai.chen@nxrobo.com>
+ *  litian.zhuang <litian.zhuang@nxrobo.com>
  *
  *  All rights reserved.
  *
@@ -74,6 +74,17 @@
 #define KEYCODE_L_CAP 108
 using namespace std;
 
+#define NONE "\e[0m"
+#define BLACK "\e[0;30m"
+#define RED "\e[0;31m"
+#define GREEN "\e[0;32m"
+#define YELLOW "\e[1;33m"
+#define BLUE "\e[1;34m"
+#define WHITE "\e[1;37m"
+#define GRAY "\e[0;37m"
+#define CLEAR "\033[2J"
+#define CYAN "\e[0;36m"
+#define MOVETO(x,y) printf("\033[%d;%dH", (x), (y))
 class SmartCarKeyboardTeleop
 {
 private:
@@ -126,6 +137,34 @@ public:
     pub_.publish(cmdvel_);
   }
 
+  void PrintfColour(std::string keystr)
+  {
+    printf(CLEAR);
+    MOVETO(0,0);
+    printf("请根据提示选择移动方向：\n\n");
+    if(keystr == "UP")
+        printf(GREEN "           w前进" NONE);
+    else
+	printf("           w前进");
+    printf("\n");
+    printf("\n");
+    if(keystr == "LEFT")
+        printf(YELLOW "    a左转" NONE "   停止  d右转 ");
+    else if(keystr == "RIGHT")
+        printf("    a左转   停止" BLUE "  d右转 " NONE);
+    else if(keystr == "STOP")
+        printf("    a左转  " RED " 停止" NONE "  d右转 ");
+    else
+	printf("    a左转   停止  d右转 ");    
+    printf("\n");
+    printf("\n");
+    if(keystr == "DOWN")
+        printf(CYAN "           s后退" NONE);
+    else
+	printf("           s后退");
+    printf("\n");
+    printf("\n");
+  }
   void keyboardLoop()
   {
     char c;
@@ -159,7 +198,7 @@ public:
     struct pollfd ufd;
     ufd.fd = kfd;
     ufd.events = POLLIN;
-
+    PrintfColour("");
     for (;;)
     {
       boost::this_thread::interruption_point();
@@ -186,11 +225,11 @@ public:
         {
           stopRobot();
           dirty = false;
-          ROS_INFO("[STOP]");
+          PrintfColour("STOP");
         }
         continue;
       }
-      printf("------------%d\n", c);
+      //printf("------------%d\n", c);
       switch (c)
       {
         case KEYCODE_W:
@@ -198,7 +237,7 @@ public:
           speed = 1;
           turn = 0;
           dirty = true;
-          ROS_INFO("[UP]");
+          PrintfColour("UP");
           sparkbasebit = 1;
           break;
         case KEYCODE_S:
@@ -206,7 +245,7 @@ public:
           speed = -1;
           turn = 0;
           dirty = true;
-          ROS_INFO("[DOWN]");
+          PrintfColour("DOWN");
           sparkbasebit = 1;
           break;
         case KEYCODE_A:
@@ -214,7 +253,7 @@ public:
           speed = 0;
           turn = 1;
           dirty = true;
-          ROS_INFO("[LEFT]");
+          PrintfColour("LEFT");
           sparkbasebit = 1;
           break;
         case KEYCODE_D:
@@ -222,7 +261,7 @@ public:
           speed = 0;
           turn = -1;
           dirty = true;
-          ROS_INFO("[RIGHT]");
+          PrintfColour("RIGHT");
           sparkbasebit = 1;
           break;
 
@@ -231,7 +270,8 @@ public:
           speed = 1;
           turn = 0;
           dirty = true;
-          ROS_INFO("[UP]");
+          //ROS_INFO("[UP]");
+	  PrintfColour("UP");
           sparkbasebit = 1;
           break;
         case KEYCODE_S_CAP:
@@ -239,7 +279,7 @@ public:
           speed = -1;
           turn = 0;
           dirty = true;
-          ROS_INFO("[DOWN]");
+          PrintfColour("DOWN");
           sparkbasebit = 1;
           break;
         case KEYCODE_A_CAP:
@@ -247,7 +287,7 @@ public:
           speed = 0;
           turn = 1;
           dirty = true;
-          ROS_INFO("[LEFT]");
+          PrintfColour("LEFT");
           sparkbasebit = 1;
           break;
         case KEYCODE_D_CAP:
@@ -255,7 +295,7 @@ public:
           speed = 0;
           turn = -1;
           dirty = true;
-          ROS_INFO("[RIGHT]");
+          PrintfColour("RIGHT");
           sparkbasebit = 1;
           break;
         case KEYCODE_Q_CAP:
