@@ -355,7 +355,7 @@ spark_carry_obj(){
 	source ${PROJECTPATH}/devel/setup.bash
 	echo -e "${Info}请选择移动的方式：
 	  ${Green_font_prefix}1.${Font_color_suffix} 固定位置移动
-	  ${Green_font_prefix}2.${Font_color_suffix} 手动地图指定位置导航
+	  ${Green_font_prefix}2.${Font_color_suffix} 手动地图指定位置导航(未完成。。)
 	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c" 
 	echo && stty erase ^? && read -p "请输入数字 [1-2]：" armnum
 	case "$armnum" in

@@ -111,8 +111,9 @@ class GraspObject(State):
         b[1]=float(a4)
 	print('k and b value:',a[0],a[1],b[0],b[1])
 
-        r1 = rospy.Rate(0.05)
-        r2 = rospy.Rate(10)
+        r1 = rospy.Rate(0.095)
+        r2 = rospy.Rate(10) 
+	#10
         # a = [0.1791, -0.3121, -0.0013, -0.0002, -0.0021, 256.1421]
         # b = [-1.0607, -0.4061, 0.0009, 0.0002, 0.0012, 325.9349]
 	# a = [-0.3180, -0.8592, 0.0023, 0.0009, 0.0007, 225]
@@ -122,9 +123,7 @@ class GraspObject(State):
         # a = [-0.8213, 297.6527]
 	# b = [-0.8919, 311.0063]
 	pos = position()
-        # start pump
-        self.pub2.publish(1)
-        r2.sleep()
+
         # go forward
         pos.x = a[0] * yc + a[1]
         pos.y = b[0] * xc + b[1]
@@ -138,6 +137,11 @@ class GraspObject(State):
         self.pub1.publish(pos)
 	print("z = -83\n")
         r2.sleep()
+
+        # start pump
+        self.pub2.publish(1)
+        r2.sleep()
+
         # go back home
         pos.x = 250  #160
         pos.y = 0
@@ -428,7 +432,7 @@ class Go2Goal(State):
 	cmd_vel.linear.x = 0.15
         print cmd_vel.angular.z
         #rate = rospy.Rate(10)
-        for i in range(50):            
+        for i in range(25):            
             self.cmd_vel_pub.publish(cmd_vel)            
             rate.sleep()
             
@@ -458,7 +462,7 @@ class TurnBodyQuar(State):
         cmd_vel.angular.z = 0.25
         print cmd_vel.angular.z
         rate = rospy.Rate(10)
-        for i in range(50):            
+        for i in range(100):            
             self.cmd_vel_pub.publish(cmd_vel)            
             rate.sleep()
             
