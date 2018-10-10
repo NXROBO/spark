@@ -163,7 +163,7 @@ public:
     float x_linear = 0;
     float z_angular = 0;
     float z_scale = 1.2;
-    float x_scale = 2.0;
+    float x_scale = 5.0;	//2.0
     x_linear = (depth - goal_depth_) * z_scale;
     z_angular = asin(y / curr_dist) * x_scale;
 
