@@ -14,7 +14,7 @@ export PATH
 
 sh_ver="1.1.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
-Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
+Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\e[1;33m" && Blue_font_prefix="\e[0;34m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
@@ -157,7 +157,7 @@ master_uri_setup(){
 	fi
 	export ROS_HOSTNAME=$local_ip
 	export ROS_MASTER_URI="http://${local_ip}:11311"
-	echo -e "${Info}Using ROS MASTER at $ROS_MASTER_URI from $ROS_HOSTNAME"
+	echo -e "${Info}Using ROS MASTER at ${Red_font_prefix}$ROS_MASTER_URI${Font_color_suffix} from ${Red_font_prefix}$ROS_HOSTNAME${Font_color_suffix}"
 }
 
 #让机器人动起来
@@ -190,8 +190,8 @@ remote_control_robot(){
 	echo -e "${Info}                  " 
 	echo -e "${Info} 远程（手机APP）控制SPARK" 
 	echo -e "${Info}" 
-	echo -e "${Info}远程控制的APP地址: https://raw.githubusercontent.com/iamzhuang/RobotCA/kinetic/Release/control_app-debug.apk"
-	echo -e "${Info}下载安装完成后，打开app，设置Master URI:http://${local_ip}:11311" 
+	echo -e "${Info}远程控制的APP地址:${Yellow_font_prefix}https://raw.githubusercontent.com/iamzhuang/RobotCA/kinetic/Release/control_app-debug.apk"${Font_color_suffix}
+	echo -e "${Info}下载安装完成后，打开app，设置Master URI:${Red_font_prefix}http://${local_ip}:11311${Font_color_suffix}" 
 	echo -e "${Info}接着就可以开始远程控制机器人了" 
 	echo -e "${Info}退出请输入：Ctrl + c" 
 	echo -e "${Info}" 
@@ -261,7 +261,7 @@ cal_camera_arm(){
 	echo -e "${Info}" 
 	echo -e "${Info}请确定："
 	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
-	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
+	echo -e "${Info}       B.${Red_font_prefix}红色${Font_color_suffix}标定物已贴好在吸盘固定头正上方。"
 	echo -e "${Info}       C.机械臂正常上电。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
@@ -353,12 +353,28 @@ spark_carry_obj(){
 	ROSVER=`/usr/bin/rosversion -d`
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
-
+	echo -e "${Info}请选择移动的方式：
+	  ${Green_font_prefix}1.${Font_color_suffix} 固定位置移动
+	  ${Green_font_prefix}2.${Font_color_suffix} 手动地图指定位置导航
+	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	echo && stty erase ^? && read -p "请输入数字 [1-2]：" armnum
+	case "$armnum" in
+		1)
+		MOVETYPE="fix"
+		;;
+		2)
+		MOVETYPE="slam"
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用固定位置移动"
+		MOVETYPE="fix"
+		;;
+	esac
 	echo -e "${Info}" 
 	echo -e "${Info}请确定："
 	echo -e "${Info}       A.摄像头已反向向下安装好。机械臂正常上电。"
-	echo -e "${Info}       B.红色标定物已贴好在吸盘固定头正上方。"
-	echo -e "${Info}       C.机械臂正常上电。" 
+	echo -e "${Info}       B.机械臂正常上电。" 
+	echo -e "${Info}       C.准备好可吸附的${Blue_font_prefix}蓝色${Font_color_suffix}物品。" 
 	echo -e "${Info}退出请输入：Ctrl + c " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
