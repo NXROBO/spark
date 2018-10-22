@@ -218,8 +218,30 @@ people_follow(){
 }
 #语音控制SPARK移动
 voice_nav(){
-	echo -e "${Info}                  " 
+	echo -e "${Info}" 
 	echo -e "${Info}语音控制SPARK移动" 
+	echo -e "${Info}" 
+	echo -e "${Info}请选择语音的方式：
+	  ${Green_font_prefix}1.${Font_color_suffix} 本地语音识别
+	  ${Green_font_prefix}2.${Font_color_suffix} 在线语音识别
+	  ${Green_font_prefix}3.${Font_color_suffix} 微信语音控制
+	  ${Green_font_prefix}4.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	echo && stty erase ^? && read -p "请输入数字 [1-3]：" asrnum
+	case "$asrnum" in
+		1)
+		ASRTYPE="voice_nav.launch"
+		;;
+		2)
+		ASRTYPE="ali_nav.launch"
+		;;
+		3)
+		ASRTYPE="wx_nav.launch"
+		;;
+		*)
+		echo -e "${Error} 错误，默认使用在线方式"
+		ASRTYPE="ali_nav.launch"
+		;;
+	esac
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
 
@@ -230,24 +252,7 @@ voice_nav(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_voice voice_nav.launch
-}
-
-#WX控制SPARK移动
-wx_nav(){
-	echo -e "${Info}                  " 
-	echo -e "${Info}微信控制SPARK移动" 
-	PROJECTPATH=$(cd `dirname $0`; pwd)
-	source ${PROJECTPATH}/devel/setup.bash
-
-	echo -e "${Info}                  " 
-	echo -e "${Info}请确认连接线"
-	echo -e "${Info}                  " 
-	echo -e "${Info}退出请输入：Ctrl + c " 
-	echo -e "${Info}" 
-	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
-
-	roslaunch spark_voice wx_nav.launch
+	roslaunch spark_voice ${ASRTYPE}
 }
 
 #机械臂与摄像头匹对标定
@@ -551,7 +556,6 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
   ${Green_font_prefix} 10.${Font_color_suffix} 使用tensorflow进行物品检测
   ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
-  ${Green_font_prefix} 12.${Font_color_suffix} 微信移动控制
 
 ————————————
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
@@ -597,9 +601,6 @@ case "$num" in
 	;;
 	11)
 	voice_nav
-	;;
-	12)
-	wx_nav
 	;;
 	100)
 	tell_us
