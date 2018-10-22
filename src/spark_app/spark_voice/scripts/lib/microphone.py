@@ -206,7 +206,7 @@ class Microphone:
 
     wakeup = detect
 
-    def listen(self, duration=9, timeout=3):
+    def listen(self, duration=9, timeout=2):
         vad.reset()
 
         self.listen_countdown[0] = (duration * self.sample_rate + self.frames_per_buffer - 1) / self.frames_per_buffer
