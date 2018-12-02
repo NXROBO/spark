@@ -97,7 +97,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation ros-${ROS_Ver}-navigation-stage ros-${ROS_Ver}-navigation-layers ros-${ROS_Ver}-navigation-tutorials
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
-	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
+#	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
 	sudo apt-get install -y libasound2-dev mplayer
 
