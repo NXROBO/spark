@@ -118,6 +118,93 @@ install_spark_require(){
 	echo -e "${Info} 依赖库安装成功……"
 }
 
+#安装intel_movidius的相关驱动和程序
+install_intel_movidius(){
+	BASEPATH=$(cd `dirname $0`; pwd)
+
+	if [[ ! -d "$BASEPATH/src/3rd_app/intel/ncappzoo" ]] || [[ ! -d "$BASEPATH/src/3rd_app/intel/ros_intel_movidius_ncs" ]]  || [[ ! -d "/opt/movidius" ]] ; then
+		echo && stty erase ^? && read -p "检测到未安装INTEL　MOVIDIUS的相关驱动和程序，是否现在安装y/n?" yorn 
+		if [[ "${yorn}" == "y" ]]; then
+			echo -e "${Info} 准备安装intel movidius的相关驱动和代码…… "
+			echo -e "${Info} 安装过程中可能会花费挺长时间的。请耐心等待！"
+			
+			cd $BASEPATH
+			mkdir $BASEPATH/src/3rd_app/intel
+			cd $BASEPATH/src/3rd_app/intel
+			echo -e "${Info} git clone https://github.com/movidius/ncsdk"
+			git clone https://github.com/movidius/ncsdk
+			echo -e "${Info} git clone https://github.com/movidius/ncappzoo"
+			git clone https://github.com/movidius/ncappzoo
+			echo -e "${Info} git clone https://github.com/intel/object_msgs"
+			git clone https://github.com/intel/object_msgs
+			echo -e "${Info} git clone https://github.com/intel/ros_intel_movidius_ncs.git"
+			git clone https://github.com/intel/ros_intel_movidius_ncs.git
+			cd $BASEPATH/src/3rd_app/intel/ncsdk
+			make install
+			make examples
+			echo -e "${Info} sudo ln -s $BASEPATH/src/3rd_app/intel/ncappzoo /opt/movidius/ncappzoo"
+			sudo ln -s $BASEPATH/src/3rd_app/intel/ncappzoo /opt/movidius/ncappzoo
+			cd $BASEPATH/src/3rd_app/intel/ros_intel_movidius_ncs
+			git checkout master
+	
+			cp $BASEPATH/src/3rd_app/intel/ros_intel_movidius_ncs/data/labels/* /opt/movidius/ncappzoo/data/ilsvrc12/
+
+		#	AlexNet
+			echo -e "${Info} compile NCS graph--AlexNet"
+			cd /opt/movidius/ncappzoo/caffe/AlexNet
+			make
+		#	GoogleNet
+			echo -e "${Info} compile NCS graph--GoogleNet"
+			cd /opt/movidius/ncappzoo/caffe/GoogleNet
+			make
+		#	SqueezeNet
+			echo -e "${Info} compile NCS graph--SqueezeNet"
+			cd /opt/movidius/ncappzoo/caffe/SqueezeNet
+			make
+		#	Inception_V1
+			echo -e "${Info} compile NCS graph--Inception_V1"
+			cd /opt/movidius/ncappzoo/tensorflow/inception_v1/
+			make
+		#	Inception_V2
+			echo -e "${Info} compile NCS graph--Inception_V2"
+			cd /opt/movidius/ncappzoo/tensorflow/inception_v2/
+			make
+		#	Inception_V3
+			echo -e "${Info} compile NCS graph--Inception_V3"
+			cd /opt/movidius/ncappzoo/tensorflow/inception_v3/
+			make
+		#	Inception_V4
+			echo -e "${Info} compile NCS graph--Inception_V4"
+			cd /opt/movidius/ncappzoo/tensorflow/inception_v4/
+			make
+		#	MobileNet
+			echo -e "${Info} compile NCS graph--MobileNet"
+			cd /opt/movidius/ncappzoo/tensorflow/mobilenets/
+			make
+
+		#	MobileNet_SSD
+			echo -e "${Info} compile NCS graph--MobileNet_SSD"
+			cd /opt/movidius/ncappzoo/caffe/SSD_MobileNet
+			make	
+		#	TinyYolo
+			echo -e "${Info} compile NCS graph--TinyYolo"
+			cd /opt/movidius/ncappzoo/caffe/TinyYolo
+			make
+
+			echo -e "${Info} finish compiling..."	
+			echo -e "${Info} start to catkin_make..."
+	
+			cd $BASEPATH
+			catkin_make
+			echo -e "${Info} finsh catkin_make..."
+		else
+			echo -e "${Info} 取消安装."
+			exit
+		fi
+	fi
+
+}
+
 #编译SPARK
 install_spark(){
 	if [[ "${Version}" == "18.04" ]]; then
@@ -339,17 +426,103 @@ spark_navigation_3d(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [[ "${SLAMTYPE}" == "2d" ]]; then
 		roslaunch spark_navigation amcl_demo_rviz.launch
-	elseif [ $ROS
+	else
 		roslaunch spark_rtabmap spark_rtabmap_nav.launch
 	fi	
 }
 
-spark_tensorflow(){
+#深度学习
+spark_DeepLearn(){
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/tensorflow/bin/activate
 	source ${PROJECTPATH}/devel/setup.bash	
-	roslaunch tensorflow_object_detector object_detect.launch
-	
+	echo -e "${Info}运行深度学习的方式：
+	1.软件tensorflow
+	2.硬件计算棒（需将intel movidius接在spark的${Blue_font_prefix}蓝色${Font_color_suffix}的USB3.0上）"
+	echo && stty erase ^? && read -p "请选择 1 或 2 ：" chnum
+ 	case "$chnum" in
+		1)
+		roslaunch tensorflow_object_detector object_detect.launch		
+		;;
+		2)
+		spark_intel_movidius
+		;;
+		*)
+		echo -e "${Error} 错误，将运行默认的软件tensorflow"
+		roslaunch tensorflow_object_detector object_detect.launch		
+		;;
+	esac
+}
+
+#intel_movidius的功能列表
+intel_movidius_list(){
+echo -e "
+  请根据右侧的功能说明选择相应的序号。
+
+  ${Green_font_prefix} NO.${Font_color_suffix} |   CNN Model   | Framework  |
+  ${Green_font_prefix}  1.${Font_color_suffix} |    AlexNet    |   Caffe    |
+  ${Green_font_prefix}  2.${Font_color_suffix} |   GoogleNet   |   Caffe    |
+  ${Green_font_prefix}  3.${Font_color_suffix} |   SqueezeNet  |   Caffe    |
+  ${Green_font_prefix}  4.${Font_color_suffix} |  Inception_v1 | tensorflow |
+  ${Green_font_prefix}  5.${Font_color_suffix} |  Inception_v2 | tensorflow |
+  ${Green_font_prefix}  6.${Font_color_suffix} |  Inception_v3 | tensorflow |
+  ${Green_font_prefix}  7.${Font_color_suffix} |  Inception_v4 | tensorflow |
+  ${Green_font_prefix}  8.${Font_color_suffix} |   MobileNet   | tensorflow |
+  ${Green_font_prefix}  9.${Font_color_suffix} |  MobileNetSSD |   Caffe    |
+  ${Green_font_prefix} 10.${Font_color_suffix} |    TinyYolo   |   Caffe    |"
+
+}
+
+#运行intel_movidius的相关功能
+spark_intel_movidius(){
+	intel_device=`/usr/bin/lsusb |grep 03e7:|awk '{print $6}'`
+	if [ $intel_device ]; then
+                echo -e "${Info}检测到INTEL MOVIDIUS神经计算棒设备，请确定该设备已插入到SPARK主机的USB3.0的接口（${Blue_font_prefix}蓝色${Font_color_suffix}USB接口）。" 
+		install_intel_movidius
+		echo -e "${Info}请选择下表的相关功能："
+		intel_movidius_list
+		echo && stty erase ^? && read -p "请输入数字 [1-10]：" chnum
+ 		case "$chnum" in
+			1)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=mobilenet
+			;;
+			2)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=googlenet
+			;;
+			3)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=squeezenet
+			;;
+			4)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V1
+			;;
+			5)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V2
+			;;
+			6)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V3
+			;;
+			7)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V4
+			;;
+			8)
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=MobileNet
+			;;
+			9)
+			roslaunch app_shell intel_movidius_detection.launch cnn_model:=mobilenetssd
+			;;
+			10)
+			roslaunch app_shell intel_movidius_detection.launch cnn_model:=tinyyolo_v1 
+			;;
+
+			*)
+			echo -e "${Error} 错误，将运行默认的mobilenetssd功能"
+			roslaunch app_shell intel_movidius_detection.launch cnn_model:=mobilenetssd
+			;;
+		esac
+	else
+                echo -e "${Info}没检测到已插入intel movidius神经计算棒。请先插入相关设备到${Blue_font_prefix}蓝色${Font_color_suffix}的USB3.0接口。" 
+		exit	
+	fi
 }
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
@@ -554,7 +727,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  7.${Font_color_suffix} 让SPARK使用深度摄像头进行导航
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
-  ${Green_font_prefix} 10.${Font_color_suffix} 使用tensorflow进行物品检测
+  ${Green_font_prefix} 10.${Font_color_suffix} 深度学习进行物品检测
   ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
@@ -597,7 +770,7 @@ case "$num" in
 	spark_carry_obj
 	;;
 	10)
-	spark_tensorflow
+	spark_DeepLearn
 	;;
 	11)
 	voice_nav

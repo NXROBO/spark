@@ -1,0 +1,16 @@
+<!--
+  The nxrobo intel movidius.   
+ -->
+<launch>
+	<include file="$(find spark_teleop)/launch/teleop.launch"/>
+
+	<arg name="cnn_model" default="GoogleNet" doc="cnn_model [MobileNetSSD, TinyYolo_v1]"/>
+	<include file="$(find movidius_ncs_launch)/launch/ncs_camera.launch">
+		<arg name="cnn_type"	value="$(arg cnn_model)"/>
+ 	</include> 
+
+	<include file="$(find movidius_ncs_launch)/launch/ncs_stream_detection_example.launch">
+		<arg name="camera_topic"                  value="/camera/rgb/image_raw"	/> 
+	</include>
+	
+</launch>
