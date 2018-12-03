@@ -155,7 +155,7 @@ install_intel_movidius(){
 			make
 		#	GoogleNet
 			echo -e "${Info} compile NCS graph--GoogleNet"
-			cd /opt/movidius/ncappzoo/caffe/GoogleNet
+			cd /opt/movidius/ncappzoo/caffe/GoogLeNet
 			make
 		#	SqueezeNet
 			echo -e "${Info} compile NCS graph--SqueezeNet"
@@ -484,7 +484,7 @@ spark_intel_movidius(){
 		echo && stty erase ^? && read -p "请输入数字 [1-10]：" chnum
  		case "$chnum" in
 			1)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=mobilenet
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=alexnet
 			;;
 			2)
 			roslaunch app_shell intel_movidius_classification.launch cnn_model:=googlenet
@@ -493,19 +493,19 @@ spark_intel_movidius(){
 			roslaunch app_shell intel_movidius_classification.launch cnn_model:=squeezenet
 			;;
 			4)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V1
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=inception_v1
 			;;
 			5)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V2
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=inception_v2
 			;;
 			6)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V3
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=inception_v3
 			;;
 			7)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=Inception_V4
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=inception_v4
 			;;
 			8)
-			roslaunch app_shell intel_movidius_classification.launch cnn_model:=MobileNet
+			roslaunch app_shell intel_movidius_classification.launch cnn_model:=mobilenet
 			;;
 			9)
 			roslaunch app_shell intel_movidius_detection.launch cnn_model:=mobilenetssd
