@@ -141,6 +141,9 @@ public:
   {
     printf(CLEAR);
     MOVETO(0,0);
+    if(keystr == "")
+        printf(YELLOW "为了更好的体验本操作，请右键点击本窗口的菜单栏，选择“Always On Top”" NONE);
+    printf("\n");
     printf("请根据提示选择移动方向：\n\n");
     if(keystr == "UP")
         printf(GREEN "           w前进" NONE);
@@ -162,7 +165,6 @@ public:
         printf(CYAN "           s后退" NONE);
     else
 	printf("           s后退");
-    printf("\n");
     printf("\n");
   }
   void keyboardLoop()
@@ -191,9 +193,9 @@ public:
     raw.c_cc[VEOF] = 2;
     tcsetattr(kfd, TCSANOW, &raw);
 
-    puts("Reading from keyboard");
-    puts("Use WASD keys to control the robot");
-    puts("Press Shift to move faster");
+ //   puts("Reading from keyboard");
+//    puts("Use WASD keys to control the robot");
+//    puts("Press Shift to move faster");
 
     struct pollfd ufd;
     ufd.fd = kfd;
@@ -358,7 +360,6 @@ public:
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "teleop_node");
-  ROS_INFO("teleop_node");
   if (argc != 3)
   {
     ROS_INFO("Useage:rosrun teleop teleop_node linear angular, such as:rosrun teleop teleop_node 0.2 1 ");
