@@ -1,0 +1,15 @@
+<!--让SPARK跑起来-->
+<launch>
+
+	<!--spark底盘驱动，机器人描述,底盘,相机-->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
+	<!--spark键盘控制 “wsad”分别代表“前后左右”-->
+	<!--node pkg="spark_teleop" type="spark_teleop_node" name="spark_teleop_node" args="0.15 0.5"/-->
+	<!--在rviz显示-->
+  	<arg name="rvizconfig" default="$(find spark_teleop)/rviz/teleop.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> 
+
+	<!---->
+	<node pkg="spark_test" type="spark_dock_node" name="spark_dock_node" args="1" output="screen"/>
+
+</launch>
