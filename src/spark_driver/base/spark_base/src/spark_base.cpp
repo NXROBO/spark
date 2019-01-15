@@ -240,6 +240,8 @@ int ComDealDataNode::pubGyroMessage(unsigned char *buf, int len)
 
 void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
 {
+  static bool last_touch = false;
+  static bool last_plug = false;
   int curr_idx = (idx + COUNT_TIMES - 1) % COUNT_TIMES;
 
   current_time = ros::Time::now();  // ros time
@@ -368,7 +370,17 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
   dock_msg.search_dock = sparkbase->search_dock_;
   dock_msg.touch_charge = sparkbase->touch_charge_;
   dock_msg.plug_charge = sparkbase->plug_charge_;
-
+  if((last_touch!=sparkbase->touch_charge_)||(last_plug!=sparkbase->plug_charge_))
+  {
+      if(sparkbase->touch_charge_)
+        n.setParam ("/battery/status", 1);   //
+      else if(sparkbase->plug_charge_)
+        n.setParam ("/battery/status", 2);   //
+      else
+        n.setParam ("/battery/status", 0);   //
+      last_touch = sparkbase->touch_charge_;
+      last_plug = sparkbase->plug_charge_;
+  }
   dock_msg.dock_dir_left = sparkbase->dock_direction_[LEFT];
   dock_msg.dock_dir_right = sparkbase->dock_direction_[RIGHT];
   dock_msg.dock_dir_front = sparkbase->dock_direction_[FRONT];

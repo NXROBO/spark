@@ -34,7 +34,12 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-
+add_executable(spark_dock_node src/spark_dock_node.cpp)
+add_dependencies(spark_dock_node 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+  ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(spark_dock_node ${catkin_LIBRARIES})
 
 add_executable(spark_test_topic_node src/spark_test_topic.cpp)
 add_dependencies(spark_test_topic_node 

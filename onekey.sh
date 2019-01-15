@@ -617,7 +617,31 @@ spark_build_map_2d(){
 	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
 	
 }
+#让SPARK去充电
+spark_dock(){
 
+	echo -e "${Info}" 
+	echo -e "${Info}      让SPARK去充电" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
+
+	roslaunch spark_test go2dock.launch
+}
+
+
+spark_test(){
+
+	echo -e "${Info}" 
+	echo -e "${Info}      SPARK test" 
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
+
+	roslaunch spark_test turn_test.launch
+}
 #让SPARK使用深度摄像头绘制地图
 spark_build_map_3d(){
 	echo -e "${Info}" 
@@ -786,6 +810,12 @@ case "$num" in
 	;;
 	103)
 	install_spark_require
+	;;
+	999)
+	spark_dock
+	;;
+	998)
+	spark_test
 	;;
 	*)
 	echo -e "${Error} 请输入正确的数字 "
