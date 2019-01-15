@@ -141,7 +141,7 @@ int nxsparkbase::OpenInterface::startOI(void)
 
 // *****************************************************************************
 // Send an OP code to the spark base
-int nxsparkbase::OpenInterface::sendOpcode(OI_Opcode code)
+int nxsparkbase::OpenInterface::sendOpcode(int code)
 {
   char buffer[8];
   buffer[0] = 0x53;                               // headcode1
@@ -162,7 +162,30 @@ int nxsparkbase::OpenInterface::sendOpcode(OI_Opcode code)
   }
   return (0);
 }
-
+// *****************************************************************************
+// Send an OP code9 to the spark base
+int nxsparkbase::OpenInterface::sendOpcode9(int code, unsigned char value)
+{
+  char buffer[9];
+  buffer[0] = 0x53;                               // headcode1
+  buffer[1] = 0x4b;                               // headcode2
+  buffer[2] = 9;                                  // communicate num
+  buffer[3] = code >> 8;                          // cmd1
+  buffer[4] = code & 0x00ff;                      // cmd2
+  buffer[5] = value;    			  // value
+  buffer[6] = checkSum((unsigned char *)buffer);  // checksum
+  buffer[7] = 0x0d;                               // endcode1
+  buffer[8] = 0x0a;                               // endcode2
+  try
+  {
+    serial_port_->write(buffer, buffer[2]);
+  }
+  catch (cereal::Exception &e)
+  {
+    return (-1);
+  }
+  return (0);
+}
 // *****************************************************************************
 // Close the serial port
 int nxsparkbase::OpenInterface::closeSerialPort()
@@ -454,9 +477,26 @@ void nxsparkbase::OpenInterface::setOdometry(double new_x, double new_y, double 
 
 // *****************************************************************************
 // Go to the dock
-int nxsparkbase::OpenInterface::goDock()
+int nxsparkbase::OpenInterface::goDock(int dock)
 {
-  return sendOpcode(OI_OPCODE_FORCE_DOCK);
+  int opcode;
+  if(dock)
+	opcode = 0x0010;
+  else 
+	opcode = 0x0005;
+  return sendOpcode(opcode);
+}
+// *****************************************************************************
+// search to the dock
+int nxsparkbase::OpenInterface::searchDock(int flag)
+{
+  int opcode = 0x0017;    //search cmd
+  unsigned char value;
+  if(flag)
+	value = 0x00;
+  else 
+	value = 0x01;
+  return sendOpcode9(opcode, value);
 }
 
 // *****************************************************************************

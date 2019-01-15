@@ -236,7 +236,8 @@ public:
   //! Set the Sparkbase in spot cleaning mode. Returns the OImode to safe.
   int spot();
   //! Sends the Sparkbase to the dock. Returns the OImode to safe.
-  int goDock();
+  int goDock(int dock);
+  int searchDock(int flag);
   //! check data sum
   /*!
   *  check data sum function.
@@ -367,6 +368,18 @@ private:
   *  \return 0 if ok, -1 otherwise.
   */
   int startOI(void);
+
+  //! Send OP code
+  /*!
+  *  Send an OP code to Sparkbase.
+  *
+  *  \param code  			OP code to send.
+  *  \param value  			op value to send.
+  *
+  *  \return 0 if ok, -1 otherwise.
+  */
+  int sendOpcode9(int code, unsigned char value);	
+
   //! Send OP code
   /*!
   *  Send an OP code to Sparkbase.
@@ -375,7 +388,7 @@ private:
   *
   *  \return 0 if ok, -1 otherwise.
   */
-  int sendOpcode(OI_Opcode code);
+  int sendOpcode(int code);
 
   //! Serial port to which the robot is connected
   std::string port_name_;

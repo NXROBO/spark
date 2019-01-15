@@ -40,6 +40,7 @@
 #include <nav_msgs/Odometry.h>    // odom
 #include <geometry_msgs/Twist.h>  // cmd_vel
 #include <sensor_msgs/JointState.h>
+#include <std_msgs/String.h>
 #include <string>
 #include <stdio.h>
 #include <string.h>
@@ -91,7 +92,8 @@ private:
   std::string port;
   std::string serial_port;
   ros::Timer stimer;
-
+  ros::Subscriber dock_sub;
+  ros::Subscriber search_sub;
   double last_x, last_y, last_yaw;
   double vel_x, vel_y, vel_yaw;
   double dt;
@@ -156,7 +158,18 @@ public:
    *    public joint states
    */
   int pubGyroMessage(unsigned char *buf, int len);
+
+  /**
+   *    Received the handleGoDock
+   */
+  void handleGoDock(const std_msgs::String::ConstPtr &msg);
+
+  /**
+   * 	Received the handleSearchDock
+   */
+  void handleSearchDock(const std_msgs::String::ConstPtr &msg);
 };
+
 ComDealDataNode *cddn = NULL;
 
 std::string prefixTopic(std::string prefix, char *name)
@@ -543,6 +556,8 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
   this->gyro_pub = n.advertise<spark_base::GyroMessage>("/spark_base/gyro", 1);
   this->rb_sensor_pub = this->n.advertise<spark_base::SparkBaseSensor>("/spark_base/sensor", 1);  // ir_bumper_cliff
   this->rb_dock_pub = this->n.advertise<spark_base::SparkBaseDock>("/spark_base/dock", 1);
+  this->dock_sub = this->n.subscribe("/spark_base/handle_go2dock", 1, &ComDealDataNode::handleGoDock, this);
+  this->search_sub = this->n.subscribe("/spark_base/handle_search_dock", 1, &ComDealDataNode::handleSearchDock, this);
   this->current_time = ros::Time::now();
   this->last_time = ros::Time::now();
   stimer = n.createTimer(ros::Duration(1), &ComDealDataNode::checkSerialGoon, this);
@@ -632,6 +647,24 @@ int ComDealDataNode::pubWheelJointStates(double linear_speed, double angular_spe
   wheel_joint_pub.publish(joint_state);
 
   return 0;
+}
+
+void ComDealDataNode::handleGoDock(const std_msgs::String::ConstPtr &msg)
+{
+  std::cout << "dock get string is :" << msg->data << std::endl;
+  if (msg->data == "open")
+    sparkbase->goDock(1);
+  else
+    sparkbase->goDock(0);
+}
+
+void ComDealDataNode::handleSearchDock(const std_msgs::String::ConstPtr &msg)
+{
+  ROS_ERROR("handleSearchDock %s", msg->data.c_str());
+  if (msg->data == "open")
+    sparkbase->searchDock(1);
+  else
+    sparkbase->searchDock(0);
 }
 
 int main(int argc, char **argv)
