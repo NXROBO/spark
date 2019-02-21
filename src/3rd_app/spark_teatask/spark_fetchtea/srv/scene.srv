@@ -1,0 +1,14 @@
+uint8 END = 0
+uint8 RUN  = 1
+uint8 PEND = 2
+uint8 SEARCH  = 3
+
+uint8 type
+string param
+---
+uint8 SUCCESS = 0
+uint8 RUNNING  = 1
+uint8 PENDING = 2
+uint8 FAILURE  = 3
+
+uint8 status

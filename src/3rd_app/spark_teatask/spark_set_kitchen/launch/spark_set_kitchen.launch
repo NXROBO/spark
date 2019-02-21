@@ -1,0 +1,5 @@
+<launch>
+  <param name="kitchen_pose" type="string" value="0,0,0,0,0,0,1"/>
+  <param name="robot_pose" type="string" value="0,0,0,0,0,0,1"/>
+  <node pkg="spark_set_kitchen" type="set_kitchen_node" name="set_kitchen_node" output="screen"/>
+</launch>
