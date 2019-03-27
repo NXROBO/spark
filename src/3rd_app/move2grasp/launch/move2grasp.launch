@@ -1,0 +1,58 @@
+<!--move2grab-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+  	<!-- Arguments -->
+  	<arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  	<arg name="configuration_basename" default="spark_lds_2d.lua"/>
+  	<arg name="open_rviz" default="true"/>
+
+
+	<include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
+ 	<!--include file="$(find spark_description)/launch/spark_description.launch"/-->
+
+
+   	<include file="$(find spark_base)/launch/spark_base.launch">
+		<arg name="serialport"                  value="/dev/sparkBase"/>
+ 	</include> 
+
+  <!--spark相机-->
+  <!--include file="$(find spark_bringup)/launch/driver_bringup.launch"/-->
+  <include file="$(find astra_launch)/launch/astra.launch">
+	<arg name="rgb_processing"                  value="true"/> 
+	<arg name="depth_processing"                value="true"/>
+	<arg name="depth_registered_processing"     value="false"/>
+	<arg name="depth_registration"              value="false"/>
+	<arg name="disparity_processing"            value="false"/>
+	<arg name="disparity_registered_processing" value="false"/>
+  </include>
+    
+  <!--UARM机械臂-->
+  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+
+ 	<!-- 3D sensor -->
+  	<arg name="3d_sensor" default="3i_lidar"/>  
+    		<include file="$(find iiiroboticslidar2)/launch/3iroboticslidar2.launch">
+  	</include>
+
+  	<!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration-->
+  	<include file="$(find spark_slam)/launch/spark_$(arg slam_methods).launch">
+    		<arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  	</include>
+
+  	<!-- Move base -->
+  	<arg name="custom_param_file" default="$(find spark_navigation)/param/$(arg 3d_sensor)_costmap_params.yaml"/>
+  	<include file="$(find spark_navigation)/launch/includes/move_base.launch.xml">
+    		<arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  	</include>
+
+
+  	<!-- rviz -->
+  	<group if="$(arg open_rviz)"> 
+    		<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find move2grasp)/rviz/spark_$(arg slam_methods).rviz"/>
+  	</group>
+
+
+        <node pkg="move2grasp" type="move.py" name="move" />
+        <node pkg="move2grasp" type="grasp.py" name="grasp" />
+
+</launch>

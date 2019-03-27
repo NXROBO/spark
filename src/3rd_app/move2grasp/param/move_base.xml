@@ -1,0 +1,29 @@
+<launch>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <param name="shutdown_costmaps" value="false" />
+
+    <param name="controller_frequency" value="15.0" />
+    <param name="controller_patience" value="5.0" />
+
+    <param name="oscillation_timeout" value="0.0" />
+    <param name="oscillation_distance" value="0.5" /> <!-- 振荡: 每次走的距离小于该值且持续指定时间则认为震荡 -->
+
+    <param name="planner_frequency" value="0.0" /> <!-- global plan frequency实验情况为静态环境，暂时只规划一次 -->
+    <param name="planner_patience" value="5.0" />
+
+    <param name="base_global_planner" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS" />
+
+    <param name="recovery_behavior_enabled" value="false" />
+    <param name="clearing_rotation_allowed" value="false" />
+    <param name="conservative_reset_dist" value="2.0" />
+
+    <rosparam file="$(find spark_movebase)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find spark_movebase)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find spark_movebase)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find spark_movebase)/param/global_costmap_params.yaml" command="load" />
+
+    <rosparam file="$(find spark_movebase)/param/navfn_global_planner_params.yaml" command="load" />
+    <rosparam file="$(find spark_movebase)/param/dwa_local_planner_params.yaml" command="load" />
+ </node>
+</launch>
