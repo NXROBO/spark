@@ -1,2 +1,3 @@
-*.yaml
-*.pgm
+!.gitignore
+test_map.pgm
+test_map.yaml
