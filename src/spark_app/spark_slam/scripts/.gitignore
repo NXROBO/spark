@@ -1,2 +1,2 @@
-test_map.yaml
-test_map.pgm
+*.yaml
+*.pgm
