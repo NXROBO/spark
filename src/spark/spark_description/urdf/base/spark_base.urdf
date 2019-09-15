@@ -15,7 +15,13 @@
 		<parent link="base_footprint"/>
 		<child link="base_link" />
 	</joint>
-		
+	
+	<link name="IMU_link"/>
+  	<joint name="IMU_joint" type="fixed">
+      		<origin xyz="0.104 -0.09 0.065" rpy="0 0 1.570796327" />
+      		<parent link="base_link"/>
+      		<child link="IMU_link"/>
+  	</joint>	
 		
 	<link name="room_base_link">
 		<inertial>

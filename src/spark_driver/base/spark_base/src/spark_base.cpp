@@ -54,7 +54,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <time.h>
-
+#include <sensor_msgs/Imu.h>
 #include "spark_base/kfilter.hpp"
 #include "spark_base/mylock.hpp"
 #include "spark_base/spark_base_interface.h"
@@ -94,6 +94,7 @@ private:
   ros::Timer stimer;
   ros::Subscriber dock_sub;
   ros::Subscriber search_sub;
+ ros::Publisher pub_imu;
   double last_x, last_y, last_yaw;
   double vel_x, vel_y, vel_yaw;
   double dt;
@@ -202,31 +203,74 @@ union Char2Float
 
 int ComDealDataNode::pubGyroMessage(unsigned char *buf, int len)
 {
-  spark_base::GyroMessage gyro;
+	spark_base::GyroMessage gyro;
+	float acvx,acvy,acvz,anvx,anvy,anvz,roll,pitch,yaw;
+	sensor_msgs::Imu car_imu;
+	tf::Quaternion q;
+	Char2Float getvalue[12];
+	if (len < 48)
+		return -1;
+	memcpy(&getvalue, buf, sizeof(float) * 12);
+	gyro.acvx = getvalue[0].value;
+	gyro.acvy = getvalue[1].value;
+	gyro.acvz = getvalue[2].value;
+	gyro.anvx = getvalue[3].value;
+	gyro.anvy = getvalue[4].value;
+	gyro.anvz = getvalue[5].value;
+	gyro.bx = getvalue[6].value;
+	gyro.by = getvalue[7].value;
+	gyro.bz = getvalue[8].value;
 
-  Char2Float getvalue[12];
-  if (len < 48)
-    return -1;
-  memcpy(&getvalue, buf, sizeof(float) * 12);
-  gyro.acvx = getvalue[0].value;
-  gyro.acvy = getvalue[1].value;
-  gyro.acvz = getvalue[2].value;
-  gyro.anvx = getvalue[3].value;
-  gyro.anvy = getvalue[4].value;
-  gyro.anvz = getvalue[5].value;
-  gyro.bx = getvalue[6].value;
-  gyro.by = getvalue[7].value;
-  gyro.bz = getvalue[8].value;
+	gyro.roll = getvalue[9].value;
 
-  gyro.roll = getvalue[9].value;
+	gyro.pitch = getvalue[10].value;
 
-  gyro.pitch = getvalue[10].value;
+	gyro.yaw = getvalue[11].value;
 
-  gyro.yaw = getvalue[11].value;
+	g_Lock.Lock();
+	robot_yaw = gyro.yaw / 180 * 3.1415926535898;
+	g_Lock.Unlock();
+  
+  	acvx = (gyro.acvx *9.8);// m/s^2
+	acvy = (gyro.acvy*9.8);
+	acvz = (gyro.acvz*9.8);
 
-  g_Lock.Lock();
-  robot_yaw = gyro.yaw / 180 * 3.1415926535898;
-  g_Lock.Unlock();
+	anvx = gyro.anvx;
+	anvy = gyro.anvy;
+	anvz = gyro.anvz;
+
+	roll  = gyro.roll/180*M_PI;
+	pitch =  gyro.pitch /180*M_PI;
+	yaw   = gyro.yaw /180*M_PI;
+
+    q = tf::createQuaternionFromRPY(roll, pitch, yaw);
+	car_imu.orientation.x = q.x();
+	car_imu.orientation.y = q.y();
+	car_imu.orientation.z = q.z();
+	car_imu.orientation.w = q.w();
+	car_imu.orientation_covariance[0] = pow(0.0017, 2);//
+	car_imu.orientation_covariance[4] = pow(0.0017, 2);
+	car_imu.orientation_covariance[8] = pow(0.0017, 2);
+
+
+	car_imu.angular_velocity.x = anvx*M_PI/180.0;// rad/s
+	car_imu.angular_velocity.y = anvy*M_PI/180.0;
+	car_imu.angular_velocity.z = anvz*M_PI/180.0;
+	car_imu.angular_velocity_covariance[0] = pow(0.1, 2);
+	car_imu.angular_velocity_covariance[4] = pow(0.1, 2);
+	car_imu.angular_velocity_covariance[8] = pow(0.1, 2);
+
+	car_imu.linear_acceleration.x = acvx;// m/s^2
+	car_imu.linear_acceleration.y = acvy;
+	car_imu.linear_acceleration.z = acvz;
+	car_imu.linear_acceleration_covariance[0] = pow(0.1, 2);
+	car_imu.linear_acceleration_covariance[4] = pow(0.1, 2);
+ 	car_imu.linear_acceleration_covariance[8] = pow(0.1, 2);
+
+	car_imu.header.stamp = ros::Time::now();
+	car_imu.header.frame_id = "IMU_link";
+	pub_imu.publish(car_imu);
+
 
 #if 0
 	cout<<"acvx="<<gyro.acvx<<",acvy="<<gyro.acvy<<",acvz="<<gyro.acvz<<",anvx=" <<gyro.anvx<<",anvy=" <<gyro.anvy<<",anvz="<<gyro.anvz<<endl;
@@ -405,8 +449,8 @@ void getSparkbaseComData(char *buf, int len)
   int i, j;
   static int count = 0;
   long long timediff;
-  unsigned char tmpbuf[255];
-  static unsigned char recvbuf[255];
+  unsigned char tmpbuf[2550];
+  static unsigned char recvbuf[2550];
   ros::Time currenttime;
   static ros::Time headertime;
   static int firsttime = 1;
@@ -429,7 +473,7 @@ void getSparkbaseComData(char *buf, int len)
     ROS_ERROR("nx-base time out-%lld\n", timediff);
     headertime = currenttime;
   }
-  if ((len + count) > 255)
+  if ((len + count) > 2048)
   {
     count = 0;
     ROS_ERROR("nx-base receive data too long!");
@@ -503,7 +547,7 @@ BACKCHECK:
             }
             else
             {
-              ROS_ERROR("sparkbase-check sum error");
+ //             ROS_ERROR("sparkbase-check sum error");
 #if 0
                             for(j=0;j<framelen; j++)
                                 printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
@@ -513,7 +557,7 @@ BACKCHECK:
           }
           else
           {
-            ROS_ERROR("sparkbase-header or ender error error");
+//            ROS_ERROR("sparkbase-header or ender error error");
 #if 0
                         for(j=0; j<framelen; j++)
                             printf(L_RED "%02X " NONE ,(unsigned char)recvbuf[j]);
@@ -559,7 +603,7 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
   pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");
   pn.param<std::string>("odom_frame_id", odom_frame_id, "odom");
   this->cmd_vel_sub = this->n.subscribe<geometry_msgs::Twist>("/cmd_vel", 1, &ComDealDataNode::cmdVelReceived, this);
-
+  this->pub_imu = this->n.advertise<sensor_msgs::Imu>("/imu_data", 1);
   this->odom_pub = this->n.advertise<nav_msgs::Odometry>("/odom", 1);
   this->fback_cmd_vel_pub =
       this->n.advertise<geometry_msgs::Twist>("/spark_base/command/velocity", 1);  // the velocity of robot's feedback

@@ -47,7 +47,7 @@ check_sys(){
 install_ros_full(){
 		sudo sh -c 'echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'
 		sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-		sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116		
+		sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654		
 		sudo apt-get update
 		sudo apt-get install -y ros-${ROS_Ver}-desktop-full
 		sudo rosdep init
@@ -97,7 +97,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation ros-${ROS_Ver}-navigation-stage ros-${ROS_Ver}-navigation-layers ros-${ROS_Ver}-navigation-tutorials
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
 	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
-#	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
+	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
 	sudo apt-get install -y libasound2-dev mplayer
 
