@@ -158,7 +158,7 @@ void C3iroboticsLidar::analysisReportDeviceWrongInfo(CLidarPacket &lidar_packet)
 		//	printf("Report Lidar wrong info:CCD_WRONG; ");
 		//	break;
 		case LIDAR_ROT_SPEED:
-			printf("Report Lidar wrong info:LIDAR_ROT_SPEED; ");
+			//printf("Report Lidar wrong info:LIDAR_ROT_SPEED; ");
 			break;
 		case CAL_PARAM_ERROR:			
 			printf("Report Lidar wrong info:CAL_PARAM_ERROR; ");
@@ -297,13 +297,13 @@ void CLidarDynamicScan::DynamicScanProcedure(CLidarDynamicScan &one_grating_dyna
             if(one_grating_dynamic_scan.m_grating_angle < m_last_scan_angle)
             {    
             	printf("[C3iroboticsLidar] recieve wrong in this scan !!! Restart scan, current_grating_angle: %5.2f, last_grating_angle: %5.2f!\n",one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle); 
-                if(isFirstGratingScan(one_grating_dynamic_scan))//这次小于上一次角度，且角度为零：表示这周数据不完�?刚好重新开始下一周（这周数据丢掉�?
+                if(isFirstGratingScan(one_grating_dynamic_scan))//这次小于上一次角度，且角度为零：表示这周数据不完\E6\95?刚好重新开始下一周（这周数据丢掉\EF\BC?
                 {   
                  	getStartTime();
 					resetScanGrab();
                 	grabFirstGratingScan(one_grating_dynamic_scan);
                 }
-				else //这次角度小于上次角度，且角度不为零：表示这周和下周数据都不完�?重新矫正到第一个光栅开始扫描，计数（这周和下周数据都丢掉）
+				else //这次角度小于上次角度，且角度不为零：表示这周和下周数据都不完\E6\95?重新矫正到第一个光栅开始扫描，计数（这周和下周数据都丢掉）
 				{
 					m_grab_scan_state = GRAB_SCAN_FIRST;
 				}

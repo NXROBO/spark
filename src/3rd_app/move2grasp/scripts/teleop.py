@@ -13,14 +13,28 @@ from std_msgs.msg import String
 cmd = Twist()
 pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
 grasp_pub = rospy.Publisher('/grasp', String, queue_size=1)
- 
+
+global can_grasp
+global can_release
+
+
+
+def grasp_status_cp(msg):
+    global can_release,can_grasp
+    # 物体抓取成功,让机器人回起始点
+    if msg.data=='1':
+        can_release=True
+    if msg.data=='0' or msg.data=='-1':
+        can_grasp=True
+grasp_status=rospy.Subscriber('/grasp_status', String, grasp_status_cp, queue_size=1)
+
 def keyboardLoop():
     #初始化
     rospy.init_node('teleop')
-    rate = rospy.Rate(rospy.get_param('~hz', 1))
+    rate = rospy.Rate(rospy.get_param('~hz', 10))
  
     #速度变量
-    walk_vel_ = rospy.get_param('walk_vel', 0.5)
+    walk_vel_ = rospy.get_param('walk_vel', 0.3)
     run_vel_ = rospy.get_param('run_vel', 1.0)
     yaw_rate_ = rospy.get_param('yaw_rate', 1.0)
     yaw_rate_run_ = rospy.get_param('yaw_rate_run', 1.5)
@@ -28,16 +42,18 @@ def keyboardLoop():
     max_tv = walk_vel_
     max_rv = yaw_rate_
     speed=0
- 
-    #显示提示信息
-    print "Reading from keyboard"
-    print "Use WASD keys to control the robot"
-    print "Press Caps to move faster"
-    print "Press q to quit"
+    global can_release,can_grasp
+    can_grasp=True
+    can_release=False
+    
+    print "使用[WASD]控制机器人"
+    print "按[G]抓取物体，按[H]放下物体"
+    print "按[Q]退出"
  
     #读取按键循环
     while not rospy.is_shutdown():
         fd = sys.stdin.fileno()
+        turn =0
         old_settings = termios.tcgetattr(fd)
 		#不产生回显效果
         old_settings[3] = old_settings[3] & ~termios.ICANON & ~termios.ECHO
@@ -48,13 +64,17 @@ def keyboardLoop():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
  
         if ch == 'g':
-            msg=String()
-            msg.data='1'
-            grasp_pub.publish(msg)
+            if can_grasp:
+                msg=String()
+                msg.data='1'
+                grasp_pub.publish(msg)
+                can_grasp=False
         elif ch == 'h':
-            msg=String()
-            msg.data='0'
-            grasp_pub.publish(msg)
+            if can_release:
+                msg=String()
+                msg.data='0'
+                grasp_pub.publish(msg)
+                can_release=False
         elif ch == 'w':
             max_tv = walk_vel_
             speed = 1
@@ -96,12 +116,12 @@ def keyboardLoop():
             turn = 0
  
         #发送消息
-        cmd.linear.x = speed * max_tv;
-        cmd.angular.z = turn * max_rv;
+        cmd.linear.x = speed * max_tv
+        cmd.angular.z = turn * max_rv
         pub.publish(cmd)
         rate.sleep()
 		#停止机器人
-        stop_robot();
+        stop_robot()
  
 def stop_robot():
     cmd.linear.x = 0.0

@@ -52,7 +52,7 @@
   	</group>
 
 
-        <node pkg="move2grasp" type="teleop.py" name="teleop" />
+        <node pkg="move2grasp" type="teleop.py" name="teleop" launch-prefix="xterm -e" />
         <node pkg="move2grasp" type="grasp.py" name="grasp" />
 
 </launch>
