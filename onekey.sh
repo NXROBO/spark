@@ -621,13 +621,18 @@ spark_build_map_2d(){
 spark_dock(){
 
 	echo -e "${Info}" 
-	echo -e "${Info}      让SPARK去充电" 
+	echo -e "${Info} 让SPARK去充电。注：只适用于带充电座的SPARK使用！" 
+	echo -e "${Info} 退出请输入：Ctrl + c        "
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
+	echo && stty erase ^? && read -p "按回车键（Enter）继续：" 
+	echo && stty erase ^? && read -p "请再次确定是否有带充电座 y/n：" choose
+	if [[ "${choose}" == "y" ]]; then
+		roslaunch spark_test go2dock.launch
+	else
+		return
+	fi
 
-	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
-
-	roslaunch spark_test go2dock.launch
 }
 
 
@@ -755,6 +760,8 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
+  ${Green_font_prefix} 99.${Font_color_suffix} 让SPARK去找充电座充电
+————————————
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
@@ -811,10 +818,10 @@ case "$num" in
 	103)
 	install_spark_require
 	;;
-	999)
+	99)
 	spark_dock
 	;;
-	998)
+	98)
 	spark_test
 	;;
 	*)
