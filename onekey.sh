@@ -226,12 +226,16 @@ install_all(){
 #远程设置
 master_uri_setup(){
 	eth_ip=`/sbin/ifconfig eth0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlp1s_ip=`/sbin/ifconfig wlp1s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	wlp2s_ip=`/sbin/ifconfig wlp2s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
         enp3s_ip=`/sbin/ifconfig enp3s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	if [ $eth_ip ]; then
 		echo -e "${Info}使用有线网络eth0" 
 		local_ip=$eth_ip
+	elif [ $wlp1s_ip ]; then
+		echo -e "${Info}使用无线网络wlp1s0" 
+	  	local_ip=$wlp1s_ip
 	elif [ $wlp2s_ip ]; then
 		echo -e "${Info}使用无线网络wlp2s0" 
 	  	local_ip=$wlp2s_ip
