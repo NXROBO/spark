@@ -760,8 +760,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
-  ${Green_font_prefix} 99.${Font_color_suffix} 让SPARK去找充电座充电
-————————————
+
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
