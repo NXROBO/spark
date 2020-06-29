@@ -761,7 +761,6 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
   ${Green_font_prefix} 10.${Font_color_suffix} 深度学习进行物品检测
-  ${Green_font_prefix} 11.${Font_color_suffix} 语音移动控制
 
 ————————————
 
