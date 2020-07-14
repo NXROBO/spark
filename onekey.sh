@@ -313,24 +313,20 @@ voice_nav(){
 	echo -e "${Info}语音控制SPARK移动" 
 	echo -e "${Info}" 
 	echo -e "${Info}请选择语音的方式：
-	  ${Green_font_prefix}1.${Font_color_suffix} 本地语音识别
-	  ${Green_font_prefix}2.${Font_color_suffix} 在线语音识别
-	  ${Green_font_prefix}3.${Font_color_suffix} 微信语音控制
-	  ${Green_font_prefix}4.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	  ${Green_font_prefix}1.${Font_color_suffix} 本地语音识别(识别准确度低,已不推荐使用,仅支持英文)
+	  ${Green_font_prefix}2.${Font_color_suffix} 在线语音识别(需要互联网连接,只支持中文)
+	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c" 
 	echo && stty erase ^? && read -p "请输入数字 [1-3]：" asrnum
 	case "$asrnum" in
 		1)
 		ASRTYPE="voice_nav.launch"
 		;;
 		2)
-		ASRTYPE="ali_nav.launch"
-		;;
-		3)
-		ASRTYPE="wx_nav.launch"
+		ASRTYPE="baidu_nav.launch"
 		;;
 		*)
 		echo -e "${Error} 错误，默认使用在线方式"
-		ASRTYPE="ali_nav.launch"
+		ASRTYPE="baidu_nav.launch"
 		;;
 	esac
 	PROJECTPATH=$(cd `dirname $0`; pwd)
@@ -803,6 +799,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  8.${Font_color_suffix} 机械臂与摄像头标定
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
   ${Green_font_prefix} 10.${Font_color_suffix} 深度学习进行物品检测
+  ${Green_font_prefix} 11.${Font_color_suffix} 语音控制SPARK移动
 
 ————————————
 

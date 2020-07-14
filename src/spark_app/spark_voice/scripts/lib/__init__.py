@@ -16,3 +16,4 @@
 """
 
 from lib.microphone import Microphone
+from .speech import AipSpeech
