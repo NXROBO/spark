@@ -54,6 +54,11 @@ class GraspObject():
             'grasp_status', String, queue_size=1)
         # 发布TWist消息控制机器人底盘
         self.cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+	pos = position()
+	pos.x = 120
+	pos.y = 0
+	pos.z = 35
+	self.pub1.publish(pos)
 
     def grasp_cp(self, msg):
         if msg.data == '1':
@@ -201,8 +206,10 @@ class GraspObject():
                     yc = y_mid
             # if box is not moving for 20 times
             # print found_count
-            if found_count >= 20:
+            if found_count >= 30:
                 self.is_found_object = True
+		cmd_vel = Twist()
+		self.cmd_vel_pub.publish(cmd_vel)
             else:
                 # if box is not moving
                 if abs(xc - xc_prev) <= 2 and abs(yc - yc_prev) <= 2:
@@ -228,7 +235,7 @@ class GraspObject():
         # stop pump
         self.pub2.publish(0)
         r2.sleep()
-        r1.sleep()
+        #r1.sleep()
         pos.x = 120
         pos.y = 0
         pos.z = 35

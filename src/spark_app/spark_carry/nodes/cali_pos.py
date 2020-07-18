@@ -42,6 +42,10 @@ def talker():
 		print(pos.x, pos.y)
 		pub2.publish(1)
 		r4.sleep()
+	pos.x = 120
+	pos.y = 0
+	pos.z = 35
+	pub1.publish(pos)
 
 	r3.sleep()
 
