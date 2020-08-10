@@ -1,9 +1,13 @@
 <!--spark rtabmap-->
 <!--SPARK技术讨论与反馈群：8346256-->
 <launch>
+	<!-- camera -->
+	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 
 	<!-- spark base driver -->
-	<include file="$(find spark_rtabmap)/launch/rtab_demo.launch"/>
+	<include file="$(find spark_rtabmap)/launch/rtab_demo.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)" />
+	</include>
 
 	<!-- rviz -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map.rviz"/>

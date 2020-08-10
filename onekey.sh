@@ -17,14 +17,15 @@ filepath=$(cd "$(dirname "$0")"; pwd)
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\e[1;33m" && Blue_font_prefix="\e[0;34m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
+Warn="${Yellow_font_prefix}[警告]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 Separator_1="——————————————————————————————"
-
+password="spark"
 Version=$(lsb_release -r --short)
 Codename=$(lsb_release -c --short)
 OSDescription=$(lsb_release -d --short)
 OSArch=$(uname -m)
-
+calibra_default="/home/spark/.ros/camera_info"
 
 
 
@@ -42,6 +43,77 @@ check_sys(){
         fi
 }
 
+#检查设备连接
+check_dev(){
+
+	#检查机械臂
+	if [ ! -n "$(lsusb -d 2341:0042)" ]; then
+		echo -e "${Error} 机械臂没有正确连接，请确认正确连接！！"
+	fi
+	
+	#检查摄像头
+	check_camera
+}
+
+#检查摄像头设备
+check_camera(){
+
+	calibra_backup="/opt/ros/$ROS_Ver/camera_info"
+	#检查使用哪种设备
+	if [ -n "$(lsusb -d 2bc5:0403)" ]&&[ -n "$(lsusb -d 2bc5:0401)" ]; then
+		echo -e "${Warn} 正在使用多个摄像头设备，请退出并拔掉其中一个再使用!"
+		echo -e "${Warn} 退出请输入：Ctrl + c！"
+	elif [ -n "$(lsusb -d 2bc5:0403)" ]; then
+		echo -e "${Info} 正在使用Astra Pro摄像头"
+		CAMERATYPE="astrapro"
+	elif [ -n "$(lsusb -d 2bc5:0401)" ]; then
+		echo -e "${Info} 正在使用Astra摄像头"
+		CAMERATYPE="astra"
+	elif [ ! -n "$(lsusb -d 2bc5:0403)" ]&&[ ! -n "$(lsusb -d 2bc5:0401)" ]; then
+		echo -e "${Error} 没有找到摄像头，请确认摄像头已正确连接！！"
+	fi	
+	
+	#根据摄像头类型检查标定文件和备份文件
+	case $CAMERATYPE in
+		astrapro) 
+			#检查是否有默认文件夹和备份文件夹
+			if [ ! -d "$calibra_default" ]; then
+				mkdir "$calibra_default"
+			fi
+
+			if [ ! -d "$calibra_backup" ]; then
+				echo -e "${Info} 创建标定文件备份文件夹..."
+				sudo mkdir "$calibra_backup"
+			fi
+			#如果没有就拷贝一份
+			if [ ! -f "$calibra_backup/camera.yaml" ]||[ ! -f "$calibra_backup/depth_Astra_Orbbec.yaml" ]; then
+				if [ -f "$calibra_default/camera.yaml" ]&&[ -f "$calibra_default/depth_Astra_Orbbec.yaml" ]; then
+					echo -e "${Info} 备份标定文件..."
+					sudo cp -r "$calibra_default/." "$calibra_backup/."
+				elif [ ! -f "$calibra_default/camera.yaml" ]||[ ! -f "$calibra_default/depth_Astra_Orbbec.yaml" ]; then
+					echo -e "${Warn} 标定文件缺少其中一个，请确认rgb和depth标定文件都存在"
+				fi
+			elif [ -f "$calibra_backup/camera.yaml" ]&&[ -f "$calibra_backup/depth_Astra_Orbbec.yaml" ]; then
+				if [ ! -f "$calibra_default/camera.yaml" ]; then
+					echo -e "${Info} 缺少彩色摄像头标定文件，已拷贝"
+					cp "$calibra_backup/camera.yaml" $calibra_default
+				fi
+				if [ ! -f "$calibra_default/depth_Astra_Orbbec.yaml" ]; then
+					echo -e "${Info} 缺少深度摄像头标定文件，已拷贝"
+					cp "$calibra_backup/depth_Astra_Orbbec.yaml" $calibra_default	
+				fi
+			fi
+			;;
+		astra)
+			#astra自带标定文件			
+			#如果检查到有标定文件就删除
+			if [ -d "$calibra_default" ]; then
+				rm -rf "$calibra_default"
+			fi
+			;;
+	esac
+
+}
 
 #安装ROS完整版
 install_ros_full(){
@@ -96,7 +168,8 @@ install_spark_require(){
 	sudo apt-get install -y python-pip python-sklearn libudev-dev
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation ros-${ROS_Ver}-navigation-stage ros-${ROS_Ver}-navigation-layers ros-${ROS_Ver}-navigation-tutorials
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
-	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration 
+	sudo apt-get install -y ros-${ROS_Ver}-frontier-exploration
+	sudo apt-get install -y ros-${ROS_Ver}-cartographer*
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
 	sudo apt-get install -y libasound2-dev mplayer
@@ -216,6 +289,8 @@ install_spark(){
 }
 
 
+
+
 #完全安装
 install_all(){
 	check_install_ros_full
@@ -251,6 +326,7 @@ master_uri_setup(){
 	echo -e "${Info}Using ROS MASTER at ${Red_font_prefix}$ROS_MASTER_URI${Font_color_suffix} from ${Red_font_prefix}$ROS_HOSTNAME${Font_color_suffix}"
 }
 
+
 #让机器人动起来
 let_robot_go(){
 	echo -e "${Info}" 
@@ -269,7 +345,7 @@ let_robot_go(){
 	echo -e "${Info}    退出请输入：Ctrl + c    " 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_teleop teleop.launch
+	roslaunch spark_teleop teleop.launch camera_type_tel:=${CAMERATYPE}
 }
 
 
@@ -288,7 +364,7 @@ remote_control_robot(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_teleop app_op.launch
+	roslaunch spark_teleop app_op.launch camera_type_tel:=${CAMERATYPE}
 }
 
 #让SPARK跟着你走
@@ -305,8 +381,10 @@ people_follow(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_follower bringup.launch
+	roslaunch spark_follower bringup.launch camera_type_tel:=${CAMERATYPE}
 }
+
+
 #语音控制SPARK移动
 voice_nav(){
 	echo -e "${Info}" 
@@ -339,7 +417,8 @@ voice_nav(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_voice ${ASRTYPE}
+	roslaunch spark_voice ${ASRTYPE} camera_type_tel:=${CAMERATYPE}
+
 }
 
 #机械臂与摄像头匹对标定
@@ -360,13 +439,13 @@ cal_camera_arm(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE}
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv2.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv2.launch camera_type_tel:=${CAMERATYPE}
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE}
 	fi
 		
 }
@@ -425,9 +504,9 @@ spark_navigation_3d(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [[ "${SLAMTYPE}" == "2d" ]]; then
-		roslaunch spark_navigation amcl_demo_rviz.launch
+		roslaunch spark_navigation amcl_demo_rviz.launch camera_type_tel:=${CAMERATYPE}
 	else
-		roslaunch spark_rtabmap spark_rtabmap_nav.launch
+		roslaunch spark_rtabmap spark_rtabmap_nav.launch camera_type_tel:=${CAMERATYPE}
 	fi	
 }
 
@@ -442,14 +521,14 @@ spark_DeepLearn(){
 	echo && stty erase ^? && read -p "请选择 1 或 2 ：" chnum
  	case "$chnum" in
 		1)
-		roslaunch tensorflow_object_detector object_detect.launch		
+		roslaunch tensorflow_object_detector object_detect.launch camera_type_tel:=${CAMERATYPE}		
 		;;
 		2)
 		spark_intel_movidius
 		;;
 		*)
 		echo -e "${Error} 错误，将运行默认的软件tensorflow"
-		roslaunch tensorflow_object_detector object_detect.launch		
+		roslaunch tensorflow_object_detector object_detect.launch camera_type_tel:=${CAMERATYPE}		
 		;;
 	esac
 }
@@ -558,13 +637,13 @@ spark_carry_obj(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE}
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv2.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv2.launch camera_type_tel:=${CAMERATYPE}
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch 
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE}
 	fi
 	
 }
@@ -647,11 +726,12 @@ spark_test(){
 
 	roslaunch spark_test turn_test.launch
 }
+
 #让SPARK使用深度摄像头绘制地图
 spark_build_map_3d(){
 	echo -e "${Info}" 
 	echo -e "${Info}让SPARK使用深度摄像头绘制地图" 
-	echo -e "${Info}" 
+	echo -e "${Info}"
 	echo -e "${Info}请选择SLAM的方式：
 	  ${Green_font_prefix}1.${Font_color_suffix} gmapping
 	  ${Green_font_prefix}2.${Font_color_suffix} hector
@@ -702,15 +782,64 @@ spark_build_map_3d(){
 		echo -e "${Tip}" 
 		echo && stty erase ^? && read -p "请选择是否继续y/n：" choose
 		if [[ "${choose}" == "y" ]]; then
-                	roslaunch spark_rtabmap spark_rtabmap_teleop.launch 
+                	roslaunch spark_rtabmap spark_rtabmap_teleop.launch camera_type_tel:=${CAMERATYPE}
 		else
 			return
 		fi
         else
-		roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} 
+		roslaunch spark_slam depth_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} camera_type_tel:=${CAMERATYPE}
 	fi
 	
 }
+
+#给摄像机做标定
+calibrate_camera(){
+	echo -e "${Info} "
+	echo -e "${Info}给摄像头做标定"
+	echo -e "${Info} "
+	echo -e "${Info}请选择：
+	  ${Green_font_prefix}1.${Font_color_suffix} 彩色(rgb)摄像头标定
+	  ${Green_font_prefix}2.${Font_color_suffix} 深度(depth/ir)摄像头标定
+	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c"
+	echo && stty erase ^? && read -p "请输入数字 [1-2]：" calinum
+		case "$calinum" in
+		1)
+		CALIBRATETYPE="rgb"
+		;;
+		2)
+		CALIBRATETYPE="depth"
+		;;
+		*)
+		echo -e "${Error} 错误，退出" && exit
+		;;
+	esac
+	echo -e "${Info}" 
+	echo -e "${Info}标定步骤                                  					"
+	echo -e "${Info}1.准备格子大小为20x20mm的9x7的黑白棋盘（在doc文件夹中可以找到）                    "
+	echo -e "${Info}                            							" 	
+	echo -e "${Info}2.倾斜或移动棋盘格子使X，Y，Size，Skew指标变成${Green_font_prefix}绿色          	"
+	echo -e "${Info}                            							" 
+	echo -e "${Info}3.点击窗口中的CALIBRATE进行标定                            			"
+	echo -e "${Info}${Yellow_font_prefix}注意：${Font_color_suffix}点击后图像窗口将会卡顿！请耐心等候至新终端窗口出现标定矩阵数据！  		"
+	echo -e "${Info}                            							" 	 
+	echo -e "${Info}4.点击SAVE按钮保存标定文件                          				" 
+	echo -e "${Info}                       " 
+	echo -e "${Info}标定文件储存在/tmp/calibrationdata.tar.gz中 	        			"
+	echo -e "${Info}请把压缩文件中的yaml格式文件拷贝至/home/spark/.ros/camera_info中  		"
+	echo -e "${Info}								"
+	echo -e "${Info}${Yellow_font_prefix}注意：${Font_color_suffix}请把yaml文件命名为当以下两种"
+	echo -e "${Info}rgb标定：camera.yaml         depth标定：depth_Astra_Orbbec.yaml"
+	echo -e "${Info}         "
+	echo -e "${Info}退出请输入：Ctrl + c                                             		" 
+	echo -e "${Info}										" 
+	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
+
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+	roslaunch camera_calibrator camera_calibrate.launch calibrate_type:=${CALIBRATETYPE}
+
+}
+
 
 qrcode_transfer_files(){
 	echo -e "${Info}" 
@@ -786,7 +915,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
 
   请根据右侧的功能说明选择相应的序号。
   注意：101～103为相关环境的安装与设置，如果已执行过，不要再重复执行。
-
+  
   ${Green_font_prefix}  0.${Font_color_suffix} 单独编译SPARK
 ————————————
   ${Green_font_prefix}  1.${Font_color_suffix} 让机器人动起来
@@ -800,6 +929,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}  9.${Font_color_suffix} 让SPARK通过机械臂进行视觉抓取
   ${Green_font_prefix} 10.${Font_color_suffix} 深度学习进行物品检测
   ${Green_font_prefix} 11.${Font_color_suffix} 语音控制SPARK移动
+  ${Green_font_prefix} 12.${Font_color_suffix} 给摄像头做标定
 
 ————————————
 
@@ -810,10 +940,11 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}104.${Font_color_suffix} 文件传输
  "
 menu_status
+check_dev
 echo && stty erase ^? && read -p "请输入数字：" num
 case "$num" in
 	0)
-	install_spark
+	install_spark	
 	;;
 	1)
 	let_robot_go
@@ -847,6 +978,9 @@ case "$num" in
 	;;
 	11)
 	voice_nav
+	;;
+	12)
+	calibrate_camera
 	;;
 	100)
 	tell_us

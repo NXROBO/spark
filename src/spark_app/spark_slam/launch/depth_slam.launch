@@ -3,6 +3,7 @@
 <launch>
   <!-- Arguments -->
   <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  <arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
   <arg name="configuration_basename" default="spark_lds_2d.lua"/>
   <arg name="open_rviz" default="true"/>
 
@@ -17,7 +18,7 @@
 
    <!-- 3D sensor -->
   <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
-  <include file="$(find astra_launch)/launch/astra.launch">
+  <include file="$(find astra_camera)/launch/$(arg camera_types).launch">
   <!--  <arg name="rgb_processing"                 value="false" /> -->
   <!--  <arg name="depth_registration"             value="false" /> -->
   <!--  <arg name="depth_processing"                value="false" /> -->
@@ -46,7 +47,7 @@
     <remap from="camera_info" to="/camera/depth/camera_info" />
 
     <remap from="scan" to="/scan" />
-    <param name="output_frame_id" value="/camera_depth_frame" />
+    <param name="output_frame_id" value="camera_depth_frame" />
 
     <!--added by xilai 6/19/2017-->
     <param name="scan_height" value="50" />

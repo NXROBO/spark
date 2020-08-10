@@ -35,4 +35,5 @@
     <rosparam file="$(find spark_navigation)/param/costmap_common_params.yaml" command="load" ns="explore_costmap" />
     <rosparam file="$(find spark_slam)/config/frontier_exploration.yaml" command="load" ns="explore_costmap" />
   </node>
+
 </launch>

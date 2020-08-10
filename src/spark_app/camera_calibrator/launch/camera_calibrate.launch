@@ -1,0 +1,13 @@
+<!-- camerea calibration launch -->
+<launch>
+
+	<!-- Open Astra Pro Camera -->
+	<!--<include file="$(find astra_camera)/launch/astrapro.launch"/>-->
+	<node pkg="camera_calibrator" type="cam_open.sh" name="cam_opn" />
+	
+	<!-- Open Calibrator-->
+	<arg name="calibrate_type" default="" doc="calibrate type [rgb, depth(ir)]"/>
+	<node pkg="camera_calibrator" type="cam_calibrate_$(arg calibrate_type).sh" name="cam_cal" />
+
+
+</launch>

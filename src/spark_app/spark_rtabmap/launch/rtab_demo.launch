@@ -1,5 +1,7 @@
 <!--rtab_demo -->
 <launch>
+  <!-- camera -->
+  <arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
 
   <!-- description file -->
   <include file="$(find spark_description)/launch/spark_description.launch"/>
@@ -12,7 +14,7 @@
 
   <!-- 3D sensor -->
   <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
-  <include file="$(find astra_launch)/launch/astra.launch">
+  <include file="$(find astra_camera)/launch/$(arg camera_types).launch">
     <arg name="rgb_processing"                  value="true"/>
     <arg name="depth_processing"                value="true"/>
     <arg name="depth_registered_processing"     value="false"/>
@@ -33,9 +35,9 @@
     <remap from="camera_info" to="/camera/depth/camera_info" />
 
     <remap from="scan" to="/scan" />
-    <param name="output_frame_id" value="/camera_depth_frame" />
+    <param name="output_frame_id" value="camera_depth_frame" />
 
-    <param name="scan_height" value="50" />
+    <param name="scan_height" value="20" />
   </node>
 
 

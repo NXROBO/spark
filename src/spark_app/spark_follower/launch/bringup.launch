@@ -3,13 +3,13 @@
  -->
 
 <launch>
-	
+	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 	<include file="$(find spark_description)/launch/spark_description.launch"/>
 	<include file="$(find spark_base)/launch/spark_base.launch">
 		<arg name="serialport"                  value="/dev/sparkBase"/> 
 	</include>
 	
-	<include file="$(find astra_launch)/launch/astra.launch">
+	<include file="$(find astra_camera)/launch/$(arg camera_type_tel).launch">
 	  <arg name="rgb_processing"                  value="true"/> 
 	  <arg name="depth_processing"                value="true"/>
 	  <arg name="depth_registered_processing"     value="false"/>

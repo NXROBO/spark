@@ -1,3 +1,5 @@
+<!-- object detect -->
+
 <launch>
 	<node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen"> 
     <remap from='image' to='/camera/rgb/image_raw'/>
@@ -6,7 +8,9 @@
   <arg name ="rviz" default="true" />
   <arg name ="rviz_file" default="$(find tensorflow_object_detector)/config/display.rviz"/>
 	<node pkg ="rviz" type="rviz" name="rviz" output="screen" args= "-d $(arg rviz_file)" if="$(arg rviz)"/>
-  <include file="$(find astra_launch)/launch/astra.launch">
+  <!-- camera -->
+  <arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
+  <include file="$(find astra_camera)/launch/$(arg camera_type_tel).launch">
     <arg name="rgb_processing"                  value="true"/>
     <arg name="depth_processing"                value="true"/>
     <arg name="depth_registered_processing"     value="false"/>
@@ -14,4 +18,6 @@
     <arg name="disparity_processing"            value="false"/>
     <arg name="disparity_registered_processing" value="false"/>
   </include>
+
+
 </launch>

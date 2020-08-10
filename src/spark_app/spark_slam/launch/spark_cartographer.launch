@@ -40,7 +40,8 @@
         args="-configuration_directory $(find spark_slam)/config
               -configuration_basename $(arg configuration_basename)"
         output="screen">
-    <remap from="/imu" to="/flat_imu"/>
+    <!-- <remap from="/imu" to="/flat_imu"/> -->
+    <remap from="scan" to="scan"/>
     <!--remap from="points2" to="/camera/depth/points" / -->
   </node>
 
@@ -54,4 +55,4 @@
     <remap from="imu_in" to="/imu" />
     <remap from="imu_out" to="/flat_imu" />
   </node>
-</launch
+</launch>

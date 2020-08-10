@@ -2,14 +2,16 @@
   机械臂与摄像头之间的校准功能。注意摄像头需要反着装，垂直向下。使用一个蓝色圆贴在吸盘的正上方当校准点。
  -->
 <launch> 	
+  <!-- Camera -->
+  <arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 
   <!--UARM机械臂-->
   <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
 
   <!--spark驱动，机器人描述，相机，底盘-->
-  <include file="$(find spark_bringup)/launch/driver_bringup.launch"/>
-  
-
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch">
+  	<arg name="camera_types"	value="$(arg camera_type_tel)" />
+  </include>
 
   <!--摄像头订阅与视觉定位-->
   <node pkg="spark_carry_object" type="cali_cam_cv3.py" name="cali_cam_cv3_node" output="screen"/>
