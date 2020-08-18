@@ -25,9 +25,7 @@ Version=$(lsb_release -r --short)
 Codename=$(lsb_release -c --short)
 OSDescription=$(lsb_release -d --short)
 OSArch=$(uname -m)
-calibra_default="/home/spark/.ros/camera_info"
-
-
+calibra_default="${filepath}/../.ros/camera_info"
 
 
 #检查系统要求
@@ -58,7 +56,7 @@ check_dev(){
 #检查摄像头设备
 check_camera(){
 
-	calibra_backup="/opt/ros/$ROS_Ver/camera_info"
+	calibra_backup="/opt/nxrobo/camera_info"
 	#检查使用哪种设备
 	if [ -n "$(lsusb -d 2bc5:0403)" ]&&[ -n "$(lsusb -d 2bc5:0401)" ]; then
 		echo -e "${Warn} 正在使用多个摄像头设备，请退出并拔掉其中一个再使用!"
