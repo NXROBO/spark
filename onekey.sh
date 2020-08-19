@@ -163,6 +163,7 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-image-common
 	sudo apt-get install -y ros-${ROS_Ver}-move-base-* 
 	sudo apt-get install -y ros-${ROS_Ver}-serial
+	sudo apt-get install -y ros-${ROS_Ver}-libuvc-camera
 	sudo apt-get install -y python-pip python-sklearn libudev-dev
 	sudo apt-get install -y ros-${ROS_Ver}-depthimage-to-laserscan ros-${ROS_Ver}-map-server ros-${ROS_Ver}-amcl ros-${ROS_Ver}-gmapping ros-${ROS_Ver}-navigation ros-${ROS_Ver}-navigation-stage ros-${ROS_Ver}-navigation-layers ros-${ROS_Ver}-navigation-tutorials
 	sudo apt-get install -y ros-${ROS_Ver}-hector-mapping
@@ -171,14 +172,18 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
 	sudo apt-get install -y libasound2-dev mplayer
-
-        echo -e "${Info} 安装tensorflow依赖库……"
 	sudo apt-get install -y ros-${ROS_Ver}-usb-cam ros-${ROS_Ver}-openni2-launch
 	sudo apt-get install -y python-dev python-virtualenv
+
+        echo -e "${Info} 安装tensorflow依赖库……"
+	pip install setuptools -i https://pypi.douban.com/simple/
+	pip install --upgrade setuptools -i https://pypi.douban.com/simple/
+	pip install virtualenv -i https://pypi.douban.com/simple/
+	pip install --upgrade virtualenv -i https://pypi.douban.com/simple/
 	virtualenv --system-site-packages $BASEPATH/tensorflow
 	source $BASEPATH/tensorflow/bin/activate
-	sudo easy_install -U pip
-	pip install --upgrade tensorflow==1.5.0
+	easy_install -U pip
+	pip install --upgrade tensorflow==1.5.0 -i https://pypi.douban.com/simple/
 	source $BASEPATH/tensorflow/bin/activate
 
 	echo -e "${Info} 安装语音依赖库……"
