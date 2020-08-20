@@ -43,7 +43,10 @@ check_sys(){
 
 #检查设备连接
 check_dev(){
-
+	#检查底盘
+	if [ ! -n "$(lsusb -d 1a86:7523)" ]; then
+		echo -e "${Error} 底盘没有正确连接，请确认正确连接！！"
+	fi
 	#检查机械臂
 	if [ ! -n "$(lsusb -d 2341:0042)" ]; then
 		echo -e "${Error} 机械臂没有正确连接，请确认正确连接！！"
@@ -76,12 +79,12 @@ check_camera(){
 		astrapro) 
 			#检查是否有默认文件夹和备份文件夹
 			if [ ! -d "$calibra_default" ]; then
-				mkdir "$calibra_default"
+				mkdir -p "$calibra_default"
 			fi
 
 			if [ ! -d "$calibra_backup" ]; then
 				echo -e "${Info} 创建标定文件备份文件夹..."
-				sudo mkdir "$calibra_backup"
+				sudo mkdir  -p "$calibra_backup"
 			fi
 			#如果没有就拷贝一份
 			if [ ! -f "$calibra_backup/camera.yaml" ]||[ ! -f "$calibra_backup/depth_Astra_Orbbec.yaml" ]; then
@@ -176,10 +179,11 @@ install_spark_require(){
 	sudo apt-get install -y python-dev python-virtualenv
 
         echo -e "${Info} 安装tensorflow依赖库……"
+	sudo apt install python-testresources
 	pip install setuptools -i https://pypi.douban.com/simple/
-	pip install --upgrade setuptools -i https://pypi.douban.com/simple/
+	sudo pip install --upgrade setuptools -i https://pypi.douban.com/simple/
 	pip install virtualenv -i https://pypi.douban.com/simple/
-	pip install --upgrade virtualenv -i https://pypi.douban.com/simple/
+	sudo pip install --upgrade virtualenv -i https://pypi.douban.com/simple/
 	virtualenv --system-site-packages $BASEPATH/tensorflow
 	source $BASEPATH/tensorflow/bin/activate
 	easy_install -U pip
@@ -845,6 +849,28 @@ calibrate_camera(){
 
 
 qrcode_transfer_files(){
+	wlp1s_ip=`/sbin/ifconfig wlp1s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlp2s_ip=`/sbin/ifconfig wlp2s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	enp3s_ip=`/sbin/ifconfig enp3s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	eth_ip=`/sbin/ifconfig eth0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+
+	if [ $wlp1s_ip ]; then
+		echo -e "${Info}使用无线网络wlp1s0" 
+	  	net_interface="wlp1s0"
+	elif [ $wlp2s_ip ]; then
+		echo -e "${Info}使用无线网络wlp2s0" 
+	  	net_interface="wlp2s0"
+	elif [ $wlan_ip ]; then
+		echo -e "${Info}使用无线网络wlan0" 
+	  	net_interface="wlan0"
+	elif [ $enp3s_ip ]; then
+		echo -e "${Info}使用无线网络enp3s0" 
+		net_interface="enp3s0"
+	elif [ $eth_ip ]; then
+		echo -e "${Info}使用有线网络eth0" 
+		net_interface="eth0"
+	fi
 	echo -e "${Info}" 
 	echo -e "${Info}通过局域网收发文件" 
 	echo -e "${Info}" 
@@ -855,7 +881,7 @@ qrcode_transfer_files(){
 	echo && stty erase ^? && read -p "请输入数字 [1-2]：" cnum
 	case "$cnum" in
 		1)
-		echo -e "${Info}请输入文件名，带上文件绝对路径，如 /home/spark/a.jpg：
+		echo -e "${Info}请输入文件名，带上文件绝对路径，如 /home/${USER}/a.jpg：
 		 退出请输入：Ctrl + c" 
 		echo && stty erase ^? && read -p "请输入要发送的文件：" s_file
 		if [ -f "$s_file" ]; then
@@ -865,20 +891,20 @@ qrcode_transfer_files(){
 			exit
 		fi
 		
-		qrcp send $s_file
+		qrcp send  -i $net_interface $s_file
 		;;
 		2)
-		echo -e "${Info}请输入接收到的文件存放的路径，默认为 /home/spark/Downloads：
+		echo -e "${Info}请输入接收到的文件存放的路径，默认为 /home/${USER}/Downloads：
 		退出请输入：Ctrl + c" 
 		echo && stty erase ^? && read -p "请输入文件存放的文件夹路径：" s_file
 		if [ -d "$s_file" ]; then
 			echo ""
 		else 
-			echo -e "${Info}${Red_font_prefix}文件夹不存在，将存放在默认文件夹/home/spark/Downloads中${Font_color_suffix}"
-			s_file="/home/spark/Downloads"
+			echo -e "${Info}${Red_font_prefix}文件夹不存在，将存放在默认文件夹/home/${USER}/Downloads中${Font_color_suffix}"
+			s_file="/home/${USER}/Downloads"
 		fi
 		echo -e "${Info}接收的文件将存放在：${Green_font_prefix}"$s_file"${Font_color_suffix}，目录下，请发送端扫码或者直接输入下面的网址选择文件发送"
-		qrcp receive --output=$s_file
+		qrcp  -i $net_interface receive --output=$s_file
 		;;
 		*)
 		echo -e "${Error} 错误，退出"
