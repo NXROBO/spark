@@ -6,14 +6,10 @@
   	<arg name="configuration_basename" default="spark_lds_2d.lua"/>
   	<arg name="open_rviz" default="true"/>
 
-
-	<include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
- 	<!--include file="$(find spark_description)/launch/spark_description.launch"/-->
-
-
-   	<include file="$(find spark_base)/launch/spark_base.launch">
-		<arg name="serialport"                  value="/dev/sparkBase"/>
- 	</include> 
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="start_camera"	value="false"/>
+	</include>
 
  	<!-- 3D sensor -->
   	<arg name="3d_sensor" default="3i_lidar"/>  
@@ -26,7 +22,6 @@
   	</include>
 	<!--<include file="$(find exploration_server)/launch/exploration.launch"/> -->
   	
-
   	<!-- rviz -->
   	<group if="$(arg open_rviz)"> 
     		<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods).rviz"/>

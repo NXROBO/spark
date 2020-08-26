@@ -7,5 +7,8 @@
 -->
 
 <robot name="spark" xmlns:xacro="http://ros.org/wiki/xacro">
-  	<xacro:include filename="$(find spark_description)/urdf/spark_340.urdf.xacro"/> 	
+	<xacro:arg name="camera_types" default="astrapro"/>
+  	<xacro:include filename="$(find spark_description)/urdf/spark_340.urdf.xacro">
+		<xacro:arg name="camera_types"	value="$(arg camera_types)"/>	
+	</xacro:include> 	
 </robot>

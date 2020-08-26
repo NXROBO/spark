@@ -1,69 +1,51 @@
 <!--spark camera slam-->
 <!--SPARK技术讨论与反馈群：8346256-->
 <launch>
-  <!-- Arguments -->
-  <arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
-  <arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
-  <arg name="configuration_basename" default="spark_lds_2d.lua"/>
-  <arg name="open_rviz" default="true"/>
+  	<!-- Arguments -->
+	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
+  	<arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+  	<arg name="camera_types" default="astrapro" doc="camera type [astrapro, astra, d435]"/>
+  	<arg name="configuration_basename" default="spark_lds_2d.lua"/>
+  	<arg name="open_rviz" default="true"/>
 
+	<!-- depth to laser topic -->
+	<group if="$(eval arg('camera_types')=='astra')">
+		<arg name="depthtolaser"	value="/camera/depth/image_raw"/>
+	</group>
 
- <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
- <!--include file="$(find spark_description)/launch/spark_description.launch"/-->
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="camera_types" 	value="$(arg camera_types)"/>
+	</include>
 
-   <include file="$(find spark_base)/launch/spark_base.launch">
-	<arg name="serialport"                  value="/dev/sparkBase"/>
- </include> 
-
-
-   <!-- 3D sensor -->
-  <arg name="3d_sensor" default="astra"/>  <!-- r200, kinect, asus_xtion_pro -->
-  <include file="$(find astra_camera)/launch/$(arg camera_types).launch">
-  <!--  <arg name="rgb_processing"                 value="false" /> -->
-  <!--  <arg name="depth_registration"             value="false" /> -->
-  <!--  <arg name="depth_processing"                value="false" /> -->
-
-    <arg name="rgb_processing"                  value="true"/>
-    <arg name="depth_processing"                value="true"/>
-    <arg name="depth_registered_processing"     value="false"/>
-    <arg name="depth_registration"              value="false"/>
-    <arg name="disparity_processing"            value="false"/>
-    <arg name="disparity_registered_processing" value="false"/>
+  	<!-- Run the depthimage_to_laserscan node -->
+  	<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
     
-    <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
-         Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
-    
-  </include>
+    		<!--<remap from="image" to="/camera/depth/image_raw" />-->
+    		<remap from="image" to="$(arg depthtolaser)" />
 
+    		<!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
+    		<remap from="camera_info" to="/camera/depth/camera_info" />
 
-  <!-- Run the depthimage_to_laserscan node -->
-  <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
-    
+    		<remap from="scan" to="/scan" />
+    		<param name="output_frame_id" value="camera_depth_frame" />
 
-    <!--<remap from="image" to="/camera/depth/image_raw" />-->
-    <remap from="image" to="/camera/depth/image_raw" />
+    		<!--added by xilai 6/19/2017-->
+    		<param name="scan_height" value="50" />
+  	</node>
 
-    <!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
-    <remap from="camera_info" to="/camera/depth/camera_info" />
+  	<!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
+  	<include file="$(find spark_slam)/launch/spark_$(arg slam_methods).launch">
+    	<!--arg name="model" value="$(arg model)"/-->
+    		<arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  	</include>
 
-    <remap from="scan" to="/scan" />
-    <param name="output_frame_id" value="camera_depth_frame" />
+  	<!-- rviz -->
+  	<group if="$(arg open_rviz)"> 
+    		<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods).rviz"/>
+  	</group>
 
-    <!--added by xilai 6/19/2017-->
-    <param name="scan_height" value="50" />
-  </node>
+  	<!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  	<node pkg="spark_teleop" type="keyboard_control.sh" name="kc" />
 
-  <!-- SLAM: Gmapping, Cartographer, Hector, Karto, Frontier_exploration, RTAB-Map -->
-  <include file="$(find spark_slam)/launch/spark_$(arg slam_methods).launch">
-    <!--arg name="model" value="$(arg model)"/-->
-    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
-  </include>
-
-  <!-- rviz -->
-  <group if="$(arg open_rviz)"> 
-    <node pkg="rviz" type="rviz" name="rviz" required="true"
-          args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods).rviz"/>
-  </group>
-  <!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
-  <node pkg="spark_teleop" type="keyboard_control.sh" name="kc" />
 </launch>

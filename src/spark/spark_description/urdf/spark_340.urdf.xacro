@@ -7,13 +7,23 @@
 -->
 
 <robot name="spark" xmlns:xacro="http://ros.org/wiki/xacro">
-  	
+
+  	<xacro:arg name="camera_types"	default="astrapro"/>
+
+	<xacro:property name="camera"	value="$(arg camera_types)"/>
+
   	<xacro:include filename="$(find spark_description)/urdf/base/spark_base.urdf"/>  	
   		
   	<xacro:include filename="$(find spark_description)/urdf/stack/spark_stack.urdf"/>
-	
-	<xacro:include filename="$(find spark_description)/urdf/sensors/spark_camera.urdf"/>
 
 	<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
-		
+
+	<xacro:if value="${camera == 'astrapro' or camera == 'astra'}">
+		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_$(arg camera_types).urdf"/>
+	</xacro:if>
+
+	<xacro:if value="${camera == 'd435'}">
+		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_d435.urdf.xacro"/>
+	</xacro:if>
+
 </robot>

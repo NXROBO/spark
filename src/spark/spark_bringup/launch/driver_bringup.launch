@@ -1,13 +1,34 @@
-<!-- -->
+<!--启动spark各种驱动-->
 <launch>
-  <arg name="serialport" default="/dev/sparkBase"/>
-  <arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
 
-  <include file="$(find spark_description)/launch/spark_description.launch"/>
-  <include file="$(find spark_base)/launch/spark_base.launch">
-	<arg name="serialport"                  value="$(arg serialport)"/>
-  </include>
+	<arg name="start_base" default="true"/>
+	<arg name="start_camera" default="true"/>
+	<arg name="serialport" default="/dev/sparkBase"/>
+	<arg name="dp_rgist" default="false"/>
+	<arg name="camera_types" default="astrapro" doc="camera type [astrapro, astra,d435]"/>
 
-  <include file="$(find astra_camera)/launch/$(arg camera_types).launch" />
+  	<!--启动描述 -->
+	<include file="$(find spark_description)/launch/spark_description.launch">
+		<arg name="camera_types"	value="$(arg camera_types)"/>	
+	</include>
+
+	<!--启动底盘 -->
+  	<!--看运行的功能是否需要启动底盘，如果不需要就不启动 -->
+  	<group if="$(arg start_base)">
+
+  		<include file="$(find spark_base)/launch/spark_base.launch">
+			<arg name="serialport"                  value="$(arg serialport)"/>
+  		</include>
+
+  	</group>
+
+	<!--打开摄像头 -->
+	<group if="$(arg start_camera)">
+		<!-- 启动摄像头 -->
+  		<include file="$(find camera_driver_transfer)/launch/$(arg camera_types).launch">
+			<arg name="dp_rgist"	value="$(arg dp_rgist)"/>	
+		</include>
+	</group>
+
 
 </launch>

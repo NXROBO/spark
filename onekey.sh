@@ -59,18 +59,29 @@ check_dev(){
 #检查摄像头设备
 check_camera(){
 
+	camera_flag=0
 	calibra_backup="/opt/nxrobo/camera_info"
+
 	#检查使用哪种设备
-	if [ -n "$(lsusb -d 2bc5:0403)" ]&&[ -n "$(lsusb -d 2bc5:0401)" ]; then
+	if [ -n "$(lsusb -d 2bc5:0403)" ]; then
+		CAMERATYPE="astrapro"
+		camera_flag=$[$camera_flag + 1]
+	fi
+	if [ -n "$(lsusb -d 2bc5:0401)" ]; then
+		CAMERATYPE="astra"
+		camera_flag=$[$camera_flag + 1]
+	fi
+	if [ -n "$(lsusb -d 8086:0b07)" ]; then
+		CAMERATYPE="d435"
+		camera_flag=$[$camera_flag + 1]
+	fi
+
+	if [ $camera_flag -ge 2 ]; then
 		echo -e "${Warn} 正在使用多个摄像头设备，请退出并拔掉其中一个再使用!"
 		echo -e "${Warn} 退出请输入：Ctrl + c！"
-	elif [ -n "$(lsusb -d 2bc5:0403)" ]; then
-		echo -e "${Info} 正在使用Astra Pro摄像头"
-		CAMERATYPE="astrapro"
-	elif [ -n "$(lsusb -d 2bc5:0401)" ]; then
-		echo -e "${Info} 正在使用Astra摄像头"
-		CAMERATYPE="astra"
-	elif [ ! -n "$(lsusb -d 2bc5:0403)" ]&&[ ! -n "$(lsusb -d 2bc5:0401)" ]; then
+	elif [ $camera_flag -eq 1 ]; then
+		echo -e "${Info} 正在使用${CAMERATYPE}摄像头"
+	elif [ $camera_flag -eq 0 ]; then
 		echo -e "${Error} 没有找到摄像头，请确认摄像头已正确连接！！"
 	fi	
 	
@@ -150,6 +161,13 @@ check_install_ros_full(){
 #安装SPARK依赖库
 install_spark_require(){
 	echo -e "${Info} 准备安装SPARK相关驱动……"
+	echo 'deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo xenial main' | sudo tee /etc/apt/sources.list.d/realsense-public.list
+	sudo apt-key adv --keyserver keys.gnupg.net --recv-key 6F3EFCDE
+	if [[ "${ROS_Ver}" == "kinetic" ]]; then
+		sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo xenial main" -u
+	elif [[ "${ROS_Ver}" == "melodic" ]]; then
+		sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u
+	fi
 
 	echo -e "${Info} 设置udev规则……"
 	BASEPATH=$(cd `dirname $0`; pwd)
@@ -174,9 +192,12 @@ install_spark_require(){
 	sudo apt-get install -y ros-${ROS_Ver}-cartographer*
 	sudo apt-get install -y ros-${ROS_Ver}-rtabmap-ros 
 	sudo apt-get install -y ros-${ROS_Ver}-slam-karto
+	sudo apt-get install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg
+	sudo apt-get install -y ros-${ROS_Ver}-ddynamic-reconfigure
 	sudo apt-get install -y libasound2-dev mplayer
 	sudo apt-get install -y ros-${ROS_Ver}-usb-cam ros-${ROS_Ver}-openni2-launch
 	sudo apt-get install -y python-dev python-virtualenv
+	
 
         echo -e "${Info} 安装tensorflow依赖库……"
 	sudo apt install python-testresources
@@ -296,8 +317,6 @@ install_spark(){
 }
 
 
-
-
 #完全安装
 install_all(){
 	check_install_ros_full
@@ -388,7 +407,7 @@ people_follow(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_follower bringup.launch camera_type_tel:=${CAMERATYPE}
+	roslaunch spark_follower bringup.launch camera_type_tel:=${CAMERATYPE} 
 }
 
 
@@ -843,7 +862,7 @@ calibrate_camera(){
 
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
-	roslaunch camera_calibrator camera_calibrate.launch calibrate_type:=${CALIBRATETYPE}
+	roslaunch camera_calibrator camera_calibrate.launch calibrate_type:=${CALIBRATETYPE} camera_type_tel:=${CAMERATYPE}
 
 }
 

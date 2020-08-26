@@ -3,23 +3,21 @@
  -->
 
 <launch>
-	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
-	<include file="$(find spark_description)/launch/spark_description.launch"/>
-	<include file="$(find spark_base)/launch/spark_base.launch">
-		<arg name="serialport"                  value="/dev/sparkBase"/> 
+	<!-- 启动哪种摄像机 -->
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
 	</include>
-	
-	<include file="$(find astra_camera)/launch/$(arg camera_type_tel).launch">
-	  <arg name="rgb_processing"                  value="true"/> 
-	  <arg name="depth_processing"                value="true"/>
-	  <arg name="depth_registered_processing"     value="false"/>
-	  <arg name="depth_registration"              value="false"/>
-	  <arg name="disparity_processing"            value="false"/>
-	  <arg name="disparity_registered_processing" value="false"/>
+
+	<!-- -->
+	<include file="$(find spark_follower)/launch/nxfollower_bringup_nodelet.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
 	</include>
-	
-	<include file="$(find spark_follower)/launch/nxfollower_bringup_nodelet.launch"/>
+
 	<!--在rviz显示-->
-  	<arg name="rvizconfig" default="$(find spark_follower)/rviz/follow.rviz" />
+  	<!--<arg name="rvizconfig" default="$(find spark_follower)/rviz/follow.rviz" />-->
+	<arg name="rvizconfig" default="$(find spark_follower)/rviz/follow_$(arg camera_type_tel).rviz" />
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 </launch>

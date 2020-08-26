@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!-- 
+	spark camera    
+	© 2016 NXROBO INTERNATIONAL (HONG KONG) LIMITED.
+    http://www.nxrobo.com
+-->
+
+<robot
+  name="camera_frame">
+  <link name="camera_link">
+    <inertial>
+      <origin 
+      	xyz="0 0 0" 
+      	rpy="0 0 0" />
+      <mass value="0.11222" />
+      <inertia
+		    ixx="0"
+		    ixy="0"
+		    ixz="0"
+		    iyy="0"
+		    iyz="-0"
+		    izz="0" />
+    </inertial>  
+    <visual>
+      <origin 
+      	xyz="0 0 0" 
+      	rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://spark_description/meshes/spark/sensors/spark_camera.DAE" />
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="camera_link_joint" type="fixed">
+      <origin 
+      	xyz="0.0936242 0 0.6629500" 
+      	rpy="0 0 0" />
+      <parent link="base_link"/>
+      <child link="camera_link" />
+  </joint>
+ 
+  <link name="camera_rgb_frame"/>
+  <joint name="camera_rgb_joint" type="fixed">
+      <origin 
+      	xyz="0 0.01255 0" 
+      	rpy="0 0 0" />
+      <parent link="camera_link"/>
+      <child link="camera_rgb_frame" />
+  </joint>
+  
+  <link name="camera_rgb_optical_frame"/>
+  <joint name="camera_rgb_optical_joint" type="fixed">
+	  <origin 
+	  	xyz="0 0 0" 
+	  	rpy="-1.5707963267948966 0 -1.5707963267948966" />
+	  <parent link="camera_rgb_frame"/>
+	  <child link="camera_rgb_optical_frame" />
+  </joint>  
+ 
+  <link name="camera_depth_frame"/>
+  <joint name="camera_depth_joint" type="fixed">
+      <origin 
+      	xyz="0 0.03755 0" 
+      	rpy="0 0 0" />
+      <parent link="camera_link"/>
+      <child link="camera_depth_frame" />
+  </joint>
+ 
+   
+  <link name="camera_depth_optical_frame"/>
+  <joint name="camera_depth_optical_joint" type="fixed">
+	  <origin 
+	  	xyz="0 0 0" 
+	  	rpy="-1.5707963267948966 0 -1.5707963267948966" />
+	  <parent link="camera_depth_frame"/>
+	  <child link="camera_depth_optical_frame" />
+  </joint>
+  
+</robot>

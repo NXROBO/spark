@@ -1,13 +1,16 @@
 <!--让SPARK跑起来-->
 <launch>
-	<!-- camera -->
-	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
+	<!-- 启动哪种摄像机 -->
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+
 	<!--spark底盘驱动，机器人描述,底盘,相机-->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
 		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
 	</include>
+
 	<!--spark键盘控制 “wsad”分别代表“前后左右”-->
 	<!--node pkg="spark_teleop" type="spark_teleop_node" name="spark_teleop_node" args="0.15 0.5"/-->
+
 	<!--在rviz显示-->
   	<arg name="rvizconfig" default="$(find spark_teleop)/rviz/teleop.rviz" />
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> 

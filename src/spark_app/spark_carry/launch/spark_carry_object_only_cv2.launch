@@ -1,32 +1,28 @@
 <!-- NXROBO SPARK -->
 <launch> 	
-  <!--spark驱动，机器人描述，相机，底盘-->
-  <arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
-  <!--include file="$(find spark_bringup)/launch/driver_bringup.launch"/-->
-  <include file="$(find astra_launch)/launch/$(arg camera_type_tel).launch">
-	<arg name="rgb_processing"                  value="true"/> 
-	<arg name="depth_processing"                value="true"/>
-	<arg name="depth_registered_processing"     value="false"/>
-	<arg name="depth_registration"              value="false"/>
-	<arg name="disparity_processing"            value="false"/>
-	<arg name="disparity_registered_processing" value="false"/>
-  </include>
-	
-  <!--导航-->
-  <include file="$(find spark_navigation)/launch/amcl_demo_lidar.launch"/>
+	<!-- 启动哪种摄像机 -->
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+
+  	<!--导航-->
+  	<include file="$(find spark_navigation)/launch/amcl_demo_lidar.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="start_camera"	value="true">	
+	</include>
     
-  <!--UARM机械臂-->
-  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+  	<!--UARM机械臂-->
+  	<include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
 	
-  <!--搬运物体-->
-  <node pkg="spark_carry_object" type="s_carry_object_cv2.py" name="spark_carry_object_node" output="screen">
-  	<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
-  	<param name ="b_Pose" value = "0.5,0.5,0,0,0,0,1"/>
-	<param name ="turnbody_min_z" value = "-0.2"/>
-	<param name ="turnbody_max_z" value = "0.2"/>
-  </node>
-   <!--在rviz显示-->
-  <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_amcl.rviz" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+  	<!--搬运物体-->
+  	<node pkg="spark_carry_object" type="s_carry_object_cv2.py" name="spark_carry_object_node" output="screen">
+		<remap from="/camera/rgb/image_raw" to="/camera/color/image_raw" if="$(eval arg('camera_type_tel')=='d435')"/>
+  		<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
+  		<param name ="b_Pose" value = "0.5,0.5,0,0,0,0,1"/>
+		<param name ="turnbody_min_z" value = "-0.2"/>
+		<param name ="turnbody_max_z" value = "0.2"/>
+  	</node>
+
+  	<!--在rviz显示-->
+  	<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_amcl.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 
 </launch>
