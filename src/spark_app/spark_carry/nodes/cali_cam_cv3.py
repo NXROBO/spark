@@ -74,8 +74,8 @@ def image_callback(data):
 	cv_image5 = cv2.dilate(cv_image5, None, iterations=4)
 
 	# detect contour
-	# cv2.imshow("win2", cv_image5)
-	# cv2.waitKey(1)
+	cv2.imshow("win2", cv_image5)
+	cv2.waitKey(1)
 	_, contours, hier = cv2.findContours(cv_image5, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	size = []
 	size_max = 0

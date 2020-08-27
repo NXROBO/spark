@@ -22,7 +22,7 @@
   	</node>
 
   	<!--在rviz显示-->
-  	<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_amcl.rviz" />
+  	<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_amcl_$(arg camera_type_tel).rviz" />
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 
 </launch>

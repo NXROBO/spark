@@ -38,7 +38,7 @@
 
 
 	<!-- rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map.rviz"/>
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map_$(arg camera_type_tel).rviz"/>
 	<!-- rtabmap -->
   	<include file="$(find spark_rtabmap)/launch/spark_mapping.launch">
 		<arg name="localization"                  value="true"/>
