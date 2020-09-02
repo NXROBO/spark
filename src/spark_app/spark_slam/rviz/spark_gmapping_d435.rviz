@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
         - /PointCloud21
       Splitter Ratio: 0.594406009
@@ -64,33 +65,33 @@ Visualization Manager:
         base_link:
           Value: true
         camera_aligned_depth_to_color_frame:
-          Value: true
+          Value: false
         camera_aligned_depth_to_infra1_frame:
-          Value: true
+          Value: false
         camera_bottom_screw_frame:
-          Value: true
+          Value: false
         camera_color_frame:
-          Value: true
+          Value: false
         camera_color_optical_frame:
-          Value: true
+          Value: false
         camera_depth_frame:
           Value: false
         camera_depth_optical_frame:
           Value: false
         camera_infra1_frame:
-          Value: true
+          Value: false
         camera_infra1_optical_frame:
-          Value: true
+          Value: false
         camera_left_ir_frame:
-          Value: true
+          Value: false
         camera_left_ir_optical_frame:
-          Value: true
+          Value: false
         camera_link:
           Value: true
         camera_right_ir_frame:
-          Value: true
+          Value: false
         camera_right_ir_optical_frame:
-          Value: true
+          Value: false
         cliff_back_left_link:
           Value: false
         cliff_back_right_link:
@@ -416,8 +417,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.2543751
-        Min Value: -0.0830663443
+        Max Value: 16.714592
+        Min Value: -23.868494
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -468,25 +469,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 5.76348734
+      Distance: 3.65289211
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 9.53673975e-07
-        Y: 4.76836988e-07
-        Z: -4.76836988e-07
+        X: 0.282452166
+        Y: 0.616874695
+        Z: -9.53674089e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.630399108
+      Pitch: 0.66039902
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 0.175400183
+      Yaw: 5.22358656
     Saved: ~
 Window Geometry:
   Displays:

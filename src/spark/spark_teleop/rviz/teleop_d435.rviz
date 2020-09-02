@@ -1,13 +1,14 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 75
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
         - /PointCloud21
       Splitter Ratio: 0.5
-    Tree Height: 75
+    Tree Height: 150
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -76,6 +77,18 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         camera_depth_frame:
           Alpha: 1
           Show Axes: false
@@ -84,16 +97,24 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        camera_left_ir_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_left_ir_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_rgb_frame:
+        camera_right_ir_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        camera_rgb_optical_frame:
+        camera_right_ir_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -196,15 +217,33 @@ Visualization Manager:
           Value: false
         base_link:
           Value: true
+        camera_aligned_depth_to_color_frame:
+          Value: false
+        camera_aligned_depth_to_infra1_frame:
+          Value: false
+        camera_bottom_screw_frame:
+          Value: false
+        camera_color_frame:
+          Value: false
+        camera_color_optical_frame:
+          Value: false
         camera_depth_frame:
           Value: false
         camera_depth_optical_frame:
           Value: false
-        camera_link:
-          Value: true
-        camera_rgb_frame:
+        camera_infra1_frame:
           Value: false
-        camera_rgb_optical_frame:
+        camera_infra1_optical_frame:
+          Value: false
+        camera_left_ir_frame:
+          Value: false
+        camera_left_ir_optical_frame:
+          Value: false
+        camera_link:
+          Value: false
+        camera_right_ir_frame:
+          Value: false
+        camera_right_ir_optical_frame:
           Value: false
         cliff_back_left_link:
           Value: false
@@ -259,12 +298,26 @@ Visualization Manager:
                 {}
               base_gyro_link:
                 {}
-              camera_link:
-                camera_depth_frame:
-                  camera_depth_optical_frame:
+              camera_bottom_screw_frame:
+                camera_link:
+                  camera_aligned_depth_to_color_frame:
+                    camera_color_optical_frame:
+                      {}
+                  camera_aligned_depth_to_infra1_frame:
+                    camera_infra1_optical_frame:
+                      {}
+                  camera_color_frame:
                     {}
-                camera_rgb_frame:
-                  camera_rgb_optical_frame:
+                  camera_depth_frame:
+                    camera_depth_optical_frame:
+                      {}
+                    camera_left_ir_frame:
+                      camera_left_ir_optical_frame:
+                        {}
+                    camera_right_ir_frame:
+                      camera_right_ir_optical_frame:
+                        {}
+                  camera_infra1_frame:
                     {}
               cliff_back_left_link:
                 {}
@@ -321,8 +374,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.84632468
-        Min Value: -0.040540576
+        Max Value: 0.734114885
+        Min Value: -1.92792726
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -373,7 +426,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10
+      Distance: 2.45080876
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -388,10 +441,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.415398329
+      Pitch: 0.67539835
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.71539736
+      Yaw: 0.52539748
     Saved: ~
 Window Geometry:
   Displays:

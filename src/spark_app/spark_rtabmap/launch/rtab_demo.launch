@@ -4,11 +4,6 @@
   	<arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
 	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
 
-	<!-- depth to laser topic -->
-	<group if="$(eval arg('camera_types')=='astra')">
-		<arg name="depthtolaser"	value="/camera/depth/image_raw"/>
-	</group>
-
 	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
 		<arg name="camera_types"	value="$(arg camera_types)"/>

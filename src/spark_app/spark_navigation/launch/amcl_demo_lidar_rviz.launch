@@ -37,7 +37,7 @@
     		<arg name="custom_param_file" value="$(arg custom_param_file)"/>
   	</include>
   	<!--在rviz显示-->
-  	<arg name="rvizconfig" default="$(find spark_navigation)/rviz/amcl_lidar.rviz" />
+  	<arg name="rvizconfig" default="$(find spark_navigation)/rviz/amcl_camera_$(arg camera_type_tel).rviz" />
   	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 </launch>
 

@@ -1,7 +1,6 @@
 <!--NXROBO Spark rtabmap-->
 <!--SPARK技术讨论与反馈群：8346256-->
 <launch>
-  <arg name="camera_types"	default="astrapro"/>
   <arg name="database_path"     default="rtabmap.db"/>
   <arg name="rgbd_odometry"     default="false"/>
   <arg name="rtabmapviz"        default="false"/>
@@ -11,14 +10,9 @@
   <arg     if="$(arg localization)" name="args"  default=""/>
   <arg unless="$(arg localization)" name="args"  default="--delete_db_on_start"/>
 
-  <arg	if="$(eval arg('camera_types')=='d435')" name="rgb_topic"   default="/camera/color/image_raw"/>
-  <arg 	unless="$(eval arg('camera_types')=='d435')" name="rgb_topic" default="/camera/rgb/image_rect_color"/>
-
-  <arg  if="$(eval arg('camera_types')=='d435')" name="depth_topic" default="/camera/aligned_depth_to_color/image_raw"/>
-  <arg  unless="$(eval arg('camera_types')=='d435')" name="depth_topic" default="/camera/depth_registered/image_raw"/>
-
-  <arg  if="$(eval arg('camera_types')=='d435')" name="camera_info_topic" default="/camera/color/camera_info"/>
-  <arg  unless="$(eval arg('camera_types')=='d435')" name="camera_info_topic" default="/camera/rgb/camera_info"/>
+  <arg name="rgb_topic" default="/camera/rgb/image_rect_color"/>
+  <arg name="depth_topic" default="/camera/depth_registered/image_raw"/>
+  <arg name="camera_info_topic" default="/camera/rgb/camera_info"/>
  
   <arg name="wait_for_transform"  default="0.2"/> 
 

@@ -5,11 +5,6 @@
 	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
 	
-	<!-- depth to laser topic -->
-	<group if="$(eval arg('camera_type_tel')=='astra')">
-		<arg name="depthtolaser"	value="/camera/depth/image_raw"/>
-	</group>
-
 	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
 		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
@@ -40,9 +35,8 @@
 	<!-- rviz -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map_$(arg camera_type_tel).rviz"/>
 	<!-- rtabmap -->
-  	<include file="$(find spark_rtabmap)/launch/spark_mapping.launch">
+  	<include file="$(find spark_rtabmap)/launch/spark_mapping_$(arg camera_type_tel).launch">
 		<arg name="localization"                  value="true"/>
-		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
 	</include>
 
 

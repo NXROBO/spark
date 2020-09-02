@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
         - /PointCloud21
       Splitter Ratio: 0.594406009
@@ -216,34 +217,26 @@ Visualization Manager:
           Value: false
         base_link:
           Value: true
-        camera_aligned_depth_to_color_frame:
-          Value: true
-        camera_aligned_depth_to_infra1_frame:
-          Value: true
         camera_bottom_screw_frame:
-          Value: true
+          Value: false
         camera_color_frame:
-          Value: true
+          Value: false
         camera_color_optical_frame:
-          Value: true
+          Value: false
         camera_depth_frame:
           Value: false
         camera_depth_optical_frame:
           Value: false
-        camera_infra1_frame:
-          Value: true
-        camera_infra1_optical_frame:
-          Value: true
         camera_left_ir_frame:
-          Value: true
+          Value: false
         camera_left_ir_optical_frame:
-          Value: true
+          Value: false
         camera_link:
           Value: true
         camera_right_ir_frame:
-          Value: true
+          Value: false
         camera_right_ir_optical_frame:
-          Value: true
+          Value: false
         cliff_back_left_link:
           Value: false
         cliff_back_right_link:
@@ -304,15 +297,10 @@ Visualization Manager:
                   {}
                 camera_bottom_screw_frame:
                   camera_link:
-                    camera_aligned_depth_to_color_frame:
-                      camera_color_optical_frame:
-                        {}
-                    camera_aligned_depth_to_infra1_frame:
-                      camera_infra1_optical_frame:
-                        {}
-                    camera_color_frame:
-                      {}
                     camera_depth_frame:
+                      camera_color_frame:
+                        camera_color_optical_frame:
+                          {}
                       camera_depth_optical_frame:
                         {}
                       camera_left_ir_frame:
@@ -321,8 +309,6 @@ Visualization Manager:
                       camera_right_ir_frame:
                         camera_right_ir_optical_frame:
                           {}
-                    camera_infra1_frame:
-                      {}
                 cliff_back_left_link:
                   {}
                 cliff_back_right_link:
@@ -487,10 +473,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.565399945
+      Pitch: 0.68539983
       Target Frame: map
       Value: ThirdPersonFollower (rviz)
-      Yaw: 2.8154006
+      Yaw: 2.8754003
     Saved: ~
 Window Geometry:
   Displays:
