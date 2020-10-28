@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 import roslib
 import sys
 import rospy
@@ -12,7 +13,7 @@ from sensor_msgs.msg import Image
 from swiftpro.msg import *
 from cv_bridge import CvBridge, CvBridgeError
 from sklearn.linear_model import LinearRegression
-
+#from PIL import Image, ImageDraw, ImageFont
 xc = 0
 yc = 0
 
@@ -25,58 +26,127 @@ yarray = np.zeros(count)
 xc_array = np.zeros(count)
 yc_array = np.zeros(count)
 
+cali_w = 20
+cali_h = 30
+collect_times = 200
+move_position = 1
+collecting = 0
+c_cnt = 0
+HSV_value = [0,0,0]
+def mean_hsv(img,hsv_value):
+	HSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+	hsv_value[0]+=np.mean(HSV[:, :, 0])
+	hsv_value[1]+=np.mean(HSV[:, :, 1])
+	hsv_value[2]+=np.mean(HSV[:, :, 2])
+	return hsv_value
+
+def hsv_range(hsv_value):
+
+	H_range = 6
+	S_range = 120
+	V_range = 120
+
+	lower_H = int(hsv_value[0] - H_range)
+	upper_H = int(hsv_value[0] + H_range)
+
+	lower_S = int(hsv_value[1] - S_range)
+	upper_S = int(hsv_value[1] + S_range)
+
+	lower_V = int(hsv_value[2] - V_range)
+	upper_V = int(hsv_value[2] + V_range)
+
+	if lower_H<0:
+		lower_H=0
+	if upper_H>180:
+		upper_H=180
+
+	if lower_S<50:
+		lower_S=50
+	if upper_S>255:
+		upper_S=255
+
+	if lower_V<50:
+		lower_V=50
+	if upper_V>255:
+		upper_V=255
+
+	lower_HSV = np.array([lower_H, lower_S, lower_V])
+	upper_HSV = np.array([upper_H, upper_S, upper_V])
+	return lower_HSV, upper_HSV
+
+def test(lower_HSV, upper_HSV, image):
+	hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+	mask = cv2.inRange(hsv, lower_HSV, upper_HSV)
+	mask = cv2.erode(mask, None, iterations=2)
+	mask = cv2.dilate(mask, None, iterations=2)
+	mask = cv2.GaussianBlur(mask, (3, 3), 0)
+	cv2.putText(mask, 'Done! Press q to exit!', (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.2,
+				(255, 255, 255), 2, cv2.LINE_AA)
+	cv2.imshow("HSV_img", mask)
 
 def image_callback(data):
 	global xc, yc
+	global move_position
+	global collecting
+	global c_cnt
+	global HSV_value
+	global lower_HSV, upper_HSV
 	# change to opencv
 	try:
 		cv_image1 = CvBridge().imgmsg_to_cv2(data, "bgr8")
 	except CvBridgeError as e:
 		print(e)
+	cv_image_draw = cv_image1.copy()
+	if(move_position):
+		cv2.putText(cv_image_draw, 'please move the camera to make ', (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+				(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.putText(cv_image_draw, 'the red color in the rectangle ', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+				(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.putText(cv_image_draw, 'green box!then press the \'ENTER\' ', (30, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+				(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.putText(cv_image_draw, 'in another terminal!', (30, 180), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
+				(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.rectangle(cv_image_draw, (355, 310), (355 + cali_w, 310 + cali_h), (0, 255, 0), 3)
+		c_cnt = 0
+		cv2.imshow("win_draw", cv_image_draw)
+		cv2.waitKey(1)
+		return
+	elif(collecting):
+		c_cnt = c_cnt+1
+		cv2.putText(cv_image_draw, 'collecting the hsv!', (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.2,
+			(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.putText(cv_image_draw, ' please wait for 5s.', (30, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2,
+				(0, 255, 0), 2, cv2.LINE_AA)
+		cv2.rectangle(cv_image_draw, (355, 310), (355 + cali_w, 310 + cali_h), (0, 255, 0), 3)
+		frame = cv_image1[315:310 + cali_h-5, 360:355 + cali_w-5]
+		HSV_value = mean_hsv(frame, HSV_value)	
+		cv2.imshow("win_draw", cv_image_draw)
+		cv2.waitKey(1)
+		
+		if(c_cnt >= collect_times):
+			for i in range(len(HSV_value)):
+				HSV_value[i] = HSV_value[i] / collect_times
+				print(i,len(HSV_value), HSV_value[i])
+			lower_HSV, upper_HSV = hsv_range(HSV_value)
+			#save_hsv(name, lower_HSV, upper_HSV)
+			print(lower_HSV , upper_HSV)
+			collecting = 0
+			cv2.destroyWindow("win_draw")
+		return
+	#test(lower_HSV, upper_HSV, cv_image1)
 
-	# change rgb to hsv
-	cv_image2 = cv2.cvtColor(cv_image1, cv2.COLOR_BGR2HSV)
-
-	# extract blue
-	# LowerBlue = np.array([100, 90, 80])
-	# UpperBlue = np.array([130, 255, 255])
-	# mask = cv2.inRange(cv_image2, LowerBlue, UpperBlue)
-	# cv_image3 = cv2.bitwise_and(cv_image2, cv_image2, mask=mask)
-	# extract red
-
-	# lower mask (0-10)
-	lower_red = np.array([0,50,50])
-	upper_red = np.array([10,255,255])
-	mask0 = cv2.inRange(cv_image2, lower_red, upper_red)
-
-	# upper mask (170-180)
-	lower_red = np.array([160,50,50])
-	upper_red = np.array([180,255,255])
-	mask1 = cv2.inRange(cv_image2, lower_red, upper_red)
-
-	# join my masks
-	mask = mask0+mask1
-
-
-	cv_image3 = cv_image2.copy()
-	cv_image3[np.where(mask==0)] = 0
-
-
-	# gray process
-	cv_image4 = cv_image3[:,:,0]
-
+	cv_image_cp = cv_image1.copy()
+	cv_image_hsv = cv2.cvtColor(cv_image_cp, cv2.COLOR_BGR2HSV)
+	cv_image_gray = cv2.inRange(cv_image_hsv, lower_HSV, upper_HSV)
 	# smooth and clean noise
-	blurred = cv2.blur(cv_image4, (9, 9))
-	(_, thresh) = cv2.threshold(blurred, 90, 255, cv2.THRESH_BINARY)
-	kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25))
-	cv_image5 = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-	cv_image5 = cv2.erode(cv_image5, None, iterations=4)
-	cv_image5 = cv2.dilate(cv_image5, None, iterations=4)
-
+	cv_image_gray = cv2.erode(cv_image_gray, None, iterations=2)
+	cv_image_gray = cv2.dilate(cv_image_gray, None, iterations=2)
+	cv_image_gray = cv2.GaussianBlur(cv_image_gray, (5,5), 0)
 	# detect contour
-	cv2.imshow("win2", cv_image5)
+	cv2.imshow("win1", cv_image1)
+	cv2.imshow("win2", cv_image_gray)
 	cv2.waitKey(1)
-	_, contours, hier = cv2.findContours(cv_image5, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	_, contours, hier = cv2.findContours(cv_image_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	size = []
 	size_max = 0
 	for i, c in enumerate(contours):
@@ -137,13 +207,24 @@ def command_callback(data):
 		print("Linear Regression for x and yc is :  x = %.5fyc + (%.5f)" % (k1, b1))
 		print("Linear Regression for y and xc is :  y = %.5fxc + (%.5f)" % (k2, b2))
 		index = 0
+		print("finish the calibration. please check the value. then press ctrl-c to exit")
 
+def msg_callback(data):
+	global move_position
+	global collecting
+	if(data.data == "start"):
+		move_position = 0
+		collecting = 1
+		print("start to collect the hsv!!")
+	else:
+		collecting = 0
 
 def main():
 	rospy.init_node('image_converter', anonymous=True)
+
 	sub1 = rospy.Subscriber("/camera/rgb/image_raw", Image, image_callback)
 	sub2 = rospy.Subscriber("cali_pix_topic", status, command_callback)
-
+	sub3 = rospy.Subscriber("start_topic", String, msg_callback)
 	try:
 		rospy.spin()
 	except KeyboardInterrupt:

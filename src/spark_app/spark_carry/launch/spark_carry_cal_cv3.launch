@@ -21,7 +21,9 @@
   <!--控制机械臂的定点移动-->
   <node pkg="spark_carry_object" type="cali_pos.py" name="cali_pos_node" output="screen"/>  	  
    <!--在rviz显示-->
-  <arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_$(arg camera_type_tel).rviz" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
-
+  <!--<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_$(arg camera_type_tel).rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>-->
+  
+  <!--是否开始 -->
+  <node pkg="spark_carry_object" type="publish_start_to_cali.sh" name="pstc" />
 </launch>
