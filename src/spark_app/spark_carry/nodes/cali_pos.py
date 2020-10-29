@@ -23,7 +23,7 @@ def talker(threadName, delay):
 
 	sub3 = rospy.Subscriber("start_topic", String, msg_callback)
 	r1 = rospy.Rate(1)  # 1s
-	r2 = rospy.Rate(0.06) # 16s
+	r2 = rospy.Rate(0.05) # 20s
 	r3 = rospy.Rate(0.2)  # 5s
 	r4 = rospy.Rate(0.4)  # 2.5s
 
