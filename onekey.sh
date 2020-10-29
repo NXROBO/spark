@@ -956,7 +956,7 @@ tell_us(){
 	echo -e ""
 	echo -e "${Tip} ------------分隔线--------------" 
 	echo -e "${Tip} 网址：www.nxrobo.com" 
-	echo -e "${Tip} SPARK技术讨论与反馈QQ群：8346256" 
+	echo -e "${Tip} SPARK技术讨论与反馈QQ群：一群 8346256(已满)；二群 6646169" 
 	echo -e "${Tip} ------------分隔线--------------"
 	echo -e ""
 }
