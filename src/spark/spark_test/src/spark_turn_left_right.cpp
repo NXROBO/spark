@@ -33,48 +33,33 @@ public:
   bool testMotion()
   {
     ros::Rate rate(10);
-    double prev_sec = ros::Time().now().toSec();
-    int sec = 10;
-    while (1)
+    while(ros::ok)
     {
-      //逆时针旋转
-      if (ros::Time().now().toSec() - prev_sec > sec)
-        break;
-      ROS_INFO("ni shi zhen");
-      testTurnBody(0, 1, 10);
-      rate.sleep();
-    }
-    prev_sec = ros::Time().now().toSec();
-    while (1)
-    {
-      //顺时针旋转
-      if (ros::Time().now().toSec() - prev_sec > sec)
-        break;
-      ROS_INFO("shen shi zhen");
-      testTurnBody(0, -1, 10);
-      rate.sleep();
-    }
-    prev_sec = ros::Time().now().toSec();
-    while (1)
-    {
-      //逆时针同心圆旋转
-      if (ros::Time().now().toSec() - prev_sec > sec)
-        break;
-      ROS_INFO("nishizhen tongxinyuan");
-      testTurnBody(0.2, 1, 10);
-      rate.sleep();
+        double prev_sec = ros::Time().now().toSec();
+        int sec = 10;
+        ROS_INFO("ni shi zhen");
+        while (ros::ok)
+        {
+          //逆时针旋转
+          if (ros::Time().now().toSec() - prev_sec > sec)
+            break;
+
+          testTurnBody(0, 2, 10);
+          rate.sleep();
+        }
+        ROS_INFO("shen shi zhen");
+        prev_sec = ros::Time().now().toSec();
+        while (ros::ok)
+        {
+          //顺时针旋转
+          if (ros::Time().now().toSec() - prev_sec > sec)
+            break;
+
+          testTurnBody(0, -2, 10);
+          rate.sleep();
+        }
     }
 
-    prev_sec = ros::Time().now().toSec();
-    while (1)
-    {
-      //顺时针同心圆旋转
-      if (ros::Time().now().toSec() - prev_sec > sec)
-        break;
-      ROS_INFO("shunshizhen tongxinyuan");
-      testTurnBody(0.2, -1, 10);
-      rate.sleep();
-    }
   }
 
   void testTurnBody(float linearx, float angularz, float sec)

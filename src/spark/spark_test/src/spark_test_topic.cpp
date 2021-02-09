@@ -4,7 +4,8 @@
 #include <pcl/point_types.h>
 #include <sensor_msgs/Image.h>
 #include <nav_msgs/Odometry.h>
-
+#include <boost/function.hpp>
+#include <boost/thread/thread.hpp>
 #include "spark_base/GyroMessage.h"
 #include "spark_base/SparkBaseSensor.h"
 

@@ -632,6 +632,20 @@ spark_intel_movidius(){
 		exit	
 	fi
 }
+
+#spark_test_mode
+spark_test_mode(){
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/tensorflow/bin/activate
+	source ${PROJECTPATH}/devel/setup.bash	
+	echo -e "${Info}老化测试程序，将执行左右转："
+	echo && stty erase ^? && read -p "按任意键开始 ：" chnum
+ 	case "$chnum" in
+		*)
+		roslaunch spark_test all_run_test.launch camera_type_tel:=${CAMERATYPE}		
+		;;
+	esac
+}
 #让SPARK通过机械臂进行视觉抓取
 spark_carry_obj(){
 	echo -e "${Info}" 
@@ -1052,7 +1066,7 @@ case "$num" in
 	spark_dock
 	;;
 	98)
-	spark_test
+	spark_test_mode
 	;;
 	*)
 	echo -e "${Error} 请输入正确的数字 "

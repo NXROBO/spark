@@ -49,6 +49,13 @@ add_dependencies(spark_test_topic_node
 target_link_libraries(spark_test_topic_node ${catkin_LIBRARIES})
 
 
+add_executable(spark_turn_left_right_node src/spark_turn_left_right.cpp)
+add_dependencies(spark_turn_left_right_node 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+  ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(spark_turn_left_right_node ${catkin_LIBRARIES})
+
 add_executable(spark_test_motion_node src/spark_test_motion.cpp)
 add_dependencies(spark_test_motion_node 
   ${${PROJECT_NAME}_EXPORTED_TARGETS} 
