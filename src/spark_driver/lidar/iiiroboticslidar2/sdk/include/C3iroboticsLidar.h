@@ -45,24 +45,24 @@ namespace everest
   		enum TLidarCommandID
     	{
 			SET_LIDAR_WORK_MODE=0x01,
-			LASER_CONTROL=0x02,
-			ADJUST_MEASURING_RATE=0x03,
+			LASER_CONTROL=0x05,
+			ADJUST_MEASURING_RATE=0x07,
 			ADJUST_LIDAR_ROTATIONL_SPEED=0x04,
 			ADJUST_LASER_POWER_ID=0x05,
 			EXIT_ADJUST_LASER_POWER=0x06,
-			WRITE_CALIBRATION_DATA=0x07,
+			WRITE_CALIBRATION_DATA=0x08,
 			WRITE_FIRMWARE_TO_FLASH=0x08,
-			FIRMWARE_UPDATE_MARK=0x09,
+			FIRMWARE_UPDATE_MARK=0x08,
 			READ_LASER_PARAM=0x0A,
 			READ_LASER_PARAM_SETVALUE=0x0B,
-			READ_FIRM_FROM_FLASH=0x0C,
+			READ_FIRM_FROM_FLASH=0x0A,
 			READ_DEVICE_INFO=0x0D,
-			READ_CALIBRATION_DATA=0x0E,
+			READ_CALIBRATION_DATA=0x0F,
 			READ_MEASURING_RATE=0x0F,
 			READ_HEAT_ENGINE_TIME=0x10,
 			REPORT_CCD_DATA_HI=0x011,
-			REPORT_FIXED_POINT_CALIB_DATA=0x12,//定点标定
-			REPORT_FIXED_POINT_MEAS_DATA=0x013,//定点测量
+			REPORT_FIXED_POINT_CALIB_DATA=0x13,
+			REPORT_FIXED_POINT_MEAS_DATA=0x012,
 			REPORT_DYNAMIC_SCAN_DATA=0x14,
 			REPORT_DEVCIE_VERSION=0x15,
 			REPORT_DEVICE_WRONG_INFO=0x16		
@@ -96,14 +96,14 @@ namespace everest
 		enum TLidarWorkMode
 		{
 			IDLE_MODE=0x00,
-			LOWSPEED_SCAN=0x01,
-			HIGHSPEED_SCAN=0X02,
-			LENS_FOCUS=0x03,
-			LASER_FOCUS=0x04,
-			CALIBRATION_DATA=0x05, 
-			STATIC_MEASURE=0x06,
-			ADJUST_LASER_POWER_MODE=0x07,
-			LIDAR_RESET=0x08
+			LOWSPEED_SCAN=0x02,
+			HIGHSPEED_SCAN=0X01,
+			LENS_FOCUS=0x05,
+			LASER_FOCUS=0x03,
+			CALIBRATION_DATA=0x04, 
+			STATIC_MEASURE=0x05,
+			ADJUST_LASER_POWER_MODE=0x08,
+			LIDAR_RESET=0x07
 		};
 		enum TLaserControl
 		{
@@ -122,6 +122,7 @@ namespace everest
 			INIT_VALUE=0X07,
 			
 	    };
+
 		enum TLidarWrongInfo
 		{
 			//CCD_WRONG=0x01,
@@ -223,6 +224,7 @@ namespace everest
 				int getSize() {return m_angle.size();}
 				
 				TLidarGrabResult getGrabResult(void){return m_grab_result;}
+				void resetGrabResult(void){ m_grab_result=LIDAR_GRAB_ING;}
 				 
 				void insert(CLidarDynamicScan &DynamicScan)
 		        {
@@ -239,7 +241,7 @@ namespace everest
 			private:
 				bool isFirstGratingScan(CLidarDynamicScan &DynamicScan)
 				{
-				    return DynamicScan.m_grating_angle < 0.0001? true: false;
+					return (DynamicScan.m_grating_angle >= 0 && DynamicScan.m_grating_angle < 22.5);
 				}
 				void grabFirstGratingScan(CLidarDynamicScan &DynamicScan)
 				{
@@ -261,8 +263,15 @@ namespace everest
 		        std::vector<float> 		m_angle;//per point angle
 		        std::vector<float>		m_distance;
 		        //std::vector<u8>   		m_signal;
-				u8						m_grating_num;
-		        float 					m_grating_angle;//per grating angle
+				u8				m_grating_num;
+
+				/*
+					0x04协议中，m_angle_start没有使用，m_grating_angle作为雷达输出的点域起始角度，
+					0x10协议中，m_angle_start作为雷达输出点的点域起始角度，m_grating_angle作为雷达输出点的点域结束角度
+					为兼容新旧协议，故不做定义修改
+				*/
+				float 					m_angle_start;
+		        float 					m_grating_angle;//per grating angle 
 		        float                   m_rotationl_speed;
 				u16						m_measuring_rate;
 				TLidarGrabResult 		m_grab_result;
@@ -274,7 +283,7 @@ namespace everest
                 float          			m_last_scan_angle; 
 				u64 					m_start_time_ms;
 				u64						m_end_time_ms;
-				u16						m_timeout_ms;
+				u16				m_timeout_ms;
 				
 
 	    };
@@ -302,6 +311,7 @@ namespace everest
 				void analysisWorkMode(CLidarPacket &lidar_packet);
 				void analysissetLidarRotationlSpeed(CLidarPacket &lidar_packet);
 				void analysisReportNewtDynamicScanData(CLidarPacket &lidar_packet);
+				void analysisReportNewtDynamicScanData2(CLidarPacket &lidar_packet);
 				void analysisReportDeviceWrongInfo(CLidarPacket &lidar_packet);
 			
             public:

@@ -51,33 +51,26 @@ void publish_scan(ros::Publisher *pub,
     scan_msg.header.frame_id = frame_id;
     scan_msg.angle_min = angle_min;
     scan_msg.angle_max = angle_max;
-    scan_msg.angle_increment = (scan_msg.angle_max - scan_msg.angle_min) / (360.0f - 1.0f);
+    scan_msg.angle_increment = (scan_msg.angle_max - scan_msg.angle_min) /(double)(node_count - 1);
 
     scan_msg.scan_time = scan_time;
     scan_msg.time_increment = scan_time / (double)(node_count-1);
     scan_msg.range_min = 0.15;
-    scan_msg.range_max = 5.0;
+    scan_msg.range_max = 16.0;
 
-    scan_msg.ranges.resize(360, std::numeric_limits<float>::infinity());
-    scan_msg.intensities.resize(360, 0.0);
+    scan_msg.ranges.resize(node_count);
+    scan_msg.intensities.resize(node_count);
 
     //Unpack data
     for (size_t i = 0; i < node_count; i++)
     {
-        size_t current_angle = floor(nodes[i].angle);
-        if(current_angle > 360.0)
-        {
-            ROS_INFO("Lidar angle is out of range %d\n", (int)current_angle);
-            continue;
-        }
         float read_value = (float) nodes[i].distance;
-        if (read_value < scan_msg.range_min || read_value > scan_msg.range_max)
-            scan_msg.ranges[360- 1- current_angle] = std::numeric_limits<float>::infinity();
+        if (read_value == 0.0)
+            scan_msg.ranges[node_count- 1- i] = std::numeric_limits<float>::infinity();
         else
-            scan_msg.ranges[360 -1- current_angle] = read_value;
+            scan_msg.ranges[node_count -1- i] = read_value;
 
-		//float intensities = (float) nodes[i].signal;
-		//scan_msg.intensities[360 -1- current_angle] = intensities;
+		//scan_msg.intensities[node_count -1- i] = (float) nodes[i].signal;
 
 	}
 
@@ -115,70 +108,62 @@ int main(int argc, char * argv[])
     serial_connect.setPort(opt_com_path.c_str());
     if(serial_connect.openSimple())
     {
-        ROS_INFO("[AuxCtrl] Open serail port sucessful!\n");
+        printf("[AuxCtrl] Open serail port sucessful!\n");
     }
     else
     {
-        ROS_INFO("[AuxCtrl] Open serail port %s failed! \n", opt_com_path.c_str());
+        printf("[AuxCtrl] Open serail port %s failed! \n", opt_com_path.c_str());
         return -1;
     }
 
-    ROS_INFO("3iRoboticsLidar connected\n");
+    printf("3iRoboticsLidar connected\n");
 
     robotics_lidar.initilize(&serial_connect);
 
 
 	#if 1
-   //接收解析线程
 	bool ret = robotics_lidar.RecvAndAnalysisPthread(&robotics_lidar);
 	if(ret)
-		ROS_INFO("RecvAndAnalysisPthread create success!\n");
+		printf("RecvAndAnalysisPthread create success!\n");
 	else
-		ROS_INFO("RecvAndAnalysisPthread create fail!\n");
+		printf("RecvAndAnalysisPthread create fail!\n");
 	#endif
 
 
 	TLidarError retvalue;
 	
-  	//高速扫描模式命令帧：AA 08 00 02 01 01 00 01 B7 00  返回帧：AA 08 00 02 41 01 00 00 F6 00
-	#if 0
+  	// start scan：AA 08 00 04 01 01 00 02 B9 00  
+	#if 1
 	retvalue = robotics_lidar.setLidarWorkMode(HIGHSPEED_SCAN);
 	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("High speed scan set successs!\n");
+		printf("High speed scan set successs!\n");
 	else
-		ROS_INFO("High speed scan set fail! ...TLidarError=%d...\n",retvalue);
+		printf("High speed scan set fail! ...TLidarError=%d...\n",retvalue);
 	#endif
-	//低速扫描模式命令帧：AA 08 00 02 01 01 00 01 B7 00  返回帧：AA 08 00 02 41 01 00 00 F6 00
-	#if 1
-	retvalue = robotics_lidar.setLidarWorkMode(LOWSPEED_SCAN);
-	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("LOW speed scan set successs!\n");
-	else
-		ROS_INFO("LOW speed scan set fail! ...TLidarError=%d...\n",retvalue);
-	#endif
-	//复位命令：
+
+	//reset lidar ：
 	#if 0
 	retvalue = robotics_lidar.setLidarWorkMode(LIDAR_RESET);
 	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("LIDAR reset successs!\n");
+		printf("LIDAR reset successs!\n");
 	else
-		ROS_INFO("LIDAR reset fail! ...TLidarError=%d...\n",retvalue);
+		printf("LIDAR reset fail! ...TLidarError=%d...\n",retvalue);
 	#endif
-	//设置停止扫描 命令帧 AA 08 00 02 01 01 00 00 B6 00   返回帧 AA 08 00 02 41 01 00 00 F6 00 
+	//stop scan		   send: AA 08 00 04 01 01 00 00 B8 00   	return:AA 08 00 04 41 01 00 00 F8 00 
 	#if 0
 	retvalue = robotics_lidar.setLidarWorkMode(IDLE_MODE);
 	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("stop scan set successs!\n");
+		printf("stop scan set successs!\n");
 	else
-		ROS_INFO("stop scan set fail! ...TLidarError=%d...\n",retvalue);
+		printf("stop scan set fail! ...TLidarError=%d...\n",retvalue);
 	#endif
-	//调整测量速率 命令帧 AA 09 00 04 04 02 00 0B 00 C8 00返回帧 AA 08 00 04 44 01 00 00 FB 00
+	//set rotate_speed     send: AA 09 00 04 04 02 00 0B 00 C8 00 	return:AA 08 00 04 44 01 00 00 FB 00
 	#if 0
 	retvalue = robotics_lidar.setLidarRotationlSpeed(11);
 	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("RotationlSpeed set successs!\n");
+		printf("RotationlSpeed set successs!\n");
 	else
-		ROS_INFO("RotationlSpeed set fail! ...TLidarError=%d...\n",retvalue);
+		printf("RotationlSpeed set fail! ...TLidarError=%d...\n",retvalue);
 	#endif
 
 	
@@ -194,23 +179,6 @@ int main(int argc, char * argv[])
 	int start_node = 0, end_node = 359;
     while (ros::ok())
     {
-		#if  0
-		//robotics_lidar.RecvAndAnalysisPthreadCallback(&robotics_lidar);
-		
-		//判断是否获取成功
-		if(robotics_lidar.m_dynamic_scan.getGrabResult()==LIDAR_GRAB_SUCESS)	
-		{
-			size = robotics_lidar.m_dynamic_scan.m_angle.size();
-			if(size>0)
-			{
-				//打印扫描结果
-				ROS_INFO("scan counter = %d.........................................\n",size);
-				robotics_lidar.m_dynamic_scan.clear();
-			}
-		}
-		
-		usleep(10);
-		#else
 		 result = robotics_lidar.m_dynamic_scan.getGrabResult();
         switch(result)
         {
@@ -220,6 +188,8 @@ int main(int argc, char * argv[])
             }
             case LIDAR_GRAB_SUCESS:
             {
+				robotics_lidar.m_dynamic_scan.resetGrabResult();
+			
                 lidar_dynamicscan = robotics_lidar.getLidarDynamicScan();
                 lidar_scan_size = lidar_dynamicscan.getSize();              
                 send_lidar_scan_data.resize(lidar_scan_size);             
@@ -236,7 +206,7 @@ int main(int argc, char * argv[])
 
 				end_scan_time = ros::Time::now();
 				scan_duration = (end_scan_time - start_scan_time).toSec() * 1e-3;
-                //ROS_INFO("Receive Lidar count %u!\n", lidar_scan_size);
+                //printf("Receive Lidar count %u!\n", lidar_scan_size);
 
                 //if successful, publish lidar scan
                 
@@ -255,20 +225,20 @@ int main(int argc, char * argv[])
             }
             case LIDAR_GRAB_ELSE:
             {
-                ROS_INFO("[Main] LIDAR_GRAB_ELSE!\n");
+                printf("[Main] LIDAR_GRAB_ELSE!\n");
                 break;
             }
         }
         usleep(50);
 		
         ros::spinOnce();
-
-		#endif
     }
-	retvalue = robotics_lidar.setLidarWorkMode(IDLE_MODE);
-	if(retvalue == EXECUTE_SUCCESS )
-		ROS_INFO("stop scan set successs!\n");
-	else
-		ROS_INFO("stop scan set fail! ...TLidarError=%d...\n",retvalue);
+    #if 1
+    retvalue = robotics_lidar.setLidarWorkMode(IDLE_MODE);
+    //if(retvalue == EXECUTE_SUCCESS )
+    //    printf("stop scan set successs!\n");
+    //else
+    //    printf("stop scan set fail! ...TLidarError=%d...\n",retvalue);
+    #endif
     return 0;
 }

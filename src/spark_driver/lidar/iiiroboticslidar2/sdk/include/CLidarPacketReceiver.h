@@ -24,6 +24,9 @@ History:
 #include <vector>
 #include <fstream>
 
+#define OLD_VERSION 0x04
+#define NEW_VERSION 0X10
+
 namespace everest
 {
 	namespace hwdrivers
@@ -87,21 +90,24 @@ namespace everest
 				TPacketResult processPacketRemainderData(CLidarPacket *packet, u8 ch);
 
                 void reset();
-
+                
+                bool                  m_IsOldVersion;
             public:
                 struct TParams
                 {
                     /* Constructor */
                     TParams()
                     {
-                        packet_max_time_ms = 10000;
+                        packet_max_time_ms = 1000;
                         packet_wait_time_ms = 100;
                     }
 
                     size_t packet_max_time_ms;
                     size_t packet_wait_time_ms;
                 };
-
+             inline void IsOldVersion(void){m_IsOldVersion = 1;}
+             inline void IsNewVersion(void){m_IsOldVersion = 0;}
+             inline bool CheckOldVersion(void){return m_IsOldVersion == 1;}
             private:
                 CDeviceConnection 	*m_device_conn;
                 CCountDown          m_count_down;
@@ -113,6 +119,7 @@ namespace everest
                 std::ofstream       m_save_fp;
                 size_t              m_counter;
                 bool                m_log_when_receive_time_over;
+                
 		};
 	}
 }

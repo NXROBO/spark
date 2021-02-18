@@ -16,7 +16,7 @@ History:
 #include "CLidarPacket.h"
 
 /********************************** Current libs includes *************************/
-//#include "C3iroboticsLidarProtocol.h"
+
 
 /********************************** System includes *******************************/
 #include <string.h>
@@ -216,9 +216,10 @@ bool CLidarPacket::verify16BitAccCheckSum(void)
 	value[0] = value[1];
 	value[1] = temp;
 	recv_checksum = bufToUByte2(&value[0]); 
-	if (m_length < m_params.least_packet_len)
+	//if (m_length < m_params.least_packet_len)
+	if (m_length < 5)
     {
-    	printf("packer.m_length<least_packet_len,error\n");
+    	printf("packer.m_length<least_packet_len,error %d\n", m_length);
         return FALSE;
     }
 	

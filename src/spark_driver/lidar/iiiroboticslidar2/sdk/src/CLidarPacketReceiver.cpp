@@ -18,7 +18,6 @@ History:
 /******************************* Current libs includes ****************************/
 #include "CDeviceConnection.h"
 #include "CCountDown.h"
-#include <unistd.h>
 
 /********************************** Name space ************************************/
 using namespace everest;
@@ -95,7 +94,6 @@ bool CLidarPacketReceiver::receivePacket(CLidarPacket *packet)
 	char ch;
 	while(1)
 	{
-		//usleep(10);
 		if(m_count_down.isEnd())
 		{
 			printf("[CLidarPacketReceiver] Receive packet time %5.2f ms is over!\n", m_count_down.getInputTime());
@@ -199,7 +197,7 @@ CLidarPacketReceiver::TPacketResult CLidarPacketReceiver::processPacketLengthHI(
     packet->pushBack(ch);
 	
 	m_packet_length |= (ch << 8);
-	
+	//printf("=====len = %d\n", m_packet_length);
 	//one packet remainder length = sub 4 bytes(header(1bytes) and length(2bytes) and protocol_ver),add verify 2 byte
 	m_packet_remainder_length = m_packet_length - 4+2;
     m_state = PACKET_PROTOCOL_VER;
@@ -210,15 +208,28 @@ CLidarPacketReceiver::TPacketResult CLidarPacketReceiver::processPacketLengthHI(
 
 CLidarPacketReceiver::TPacketResult CLidarPacketReceiver::processPacketProtocolVer(CLidarPacket *packet, u8 ch)
 {
-   // if(ch == ProtocolVer)
-    //{
-    	packet->pushBack(ch);
-   		 m_state = PACKET_REMAINDER_DATA;   
-    //}
-	//else
-	//{
-	//	packet->reset();
-	//}    
+    #if 1
+   if(ch != OLD_VERSION && ch != NEW_VERSION)
+   {
+        packet->reset();
+        //printf("========err ver\n");
+        return PACKET_ING;
+   }
+    else if(ch == OLD_VERSION)
+    {
+        IsOldVersion();
+
+        //printf("old version\n");
+    }
+    else if(ch == NEW_VERSION)
+    {
+         //printf("new version\n");
+        IsNewVersion();
+    }
+     #endif 
+     packet->pushBack(ch);
+    m_state = PACKET_REMAINDER_DATA;	   
+    
     return PACKET_ING;
 }
 
@@ -237,6 +248,7 @@ CLidarPacketReceiver::TPacketResult CLidarPacketReceiver::processPacketRemainder
     packet->pushBack(ch);
     if(m_actual_count == m_packet_remainder_length)
     {
+        //printf("=======m_packet_remainder_length = %d\n", m_packet_remainder_length);
         reset();
         if(packet->verify16BitAccCheckSum())
         {

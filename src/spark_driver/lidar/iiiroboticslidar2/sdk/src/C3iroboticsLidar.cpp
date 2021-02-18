@@ -137,16 +137,26 @@ void C3iroboticsLidar::analysisPacket(CLidarPacket &lidar_packet)//debug chenyf
 			break;
 		
 		case REPORT_DYNAMIC_SCAN_DATA:
-			analysisReportNewtDynamicScanData(lidar_packet);
+			if(m_receiver.CheckOldVersion())
+			{
+				analysisReportNewtDynamicScanData(lidar_packet);
+			}
+			else
+			{
+				analysisReportNewtDynamicScanData2(lidar_packet);
+			}
 			break;
 		
 		case REPORT_DEVICE_WRONG_INFO:
 			analysisReportDeviceWrongInfo(lidar_packet);
 			break;
+		
         default:
             printf("[C3iroboticsLidar] Special command id %d!\n", command_id);
+			break;
     }
 }
+
 void C3iroboticsLidar::analysisReportDeviceWrongInfo(CLidarPacket &lidar_packet)
 {
 	u16 length = lidar_packet.getParamLength();
@@ -158,7 +168,7 @@ void C3iroboticsLidar::analysisReportDeviceWrongInfo(CLidarPacket &lidar_packet)
 		//	printf("Report Lidar wrong info:CCD_WRONG; ");
 		//	break;
 		case LIDAR_ROT_SPEED:
-			//printf("Report Lidar wrong info:LIDAR_ROT_SPEED; ");
+			printf("Report Lidar wrong info:LIDAR_ROT_SPEED; ");
 			break;
 		case CAL_PARAM_ERROR:			
 			printf("Report Lidar wrong info:CAL_PARAM_ERROR; ");
@@ -236,7 +246,41 @@ void C3iroboticsLidar::analysisWorkMode(CLidarPacket &lidar_packet)
 		
 }
 
+void C3iroboticsLidar::analysisReportNewtDynamicScanData2(CLidarPacket &lidar_packet)
+{
+	CLidarDynamicScan new_dynamic_scan;
+	u16 length = lidar_packet.getParamLength();
+    u8 *buffer = lidar_packet.getParamPtr();
+	CLidarPacket::swap(buffer);
+	m_dynamic_scan.m_rotationl_speed = (float)(CLidarPacket::bufToUByte2(buffer)/100.0);
+	//CLidarPacket::swap(buffer+2);
+	new_dynamic_scan.m_angle_start = (float)(CLidarPacket::bufToUByte2(buffer+2)/100.0); 
+	//CLidarPacket::swap(buffer+4); 
+	new_dynamic_scan.m_grating_angle = (float)(CLidarPacket::bufToUByte2(buffer+4)/100.0);
+	u16 num = (length - 6)/2;
+	float per_changed_angle = (new_dynamic_scan.m_grating_angle - new_dynamic_scan.m_angle_start)/(num - 1);
+	new_dynamic_scan.m_angle.resize(num);
+	new_dynamic_scan.m_distance.resize(num);
 
+	#if 0
+	for(int i =0; i < 6;i++)
+	{
+		printf("%x ", buffer[i]);
+	}
+	printf("\n");
+	std::cout << "speed: "<< m_dynamic_scan.m_rotationl_speed << std::endl;
+	std::cout << "start_angle2: "<< new_dynamic_scan.m_angle_start << std::endl;
+	std::cout << "end_angle2: "<< new_dynamic_scan.m_grating_angle <<"\n\n"<< std::endl;
+#endif
+	for(int i=0;i<num;i++)
+	{
+		new_dynamic_scan.m_angle[i]=new_dynamic_scan.m_angle_start+i*per_changed_angle; 
+		CLidarPacket::swap(buffer+6+i*2);
+		new_dynamic_scan.m_distance[i]=(float)(CLidarPacket::bufToUByte2(buffer+6+i*2)/1000.0);
+	}
+
+	m_dynamic_scan.DynamicScanProcedure(new_dynamic_scan);
+}
 
 void C3iroboticsLidar::analysisReportNewtDynamicScanData(CLidarPacket &lidar_packet)
 {
@@ -257,7 +301,9 @@ void C3iroboticsLidar::analysisReportNewtDynamicScanData(CLidarPacket &lidar_pac
 		CLidarPacket::swap(buffer+4+i*2);
 		new_dynamic_scan.m_distance[i]=(float)(CLidarPacket::bufToUByte2(buffer+4+i*2)/1000.0);
 	}
-
+	//std::cout << "speed: "<< m_dynamic_scan.m_rotationl_speed << std::endl;
+	//std::cout << "start_angle: "<< new_dynamic_scan.m_angle_start << std::endl;
+	//std::cout << "end_angle: "<< new_dynamic_scan.m_grating_angle << std::endl;
 	m_dynamic_scan.DynamicScanProcedure(new_dynamic_scan);
 }
 void CLidarDynamicScan::DynamicScanProcedure(CLidarDynamicScan &one_grating_dynamic_scan)
@@ -266,28 +312,29 @@ void CLidarDynamicScan::DynamicScanProcedure(CLidarDynamicScan &one_grating_dyna
     {
         case GRAB_SCAN_FIRST:
         {
+			//printf("000\n");
             getStartTime();
 			
             /* First scan come */
             if(isFirstGratingScan(one_grating_dynamic_scan))
-            {
+            {//printf("111\n");
                 resetScanGrab();
                 grabFirstGratingScan(one_grating_dynamic_scan);
             }
             else
             {
-                printf("[C3iroboticsLidar] GRAB_SCAN_FIRST tooth scan angle %5.2f!\n",one_grating_dynamic_scan.m_grating_angle);
+               // printf("[C3iroboticsLidar] GRAB_SCAN_FIRST tooth scan angle %5.2f!\n",one_grating_dynamic_scan.m_grating_angle);
             }
-			
+			//printf("222\n");
             m_grab_result = LIDAR_GRAB_ING;
 			return;
         }
         case GRAB_SCAN_ELSE_DATA:
-        {
+        {//printf("333\n");
         	getEndTime();
             if(isTimeout())//timeout
             {	
-            	printf("[C3iroboticsLidar] grab scan is time out ! Reset grab scan state, current is %5.2f, last is %5.2f! \n", one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle);                   
+            	//printf("[C3iroboticsLidar] grab scan is time out ! Reset grab scan state, current is %5.2f, last is %5.2f! \n", one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle);                   
                 m_grab_scan_state = GRAB_SCAN_FIRST;
                 m_grab_result =  LIDAR_GRAB_ING;
 				return;
@@ -295,15 +342,15 @@ void CLidarDynamicScan::DynamicScanProcedure(CLidarDynamicScan &one_grating_dyna
             getStartTime();
             /* Handle angle suddenly reduces */
             if(one_grating_dynamic_scan.m_grating_angle < m_last_scan_angle)
-            {    
-            	printf("[C3iroboticsLidar] recieve wrong in this scan !!! Restart scan, current_grating_angle: %5.2f, last_grating_angle: %5.2f!\n",one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle); 
-                if(isFirstGratingScan(one_grating_dynamic_scan))//这次小于上一次角度，且角度为零：表示这周数据不完\E6\95?刚好重新开始下一周（这周数据丢掉\EF\BC?
-                {   
+            {    //printf("444 %f %f\n", one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle);
+            	//printf("[C3iroboticsLidar] recieve wrong in this scan !!! Restart scan, current_grating_angle: %5.2f, last_grating_angle: %5.2f!\n",one_grating_dynamic_scan.m_grating_angle, m_last_scan_angle); 
+                if(isFirstGratingScan(one_grating_dynamic_scan))//这次小于上一次角度，且角度为零：表示这周数据不完�?刚好重新开始下一周（这周数据丢掉                
+                {   //printf("555\n");
                  	getStartTime();
 					resetScanGrab();
                 	grabFirstGratingScan(one_grating_dynamic_scan);
                 }
-				else //这次角度小于上次角度，且角度不为零：表示这周和下周数据都不完\E6\95?重新矫正到第一个光栅开始扫描，计数（这周和下周数据都丢掉）
+				else //这次角度小于上次角度，且角度不为零：表示这周和下周数据都不完�?重新矫正到第一个光栅开始扫描，计数（这周和下周数据都丢掉）
 				{
 					m_grab_scan_state = GRAB_SCAN_FIRST;
 				}
@@ -330,12 +377,12 @@ void CLidarDynamicScan::DynamicScanProcedure(CLidarDynamicScan &one_grating_dyna
             }
         }
         default:
-            printf("[C3iroboticsLidar] Uknow grab scan data state %d!\n",
-                      m_grab_scan_state);
-        break;
-    }
-    printf("[C3iroboticsLidar] combineScan should not come to here!\n");
-    m_grab_result =  LIDAR_GRAB_ERRO;
+            //printf("[C3iroboticsLidar] Uknow grab scan data state %d!\n", m_grab_scan_state);
+        	break;
+       
+    }	
+  // printf("[C3iroboticsLidar] combineScan should not come to here!\n");
+	m_grab_result= LIDAR_GRAB_ERRO;
 }
 
 
@@ -380,6 +427,7 @@ TLidarError C3iroboticsLidar::setLidarWorkMode(TLidarWorkMode mode)
 	m_lidar_work_mode = mode;
     m_sender.WorkModePacket(m_packet,m_lidar_work_mode);
 	ret = m_device_connect->write((char*)&m_packet.m_sendbuf[0],m_packet.m_params.sendbuf_size);
+//return EXECUTE_SUCCESS; 
 	if(ret>0)
 	{
 		clock_gettime(CLOCK_REALTIME, &starttime);
@@ -391,7 +439,7 @@ TLidarError C3iroboticsLidar::setLidarWorkMode(TLidarWorkMode mode)
 			//printf("m_lidar_work_status=%d\n",m_lidar_work_status);
 			if(timeout>=100)
 			{
-				printf("TIME_OUT\n");
+				printf(" TIME_OUT\n");
 				return TIME_OUT;//timeout
 			}
 			
