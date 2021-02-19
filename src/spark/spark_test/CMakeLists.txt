@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   pcl_ros
   spark_base
+  spark_carry_object
 )
 
 
@@ -64,6 +65,12 @@ add_dependencies(spark_test_motion_node
 target_link_libraries(spark_test_motion_node ${catkin_LIBRARIES})
 
 
+add_executable(spark_turn_left_right_st_node src/spark_turn_left_right_st.cpp)
+add_dependencies(spark_turn_left_right_st_node 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+  ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(spark_turn_left_right_st_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##

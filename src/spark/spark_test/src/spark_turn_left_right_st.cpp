@@ -50,6 +50,9 @@ public:
     pos.z = 35;
     sleep(5);
     pos_pub.publish(pos);
+    double start_sec = ros::Time().now().toSec();
+    int keep_sec = 300;
+    ROS_INFO("time is start! start turning.");      
     while(ros::ok)
     {
         pump_pub.publish(onoff);
@@ -69,6 +72,7 @@ public:
         prev_sec = ros::Time().now().toSec();
         while (ros::ok)
         {
+
           //顺时针旋转
           if (ros::Time().now().toSec() - prev_sec > sec)
             break;
@@ -76,9 +80,15 @@ public:
           testTurnBody(0, -2, 10);
           rate.sleep();
         }
+	if (ros::Time().now().toSec() - start_sec > keep_sec)
+        {
+           onoff.status = 0;
+           pump_pub.publish(onoff);  
+           ROS_WARN("time is over! stop turning.");      
+           break;
+        }
     }
-    onoff.status = 0;
-    pump_pub.publish(onoff);
+
   }
 
   void testTurnBody(float linearx, float angularz, float sec)
@@ -100,7 +110,7 @@ int main(int argc, char** argv)
 
   // start to test the spark
   // test.testTopicStatus();
-  ROS_INFO("Spark test stop");
+  //ROS_INFO("Spark test stop");
   ros::spin();
   return 0;
 }

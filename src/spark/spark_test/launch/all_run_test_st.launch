@@ -22,7 +22,7 @@
   	<!--UARM机械臂 -->
   	<include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
 
-	<node pkg="spark_test" type="spark_turn_left_right_node" name="spark_turn_left_right_node" output="screen"/>
+	<node pkg="spark_test" type="spark_turn_left_right_st_node" name="spark_turn_left_right_st_node" output="screen"/>
 
 
 </launch>

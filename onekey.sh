@@ -638,11 +638,20 @@ spark_test_mode(){
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/tensorflow/bin/activate
 	source ${PROJECTPATH}/devel/setup.bash	
-	echo -e "${Info}老化测试程序，将执行左右转："
-	echo && stty erase ^? && read -p "按任意键开始 ：" chnum
+	echo -e "${Info}老化测试程序，请将机器人放在一个50X50CM的方格中间进行测试，请选择：
+	1.执行5分钟的检测功能；
+        2.执行老化检测功能，直至断电。"
+        echo -e "${Info}退出请输入：Ctrl + c " 
+	echo && stty erase ^? && read -p "请选择 1 或 2 ：" chnum
  	case "$chnum" in
+		1)
+		roslaunch spark_test all_run_test_st.launch camera_type_tel:=${CAMERATYPE}	
+		;;
+		2)
+		roslaunch spark_test all_run_test.launch camera_type_tel:=${CAMERATYPE}	
+		;;
 		*)
-		roslaunch spark_test all_run_test.launch camera_type_tel:=${CAMERATYPE}		
+		echo -e "${Error} 退出!"	
 		;;
 	esac
 }
