@@ -206,7 +206,7 @@ int main(int argc, char * argv[])
 
 				end_scan_time = ros::Time::now();
 				scan_duration = (end_scan_time - start_scan_time).toSec() * 1e-3;
-                printf("Receive Lidar count %u!\n", lidar_scan_size);
+                //printf("Receive Lidar count %u!\n", lidar_scan_size);
 
                 //if successful, publish lidar scan
                 
@@ -233,6 +233,12 @@ int main(int argc, char * argv[])
 		
         ros::spinOnce();
     }
-
+    #if 1
+    retvalue = robotics_lidar.setLidarWorkMode(IDLE_MODE);
+    //if(retvalue == EXECUTE_SUCCESS )
+    //    printf("stop scan set successs!\n");
+    //else
+    //    printf("stop scan set fail! ...TLidarError=%d...\n",retvalue);
+    #endif
     return 0;
 }
