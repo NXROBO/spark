@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(iiiroboticslidar2)
 
-set(iiiroboticslidar2_SDK_PATH "./sdk/")
+set(delta_lidar_SDK_PATH "./sdk/")
 
-FILE(GLOB iiiroboticslidar2_SDK_SRC 
-  "${iiiroboticslidar2_SDK_PATH}/src/*.cpp"
+FILE(GLOB delta_lidar_SDK_SRC 
+  "${delta_lidar_SDK_PATH}/src/*.cpp"
 )
 
 find_package(catkin REQUIRED COMPONENTS
@@ -14,20 +14,20 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 include_directories(
-  ${iiiroboticslidar2_SDK_PATH}/include
-  ${iiiroboticslidar2_SDK_PATH}/src
+  ${delta_lidar_SDK_PATH}/include
+  ${delta_lidar_SDK_PATH}/src
   ${catkin_INCLUDE_DIRS}
 )
 
 catkin_package()
 
-add_executable(iiirobotics_lidar2_node src/node.cpp ${iiiroboticslidar2_SDK_SRC})
-target_link_libraries(iiirobotics_lidar2_node ${catkin_LIBRARIES} -lrt)
+add_executable(delta_lidar_node src/node.cpp ${delta_lidar_SDK_SRC})
+target_link_libraries(delta_lidar_node ${catkin_LIBRARIES} -lrt)
 
-add_executable(iiirobotics_lidar2_node_client src/client.cpp)
-target_link_libraries(iiirobotics_lidar2_node_client ${catkin_LIBRARIES})
+add_executable(delta_lidar_node_client src/client.cpp)
+target_link_libraries(delta_lidar_node_client ${catkin_LIBRARIES})
 
-install(TARGETS iiirobotics_lidar2_node iiirobotics_lidar2_node_client
+install(TARGETS delta_lidar_node delta_lidar_node_client
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

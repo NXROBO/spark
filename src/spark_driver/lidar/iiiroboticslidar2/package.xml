@@ -2,7 +2,7 @@
 <package>
   <name>iiiroboticslidar2</name>
   <version>1.0.0</version>
-  <description>The 3iRoboticsLidar ros package, support 3iRoboticsLidar </description>
+  <description>The iiiroboticslidar2 ros package, support delta_lidar </description>
 
   <maintainer email="robot@3irobotics.com">3i Robotics ROS Maintainer</maintainer>
   <license>BSD</license>
