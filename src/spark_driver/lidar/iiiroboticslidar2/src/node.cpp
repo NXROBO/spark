@@ -46,33 +46,41 @@ void publish_scan(ros::Publisher *pub,
                   std::string frame_id)
 {
     sensor_msgs::LaserScan scan_msg;
-
+    //printf("node_count = %d\n",node_count);
     scan_msg.header.stamp = start;
     scan_msg.header.frame_id = frame_id;
     scan_msg.angle_min = angle_min;
     scan_msg.angle_max = angle_max;
-    scan_msg.angle_increment = (scan_msg.angle_max - scan_msg.angle_min) /(double)(node_count - 1);
+    scan_msg.angle_increment = (scan_msg.angle_max - scan_msg.angle_min) / (360.0f - 1.0f);
 
     scan_msg.scan_time = scan_time;
-    scan_msg.time_increment = scan_time / (double)(node_count-1);
+    scan_msg.time_increment = scan_time / (double)(node_count - 1);
     scan_msg.range_min = 0.15;
-    scan_msg.range_max = 16.0;
+    scan_msg.range_max = 5.0;
 
-    scan_msg.ranges.resize(node_count);
-    scan_msg.intensities.resize(node_count);
+
+    scan_msg.ranges.resize(360, std::numeric_limits<float>::infinity());
+    scan_msg.intensities.resize(360, 0.0);
 
     //Unpack data
     for (size_t i = 0; i < node_count; i++)
     {
+        size_t current_angle = floor(nodes[i].angle);
+        //printf("current_angle = %d\r\n", current_angle);
+        if(current_angle >= 360.0)
+        {
+            printf("lidar angle over rang\n");
+            continue;
+        }
         float read_value = (float) nodes[i].distance;
-        if (read_value == 0.0)
-            scan_msg.ranges[node_count- 1- i] = std::numeric_limits<float>::infinity();
+        if (read_value > scan_msg.range_max || read_value < scan_msg.range_min)
+            scan_msg.ranges[360 - 1 - current_angle] = std::numeric_limits<float>::infinity();
         else
-            scan_msg.ranges[node_count -1- i] = read_value;
+            scan_msg.ranges[360 - 1 - current_angle] = read_value;
 
-		//scan_msg.intensities[node_count -1- i] = (float) nodes[i].signal;
+            //scan_msg.intensities[node_count -1- i] = (float) nodes[i].signal;
 
-	}
+    }
 
     pub->publish(scan_msg);
 }
@@ -188,7 +196,7 @@ int main(int argc, char * argv[])
             }
             case LIDAR_GRAB_SUCESS:
             {
-				robotics_lidar.m_dynamic_scan.resetGrabResult();
+                                robotics_lidar.m_dynamic_scan.resetGrabResult();
 			
                 lidar_dynamicscan = robotics_lidar.getLidarDynamicScan();
                 lidar_scan_size = lidar_dynamicscan.getSize();              
