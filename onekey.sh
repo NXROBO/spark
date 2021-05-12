@@ -334,6 +334,7 @@ master_uri_setup(){
 	wlp2s_ip=`/sbin/ifconfig wlp2s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
         enp3s_ip=`/sbin/ifconfig enp3s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
+	wlp0s_ip=`/sbin/ifconfig wlp0s20f3|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	if [ $eth_ip ]; then
 		echo -e "${Info}使用有线网络eth0" 
 		local_ip=$eth_ip
@@ -349,6 +350,9 @@ master_uri_setup(){
         elif [ $enp3s_ip ]; then
                 echo -e "${Info}使用无线网络enp3s0" 
                 local_ip=$enp3s_ip	
+        elif [ $wlp0s_ip ]; then
+                echo -e "${Info}使用无线网络wlp0s20f3" 
+                local_ip=$wlp0s_ip	
 	fi
 	export ROS_HOSTNAME=$local_ip
 	export ROS_MASTER_URI="http://${local_ip}:11311"
@@ -899,7 +903,7 @@ qrcode_transfer_files(){
 	wlan_ip=`/sbin/ifconfig wlan0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	enp3s_ip=`/sbin/ifconfig enp3s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	eth_ip=`/sbin/ifconfig eth0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
-
+	wlp0s_ip=`/sbin/ifconfig wlp0s20f3|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
 	if [ $wlp1s_ip ]; then
 		echo -e "${Info}使用无线网络wlp1s0" 
 	  	net_interface="wlp1s0"
@@ -915,7 +919,11 @@ qrcode_transfer_files(){
 	elif [ $eth_ip ]; then
 		echo -e "${Info}使用有线网络eth0" 
 		net_interface="eth0"
+	elif [ $wlp0s_ip ]; then
+		echo -e "${Info}使用有线网络wlp0s20f3" 
+		net_interface="wlp0s20f3"
 	fi
+
 	echo -e "${Info}" 
 	echo -e "${Info}通过局域网收发文件" 
 	echo -e "${Info}" 
