@@ -69,7 +69,7 @@ void publish_scan(ros::Publisher *pub,
         //printf("current_angle = %d\r\n", current_angle);
         if(current_angle >= 360.0)
         {
-            printf("lidar angle over rang\n");
+            //printf("lidar angle over rang\n");
             continue;
         }
         float read_value = (float) nodes[i].distance;
