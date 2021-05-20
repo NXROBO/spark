@@ -896,6 +896,27 @@ calibrate_camera(){
 
 }
 
+clear_user_data(){
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+
+	echo -e "${Info}" 
+	echo -e "${Info}    清除用户数据"
+	echo -e "${Info}将会删掉地图数据，ROS的log记录"
+
+	echo && stty erase ^? && read -p "请选择是否继续y/n：" choose
+
+	if [[ "${choose}" == "y" ]]; then
+                rm -fr ${PROJECTPATH}/src/spark_app/spark_slam/scripts/test_map*
+		rm -fr ~/.ros/*
+		rosclean purge -y
+		echo -e "${Info}    已清除用户数据"
+	else
+		return
+	fi
+
+}
+
 
 qrcode_transfer_files(){
 	wlp1s_ip=`/sbin/ifconfig wlp1s0|grep inet|awk '{print $2}'|awk -F: '{print $2}'`
@@ -1020,6 +1041,7 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
   ${Green_font_prefix}103.${Font_color_suffix} 单独安装SPARK依赖
   ${Green_font_prefix}104.${Font_color_suffix} 文件传输
+  ${Green_font_prefix}105.${Font_color_suffix} 清除用户数据
  "
 menu_status
 check_dev
@@ -1078,6 +1100,9 @@ case "$num" in
 	;;
 	104)
 	qrcode_transfer_files
+	;;
+	105)
+	clear_user_data
 	;;	
 	99)
 	spark_dock
