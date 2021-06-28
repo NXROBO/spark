@@ -1,0 +1,7 @@
+<!-- 启动杉川雷达 -->
+<launch>
+  	<arg name="3d_sensor" default="ydlidar_g2"/>  
+    		<include file="$(find ydlidar_g2)/launch/lidar.launch">
+  	</include>
+</launch>
+

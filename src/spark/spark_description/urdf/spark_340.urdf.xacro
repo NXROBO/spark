@@ -12,11 +12,21 @@
 
 	<xacro:property name="camera"	value="$(arg camera_types)"/>
 
+  	<xacro:arg name="lidar_type_tel"	default="astrapro"/>
+
+	<xacro:property name="lidar"	value="$(arg lidar_type_tel)"/>
+
   	<xacro:include filename="$(find spark_description)/urdf/base/spark_base.urdf"/>  	
   		
   	<xacro:include filename="$(find spark_description)/urdf/stack/spark_stack.urdf"/>
 
-	<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
+	<xacro:if value="${lidar == 'ydlidar_g2'}">
+		<xacro:include filename="$(find ydlidar_g2)/urdf/ydlidar.urdf" />
+	</xacro:if>
+
+	<xacro:if value="${lidar == '3iroboticslidar2'}">
+		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
+	</xacro:if>
 
 	<xacro:if value="${camera == 'astrapro' or camera == 'astra'}">
 		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_$(arg camera_types).urdf"/>

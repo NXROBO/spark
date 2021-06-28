@@ -1,0 +1,7 @@
+<!-- 启动杉川雷达 -->
+<launch>
+  	<arg name="3d_sensor" default="3i_lidar"/>  
+    		<include file="$(find iiiroboticslidar2)/launch/3iroboticslidar2.launch">
+  	</include>
+</launch>
+

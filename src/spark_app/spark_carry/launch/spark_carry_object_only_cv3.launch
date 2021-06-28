@@ -1,6 +1,6 @@
 <!-- NXROBO SPARK -->
 <launch> 	
-
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
 	<!-- 摄像机类型 -->
 	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
 
@@ -8,6 +8,7 @@
   	<include file="$(find spark_navigation)/launch/amcl_demo_lidar.launch">
 		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
 		<arg name="start_camera"	value="true"/>
+		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
 	</include>
     
   	<!--UARM机械臂 -->

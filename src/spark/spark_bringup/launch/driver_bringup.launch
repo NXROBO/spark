@@ -6,10 +6,11 @@
 	<arg name="serialport" default="/dev/sparkBase"/>
 	<arg name="dp_rgist" default="false"/>
 	<arg name="camera_types" default="astrapro" doc="camera type [astrapro, astra,d435]"/>
-
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
   	<!--启动描述 -->
 	<include file="$(find spark_description)/launch/spark_description.launch">
 		<arg name="camera_types"	value="$(arg camera_types)"/>	
+		<arg name="lidar_type_tel" value="$(arg lidar_type_tel)"/>	
 	</include>
 
 	<!--启动底盘 -->

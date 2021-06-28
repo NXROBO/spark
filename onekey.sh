@@ -27,6 +27,16 @@ OSDescription=$(lsb_release -d --short)
 OSArch=$(uname -m)
 calibra_default="${filepath}/../.ros/camera_info"
 
+TYPE_LIDAR=$(cat /opt/lidar.txt)
+echo ${TYPE_LIDAR}
+if [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
+	LIDARTYPE="ydlidar_g2"
+elif [[ "${TYPE_LIDAR}" == "3iroboticslidar2" ]]; then
+	LIDARTYPE="3iroboticslidar2"
+else
+	echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的杉川雷达运行"
+	LIDARTYPE="3iroboticslidar2"
+fi
 
 #检查系统要求
 check_sys(){
@@ -54,6 +64,8 @@ check_dev(){
 	
 	#检查摄像头
 	check_camera
+	#检查雷达
+	check_lidar
 }
 
 #检查摄像头设备
@@ -129,6 +141,29 @@ check_camera(){
 	esac
 
 }
+
+#检查雷达设备
+check_lidar(){
+
+	lidar_flag=0
+
+	#检查使用哪种设备
+	if [ -n "$(lsusb -d 10c4:ea60)" ]; then
+		lidar_flag=$[$lidar_flag + 1]
+	fi
+
+
+
+	if [ $lidar_flag -ge 2 ]; then
+		echo -e "${Warn} 正在使用多个雷达设备，请退出并拔掉其中一个再使用!"
+		echo -e "${Warn} 退出请输入：Ctrl + c！"
+	elif [ $lidar_flag -eq 1 ]; then
+		echo -e "${Info} 正在使用${LIDARTYPE}雷达"
+	elif [ $lidar_flag -eq 0 ]; then
+		echo -e "${Error} 没有找到雷达，请确认雷达已正确连接！！"
+	fi	
+}
+
 
 #安装ROS完整版
 install_ros_full(){
@@ -378,7 +413,7 @@ let_robot_go(){
 	echo -e "${Info}    退出请输入：Ctrl + c    " 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_teleop teleop.launch camera_type_tel:=${CAMERATYPE}
+	roslaunch spark_teleop teleop.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 }
 
 
@@ -397,7 +432,7 @@ remote_control_robot(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_teleop app_op.launch camera_type_tel:=${CAMERATYPE}
+	roslaunch spark_teleop app_op.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 }
 
 #让SPARK跟着你走
@@ -472,13 +507,13 @@ cal_camera_arm(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv2.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_cal_cv2.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_cal_cv3.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	fi
 		
 }
@@ -500,7 +535,7 @@ spark_navigation_2d(){
 	echo -e "${Info}" 
 	echo && stty erase '^H' && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_navigation amcl_demo_lidar_rviz.launch camera_type_tel:=${CAMERATYPE}
+	roslaunch spark_navigation amcl_demo_lidar_rviz.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 }
 #让SPARK使用深度摄像头进行导航
 spark_navigation_3d(){
@@ -693,13 +728,13 @@ spark_carry_obj(){
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 	if [ $ROSVER = "kinetic" ]; then
 		echo -e "${Info}It is kinetic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	elif [ $ROSVER = "indigo" ]; then
 		echo -e "${Info}It is indigo." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv2.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_object_only_cv2.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	elif [ $ROSVER = "melodic" ]; then
 		echo -e "${Info}It is melodic." 
-	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE}
+	  	roslaunch spark_carry_object spark_carry_object_only_cv3.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	fi
 	
 }
@@ -749,7 +784,7 @@ spark_build_map_2d(){
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} camera_type_tel:=${CAMERATYPE}
+	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	
 }
 #让SPARK去充电
