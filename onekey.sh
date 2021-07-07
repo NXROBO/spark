@@ -931,6 +931,32 @@ calibrate_camera(){
 
 }
 
+#让SPARK夺宝奇兵比赛用示例程序
+spark_carry_game(){
+	echo -e "${Info}" 
+	echo -e "${Info}夺宝奇兵比赛用示例程序" 
+	ROSVER=`/usr/bin/rosversion -d`
+	PROJECTPATH=$(cd `dirname $0`; pwd)
+	source ${PROJECTPATH}/devel/setup.bash
+	echo -e "${Info}请选择比赛方式：
+	  ${Green_font_prefix}1.${Font_color_suffix} 手动模式
+	  ${Green_font_prefix}2.${Font_color_suffix} 自动模式
+	  ${Green_font_prefix}3.${Font_color_suffix} 退出请输入：Ctrl + c" 
+	echo && stty erase ^? && read -p "请输入数字 [1-2]：" armnum
+	case "$armnum" in
+		1)
+		roslaunch move2grasp teleop2grasp.launch camera_type_tel:=${CAMERATYPE}  lidar_type_tel:=${LIDARTYPE}
+		;;
+		2)
+		roslaunch move2grasp move2grasp.launch camera_type_tel:=${CAMERATYPE}  lidar_type_tel:=${LIDARTYPE}
+		;;
+		*)
+		echo -e "${Error} 错误，请填入正确的数字"
+		;;
+	esac	
+}
+
+
 clear_user_data(){
 	PROJECTPATH=$(cd `dirname $0`; pwd)
 	source ${PROJECTPATH}/devel/setup.bash
@@ -1068,9 +1094,12 @@ echo -e "  SPARK 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_c
   ${Green_font_prefix} 10.${Font_color_suffix} 深度学习进行物品检测
   ${Green_font_prefix} 11.${Font_color_suffix} 语音控制SPARK移动
   ${Green_font_prefix} 12.${Font_color_suffix} 给摄像头做标定
-
-————————————
-
+———————————— "
+#echo -e "
+#  ${Green_font_prefix} 20.${Font_color_suffix} 竞赛示例程序
+#  
+#————————————"
+echo -e "
   ${Green_font_prefix}100.${Font_color_suffix} 问题反馈
   ${Green_font_prefix}101.${Font_color_suffix} 完整安装
   ${Green_font_prefix}102.${Font_color_suffix} 单独安装ROS环境
@@ -1120,6 +1149,9 @@ case "$num" in
 	;;
 	12)
 	calibrate_camera
+	;;
+	20)
+	spark_carry_game
 	;;
 	100)
 	tell_us

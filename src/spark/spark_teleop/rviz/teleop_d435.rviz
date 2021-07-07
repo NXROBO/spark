@@ -4,9 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1
         - /TF1/Frames1
-        - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 150
   - Class: rviz/Selection
@@ -374,8 +372,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.734114885
-        Min Value: -1.92792726
+        Max Value: 0.998731971
+        Min Value: 0.0726249218
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -397,6 +395,36 @@ Visualization Manager:
       Size (m): 0.00999999978
       Style: Flat Squares
       Topic: /camera/depth_registered/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 0
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.00999999978
+      Style: Flat Squares
+      Topic: /scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -426,7 +454,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.45080876
+      Distance: 2.74490595
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -441,10 +469,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.67539835
+      Pitch: 0.750398457
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.52539748
+      Yaw: 1.56039727
     Saved: ~
 Window Geometry:
   Displays:
