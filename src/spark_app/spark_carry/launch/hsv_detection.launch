@@ -1,0 +1,15 @@
+<!--
+  机械臂与摄像头之间的校准功能。注意摄像头需要反着装，垂直向下。使用一个蓝色圆贴在吸盘的正上方当校准点。
+ -->
+<launch> 	
+  <arg name="color" default="red"/>
+  <!--UARM机械臂-->
+  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+
+  <!--HSV获取-->
+  <node pkg="spark_carry_object" type="hsv_detection.py" name="spark_hsv_detection" output="screen">
+  	<param name="color"	value="$(arg color)"/>
+  </node>
+  
+
+</launch>
