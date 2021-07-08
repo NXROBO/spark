@@ -10,7 +10,6 @@ export PATH
 #	Site: http://www.nxrobo.com/
 #	SPARK技术讨论与反馈群：8346256
 #=================================================
-http://192.168.100.18:8086/spark/move2grasp.git
 GAME_ENABLE="no"
 sh_ver="1.1.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
