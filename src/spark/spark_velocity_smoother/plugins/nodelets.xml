@@ -1,0 +1,10 @@
+<library path="lib/libspark_velocity_smoother_nodelet">
+  <class name="spark_velocity_smoother/VelocitySmootherNodelet"
+         type="spark_velocity_smoother::VelocitySmootherNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Implementation for the command velocity smoother as a nodelet.
+    </description>
+  </class>
+</library>
+

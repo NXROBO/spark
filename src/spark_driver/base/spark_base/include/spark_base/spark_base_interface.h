@@ -270,7 +270,7 @@ public:
   double odometry_y_;
   //! Sparkbase odometry yaw
   double odometry_yaw_;
-
+  double d_x, d_y, d_ang;
   bool wall_;           //! Wall detected.
   bool virtual_wall_;   //! Virtual wall detected.
   bool cliff_[ENDPOS];  //! Cliff sensors. Indexes: LEFT FRONT_LEFT FRONT_RIGHT
@@ -319,6 +319,7 @@ public:
 
   int stasis_;                //! 1 when the robot is going forward, 0 otherwise
   unsigned int current_time;  //! diff time.
+  unsigned int last_time;  //! diff time.
 private:
   //! Parse data
   /*!

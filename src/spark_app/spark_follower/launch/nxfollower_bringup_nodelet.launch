@@ -5,8 +5,14 @@
 <launch>
 	<arg name="camera_types" default="astrapro" />
 
-	<include file="$(find spark_follower)/launch/include/velocity_smoother.launch.xml"/>
-
+	<include file="$(find spark_velocity_smoother)/launch/velocity_smoother.launch">
+	  <arg name="nodelet_manager_name"  value="spark_base_nodelet_manager"/>
+	  <arg name="config_file"           value="$(find spark_velocity_smoother)/param/standalone.yaml"/>
+	  <arg name="raw_cmd_vel_topic"     value="raw_cmd_vel"/>
+	  <arg name="smooth_cmd_vel_topic"  value="cmd_vel"/>
+	  <arg name="robot_cmd_vel_topic"   value="/spark_base/command/velocity"/>
+	  <arg name="odom_topic"            value="odom"/>
+	</include>
 	<node pkg="nodelet" type="nodelet" name="spark_base_nodelet_manager" args="manager"/>
 
 	<node pkg="nodelet" type="nodelet" name="nxfollower_nodelet" args="load nxfollower/NxFollowerNodelet spark_base_nodelet_manager" output="screen">

@@ -121,9 +121,9 @@ public:
     for (int kk = 0; kk < cloud->points.size(); kk++)
     {
       pt = cloud->points[kk];
-      if (!std::isnan(x) && !std::isnan(y) && !std::isnan(z))
+      if ((!std::isnan(x) && !std::isnan(y) && !std::isnan(z))&&(!std::isinf(pt.x) && !std::isinf(pt.y) && !std::isinf(pt.z)))
       {
-        if (-pt.y > min_y_ && -pt.y < max_y_ && pt.x < max_x_ && pt.x > min_x_ && pt.z < max_z_)
+        if (pt.y > min_y_ && pt.y < max_y_ && pt.x < max_x_ && pt.x > min_x_ && pt.z < max_z_)
         {
           // Add the point to the totals
           x += pt.x;
