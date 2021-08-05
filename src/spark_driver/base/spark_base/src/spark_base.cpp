@@ -95,6 +95,7 @@ private:
     ros::Subscriber dock_sub;
     ros::Subscriber search_sub;
     ros::Publisher pub_imu;
+    bool vel_rt;
     double last_x, last_y, last_yaw;
     double vel_x, vel_y, vel_yaw;
     double dt;
@@ -370,14 +371,20 @@ void ComDealDataNode::dealMessageSwitch(unsigned char *recvbuf)
     double diff_time = b_current_time-last_b_time;
     last_b_time = b_current_time;
     odom.child_frame_id = base_frame_id;
-    odom.twist.twist.linear.x = (sparkbase->d_x);
-    odom.twist.twist.linear.y = (sparkbase->d_y);
-    odom.twist.twist.angular.z = vel_yaw;
+    if(vel_rt == true)
+    {
+        odom.twist.twist.linear.x = (sparkbase->d_x);
+        odom.twist.twist.linear.y = (sparkbase->d_y);
+        odom.twist.twist.angular.z = vel_yaw;
 
-    last_odometry_yaw_ = sparkbase->odometry_yaw_;
-    //  odom.twist.twist.linear.x = vel_x;
-    //  odom.twist.twist.linear.y = vel_y;
-    //  odom.twist.twist.angular.z = vel_yaw;
+        last_odometry_yaw_ = sparkbase->odometry_yaw_;
+    }
+    else
+    {
+        odom.twist.twist.linear.x = vel_x;
+        odom.twist.twist.linear.y = vel_y;
+        odom.twist.twist.angular.z = vel_yaw;
+    }
     // publish the odom's message
 
     // add covariance
@@ -607,6 +614,12 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
     robot_yaw = 0;
     g_Lock.Unlock();
     serial_port = new_serial_port;
+    vel_rt = false;
+    if(_n.getParam("vel_rt", vel_rt))
+    {
+        ROS_WARN("vel_rt is %d",vel_rt);
+    }
+
     pn.param<std::string>("port", port, serial_port);
     pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");
     pn.param<std::string>("odom_frame_id", odom_frame_id, "odom");

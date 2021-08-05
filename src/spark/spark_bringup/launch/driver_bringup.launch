@@ -1,6 +1,6 @@
 <!--启动spark各种驱动-->
 <launch>
-
+	<arg name="use_vel_rt" default="false" />
 	<arg name="start_base" default="true"/>
 	<arg name="start_camera" default="true"/>
 	<arg name="serialport" default="/dev/sparkBase"/>
@@ -19,6 +19,7 @@
 
   		<include file="$(find spark_base)/launch/spark_base.launch">
 			<arg name="serialport"                  value="$(arg serialport)"/>
+			<arg name="use_vel_rt" 		value="$(arg use_vel_rt)" />
   		</include>
 
   	</group>
