@@ -1,0 +1,46 @@
+<launch>
+  <!-- <param name="robot_pose" value="0,0,0,0,0,0,1"/> -->
+  <!-- <param name="kitchen_pose" value="1,1,0,0,0,0,1"/> -->
+  
+  <!--描述-->
+  <include file="$(find spark_description)/launch/spark_description_norviz.launch"/>
+  <!--show robo with rviz-->  
+  <arg name="rvizconfig" default="$(find spark_fetchtea)/rviz/fetch_tea.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <!--底盘-->
+  <include file="$(find spark_base)/launch/spark_base.launch">
+	<arg name="serialport"                  value="/dev/sparkBase"/>
+  </include>
+  <!--相机-->
+  <include file="$(find astra_launch)/launch/astra.launch">
+    <arg name="rgb_processing"                  value="true"/>
+    <arg name="depth_processing"                value="true"/>
+    <arg name="depth_registered_processing"     value="false"/>
+    <arg name="depth_registration"              value="false"/>
+    <arg name="disparity_processing"            value="false"/>
+    <arg name="disparity_registered_processing" value="false"/>
+  </include>
+  <!--激光-->
+  <include file="$(find spark_depth2laser)/launch/spark_depth2laser.launch"/>
+  
+  <!--加载地图-->
+  <arg name="map_file" default="$(find spark_slam)/scripts/test_map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <!--amcl定位-->
+  <include file="$(find spark_amcl)/launch/spark_amcl.launch"/>
+  <!--导航-->
+  <include file="$(find spark_movebase)/launch/spark_movebase.launch"/>
+  
+  <!--指定厨房-->
+  <include file="$(find spark_set_kitchen)/launch/spark_set_kitchen.launch"/>
+
+  <!--语音指令-->
+  <node pkg="spark_voice" type="ali_asr.py" name="ali_bot" output="screen"/>
+  <!--语音识别-->
+  <node pkg="spark_voice" type="ekho_tts.py" name="ekho_tts" output="screen"/>
+  <!--指令处理-->
+  <node pkg="spark_fetchtea" type="s_fetchtea.py" name="spark_fetchtea_node" output="screen"/>
+  <node pkg="spark_fetchtea" type="fetchtea_main.py" name="spark_fetchtea_main_node" output="screen"/>
+  <!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  <node pkg="spark_teleop" type="keyboard_control.sh" name="kc" />
+</launch>

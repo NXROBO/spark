@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="spark_move_straight" type="spark_move_straight_node" name="spark_move_straight_node" output="screen"/>
+    <arg name="serialport" default="/dev/sparkBase"/>
+    <include file="$(find spark_base)/launch/spark_base.launch">
+        <arg name="serialport" value="$(arg serialport)"/>
+    </include>
+</launch>

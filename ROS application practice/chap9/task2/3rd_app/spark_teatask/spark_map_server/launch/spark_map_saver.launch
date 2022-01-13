@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="map_server" type="map_saver" name="map_saver" args="-f $(find spark_map_server)/map/spark_map" output="screen"/>
+</launch>

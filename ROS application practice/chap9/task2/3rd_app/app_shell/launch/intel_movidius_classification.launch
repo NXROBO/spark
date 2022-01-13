@@ -1,0 +1,17 @@
+<!--
+  The nxrobo intel movidius.   
+ -->
+
+<launch>
+	<include file="$(find spark_teleop)/launch/teleop.launch"/>
+
+	<arg name="cnn_model" default="GoogleNet" doc="cnn_model [GoogleNet, AlexNet, SqueezeNet, Inception_v1, Inception_v2, Inception_v3, Inception_v4, MobileNet]"/>
+	<include file="$(find movidius_ncs_launch)/launch/ncs_camera.launch">
+		<arg name="cnn_type"	value="$(arg cnn_model)"/>
+ 	</include> 
+
+	<include file="$(find movidius_ncs_launch)/launch/ncs_stream_classification_example.launch">
+		<arg name="camera_topic"                  value="/camera/rgb/image_raw"	/> 
+	</include>
+	
+</launch>

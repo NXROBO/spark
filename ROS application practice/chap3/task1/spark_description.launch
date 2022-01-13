@@ -1,0 +1,28 @@
+<!--spark description without rviz-->
+
+<launch>
+
+	<arg name="camera_types" default="astrapro" doc="camera types [asatra, astrapro, d435...]"/>
+
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+  	<arg name="model" default="$(find spark_description)/robots/spark.urdf.xacro"/>
+  
+  	<arg name="use_gui" default="false"/>
+  	<arg name="publish_default_positions" default="true"/>
+
+	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(arg model)' camera_types:=$(arg camera_types) lidar_type_tel:=$(arg lidar_type_tel)"/>
+
+  	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+  		<param name="use_gui" value="$(arg use_gui)"/>
+  		<param name="publish_default_positions" value="$(arg publish_default_positions)" />
+		<rosparam param="source_list">["wheel_states"]</rosparam>
+  	</node>
+  
+  	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+      
+  	<!--show robo with rviz
+  	<arg name="rvizconfig" default="$(find spark_description)/rviz/urdf.rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
+</launch> 	
+
+

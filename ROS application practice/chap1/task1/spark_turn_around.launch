@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="spark_turn_around" type="spark_turn_around_node" name="spark_turn_around_node" output="screen"/>
+    <arg name="serialport" default="/dev/sparkBase"/>
+    <include file="$(find spark_base)/launch/spark_base.launch">
+        <arg name="serialport" value="$(arg serialport)"/>
+    </include>
+</launch>
