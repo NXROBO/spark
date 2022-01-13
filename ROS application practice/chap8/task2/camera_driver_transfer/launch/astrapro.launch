@@ -1,7 +1,8 @@
-<!--启动 astra -->
+<!-- 启动astrapro -->
+
 <launch>
 	<arg name="dp_rgist" default="false"/>
-	<include file="$(find astra_camera)/launch/astra.launch" >
+	<include file="$(find astra_camera)/launch/astrapro.launch" >
     		<arg name="rgb_processing"                  value="true"/>
     		<arg name="depth_processing"                value="true"/>
     		<arg name="depth_registered_processing"     value="false"/>

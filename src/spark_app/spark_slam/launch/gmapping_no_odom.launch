@@ -1,0 +1,51 @@
+<!--spark 2d slam-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+  	<!-- Arguments -->
+	<arg name="camera_types"	default="astrapro"/>
+  	<arg name="configuration_basename" default="spark_lds_2d.lua"/>
+  	<arg name="open_rviz" default="true"/>
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="start_camera"	value="false"/>
+		<arg name="camera_types"	value="$(arg camera_types)"/>
+		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
+		<arg name="publish_odom_tf" value="false"/>
+	</include>
+
+ 	<!-- 3D sensor -->
+  	<arg name="3d_sensor" default="3i_lidar"/>  
+ 	<!-- 启动雷达 -->
+	<include file="$(find lidar_driver_transfer)/launch/$(arg lidar_type_tel).launch">
+	</include>
+
+  	<!-- SLAM: Gmapping-->
+  	<include file="$(find spark_slam)/launch/spark_gmapping.launch">
+    	<arg name="configuration_basename" value="$(arg configuration_basename)"/>
+		<arg name="set_odom_frame" value="odom_rf2o"/>
+  	</include>
+	<!--<include file="$(find exploration_server)/launch/exploration.launch"/> -->
+
+	<!--rf2o laser odometry-->
+	<node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry">
+		<param name="laser_scan_topic" value="/scan"/>
+		<param name="odom_topic" value="/odom_rf2o" />
+		<param name="publish_tf" value="true" />  
+		<param name="base_frame_id" value="base_footprint"/>    
+		<param name="odom_frame_id" value="odom_rf2o" />       
+		<param name="init_pose_from_topic" value="" />
+		<param name="freq" value="10.0"/>               
+	</node>
+
+  	<!-- rviz -->
+  	<group if="$(arg open_rviz)"> 
+		<group if="$(eval arg('camera_types')=='d435')">
+			<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_gmapping_d435.rviz"/>
+		</group>
+		<group unless="$(eval arg('camera_types')=='d435')">
+    			<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_gmapping.rviz"/>
+		</group>
+  	</group>
+
+</launch>

@@ -1,0 +1,17 @@
+<!--spark 2d slam-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+	<!--spark slam-->
+  	<arg name="slam_methods_tel" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
+	<arg name="camera_type_tel"	default="astrapro"/>
+	<include file="$(find spark_slam)/launch/2d_slam.launch">
+		<arg name="slam_methods"	value="$(arg slam_methods_tel)"/>
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
+ 	</include> 
+  	<!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  	<node pkg="spark_teleop" type="keyboard_control.sh" name="kc_2d" />
+	<!--创建新的终端，确定是否保存地图-->
+  	<node pkg="spark_slam" type="cmd_save_map.sh" name="csm_2d" />
+</launch>

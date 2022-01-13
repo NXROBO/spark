@@ -1,0 +1,43 @@
+<!--spark rtabmap-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+	<!-- camera -->
+	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
+	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
+	
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="dp_rgist" 		value="true"/>
+	</include>
+
+
+  	<!-- Run the depthimage_to_laserscan node -->
+  	<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+    
+    		<!--<remap from="image" to="/camera/depth/image_raw" />-->
+    		<remap from="image" to="$(arg depthtolaser)" />
+
+    		<!--<remap from="camera_info" to="/camera/depth/camera_info" />-->
+    		<remap from="camera_info" to="/camera/depth/camera_info" />
+
+    		<remap from="scan" to="/scan" />
+    		<param name="output_frame_id" value="camera_depth_frame" />
+
+    		<param name="scan_height" value="20" />
+  	</node>
+
+
+  	<!-- Move base -->
+  	<include file="$(find spark_navigation)/launch/includes/move_base.launch.xml"/>
+
+
+	<!-- rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map_$(arg camera_type_tel).rviz"/>
+	<!-- rtabmap -->
+  	<include file="$(find spark_rtabmap)/launch/spark_mapping_$(arg camera_type_tel).launch">
+		<arg name="localization"                  value="true"/>
+	</include>
+
+
+</launch>

@@ -620,8 +620,16 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
         ROS_WARN("vel_rt is %d",vel_rt);
     }
 
+	//Edit by PengJiaxi
+	bool publish_odom_tf = false;
+	_n.getParam("publish_odom_tf", publish_odom_tf);
+	if(publish_odom_tf == true)
+		pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");
+	else
+		pn.param<std::string>("base_frame_id", base_frame_id, "some_other_frame_names_whatever");
+
     pn.param<std::string>("port", port, serial_port);
-    pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");
+    //pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");
     pn.param<std::string>("odom_frame_id", odom_frame_id, "odom");
     this->cmd_vel_sub = this->n.subscribe<geometry_msgs::Twist>("/cmd_vel", 1, &ComDealDataNode::cmdVelReceived, this);
     this->pub_imu = this->n.advertise<sensor_msgs::Imu>("/imu_data", 1);

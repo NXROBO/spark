@@ -1,0 +1,9 @@
+<!-- d435摄像头 -->
+<launch>
+	<arg name="dp_rgist" default="false"/>
+	<remap from="/camera/depth/points" to="/camera/depth_registered/points"/>
+	<include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
+		<arg name="align_depth"	default="true"/>	
+	</include>
+
+</launch>

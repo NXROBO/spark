@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find iiiroboticslidar2)/launch/3iroboticslidar2.launch" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find iiiroboticslidar2)/rviz/3iroboticslidar2.rviz" />
+</launch>
