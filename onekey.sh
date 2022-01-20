@@ -28,16 +28,22 @@ calibra_default="${filepath}/../.ros/camera_info"
 
 calibration="calibration"
 color_block="color_block"
-
+BASEPATH=$(cd `dirname $0`; pwd)
 TYPE_LIDAR=$(cat /opt/lidar.txt)
 echo ${TYPE_LIDAR}
-if [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
+if [[ "${TYPE_LIDAR}" == "ydlidar_g6" ]]; then
+	LIDARTYPE="ydlidar_g6"
+	rm -f ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
+elif [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
 	LIDARTYPE="ydlidar_g2"
+	touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
 elif [[ "${TYPE_LIDAR}" == "3iroboticslidar2" ]]; then
 	LIDARTYPE="3iroboticslidar2"
+	touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
 else
 	echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的杉川雷达运行"
 	LIDARTYPE="3iroboticslidar2"
+	touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE	
 fi
 
 #检查系统要求

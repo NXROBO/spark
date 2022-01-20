@@ -24,6 +24,10 @@
 		<xacro:include filename="$(find ydlidar_g2)/urdf/ydlidar.urdf" />
 	</xacro:if>
 
+	<xacro:if value="${lidar == 'ydlidar_g6'}">
+		<xacro:include filename="$(find ydlidar_g2)/urdf/ydlidar.urdf" />
+	</xacro:if>
+
 	<xacro:if value="${lidar == '3iroboticslidar2'}">
 		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
 	</xacro:if>
