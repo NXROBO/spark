@@ -10,7 +10,7 @@ export PATH
 #	Site: http://www.nxrobo.com/
 #	SPARK技术讨论与反馈群：8346256
 #=================================================
-GAME_ENABLE="yes"
+GAME_ENABLE="no"
 sh_ver="1.1.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\e[1;33m" && Blue_font_prefix="\e[0;34m"
