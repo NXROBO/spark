@@ -1,12 +1,12 @@
 <!--rtab_demo -->
 <launch>
   	<!-- camera -->
-  	<arg name="camera_types" default="" doc="camera type [astrapro, astra]"/>
+  	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
 
 	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
-		<arg name="camera_types"	value="$(arg camera_types)"/>
+		<arg name="camera_type_tel"	value="$(arg camera_type_tel)"/>
 		<arg name="dp_rgist"		value="true"/>
 	</include>
 

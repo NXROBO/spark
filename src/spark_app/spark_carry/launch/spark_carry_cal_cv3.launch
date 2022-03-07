@@ -10,7 +10,7 @@
 
   <!--spark驱动，机器人描述，相机，底盘-->
   <include file="$(find spark_bringup)/launch/driver_bringup.launch">
-  	<arg name="camera_types"	value="$(arg camera_type_tel)" />
+  	<arg name="camera_type_tel"	value="$(arg camera_type_tel)" />
   </include>
 
   <!--摄像头订阅与视觉定位-->

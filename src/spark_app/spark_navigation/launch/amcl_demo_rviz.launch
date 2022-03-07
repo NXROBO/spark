@@ -7,7 +7,7 @@
 	
 	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
-		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="camera_type_tel"	value="$(arg camera_type_tel)"/>
 	</include>
 	
 	<!-- Run the depthimage_to_laserscan node -->

@@ -32,6 +32,6 @@
     <param name="range_max"    type="double" value="25.0" />
     <param name="frequency"    type="double" value="10.0"/>
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
-    args="0.0 0.0 0.2 0.0 0.0 0.0 /base_footprint /laser_frame 40" />
+  <!--node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+    args="0.0 0.0 0.2 0.0 0.0 0.0 /base_footprint /laser_frame 40" /-->
 </launch>

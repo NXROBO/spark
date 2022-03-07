@@ -93,16 +93,11 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <!-- lidar body, with origin at bottom screw mount -->
-    <joint name="lidar_joint" type="fixed">
-      <parent link="base_link"/>
-      <child link="lidar_bottom_screw_frame" />
-    </joint>
-    <link name="lidar_bottom_screw_frame"/>
+
 
     <joint name="lidar_link_joint" type="fixed">
       <origin xyz="0 0 0.08" rpy="0 0 0"/>
-      <parent link="lidar_bottom_screw_frame"/>
+      <parent link="base_link"/>
       <child link="lidar_link" />
     </joint>
 </robot>

@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /TF1/Frames1
+        - /TF1/Tree1
       Splitter Ratio: 0.5
     Tree Height: 150
   - Class: rviz/Selection
@@ -63,6 +64,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         Link Tree Style: Links in Alphabetic Order
+        ar_tag_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         base_footprint:
           Alpha: 1
           Show Axes: false
@@ -172,15 +177,68 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        laser_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        lidar_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         lidar_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
+        link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_grasping_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        link_gripper_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_gripper_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         right_wheel_link:
           Alpha: 1
           Show Axes: false
@@ -191,11 +249,20 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        sagittarius_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         spark_stack:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        usb_cam_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -208,9 +275,11 @@ Visualization Manager:
       Frames:
         All Enabled: false
         IMU_link:
-          Value: true
+          Value: false
+        ar_tag_link:
+          Value: false
         base_footprint:
-          Value: true
+          Value: false
         base_gyro_link:
           Value: false
         base_link:
@@ -271,9 +340,31 @@ Visualization Manager:
           Value: false
         ir_bumper_right_link:
           Value: false
+        laser_frame:
+          Value: false
         left_wheel_link:
           Value: false
+        lidar_bottom_screw_frame:
+          Value: false
         lidar_link:
+          Value: false
+        link1:
+          Value: false
+        link2:
+          Value: false
+        link3:
+          Value: false
+        link4:
+          Value: false
+        link5:
+          Value: false
+        link6:
+          Value: false
+        link_grasping_frame:
+          Value: false
+        link_gripper_left:
+          Value: false
+        link_gripper_right:
           Value: false
         odom:
           Value: true
@@ -281,7 +372,11 @@ Visualization Manager:
           Value: false
         room_base_link:
           Value: false
+        sagittarius_base_link:
+          Value: false
         spark_stack:
+          Value: false
+        usb_cam_link:
           Value: false
       Marker Scale: 1
       Name: TF
@@ -347,14 +442,34 @@ Visualization Manager:
                 {}
               left_wheel_link:
                 {}
-              lidar_link:
-                {}
+              lidar_bottom_screw_frame:
+                lidar_link:
+                  {}
               right_wheel_link:
                 {}
               room_base_link:
                 {}
               spark_stack:
                 {}
+            laser_frame:
+              {}
+            sagittarius_base_link:
+              link1:
+                link2:
+                  link3:
+                    link4:
+                      link5:
+                        link6:
+                          ar_tag_link:
+                            {}
+                          link_grasping_frame:
+                            {}
+                          link_gripper_left:
+                            {}
+                          link_gripper_right:
+                            {}
+                          usb_cam_link:
+                            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Image
@@ -372,8 +487,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.998731971
-        Min Value: 0.0726249218
+        Max Value: 3.69033003
+        Min Value: -0.10726279
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -414,9 +529,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 0
+      Max Intensity: 1020
       Min Color: 0; 0; 0
-      Min Intensity: 0
+      Min Intensity: 1008
       Name: LaserScan
       Position Transformer: XYZ
       Queue Size: 10
@@ -454,7 +569,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.74490595
+      Distance: 2.3126626
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -469,10 +584,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.750398457
+      Pitch: 0.245398864
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.56039727
+      Yaw: 2.37539697
     Saved: ~
 Window Geometry:
   Displays:
