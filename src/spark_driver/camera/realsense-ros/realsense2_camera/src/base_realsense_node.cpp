@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cctype>
 #include <mutex>
-
+using namespace std;
 using namespace realsense2_camera;
 using namespace ddynamic_reconfigure;
 
