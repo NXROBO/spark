@@ -4,7 +4,7 @@
 	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
 	<!--spark底盘驱动，机器人描述,底盘,相机-->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
-		<arg name="camera_types"	value="$(arg camera_type_tel)" />
+		<arg name="camera_type_tel"	value="$(arg camera_type_tel)" />
 	</include>
 	<!--spark控制 ”-->
 	<node pkg="spark_voice" type="wx_bot.py" name="wx_bot" />

@@ -1,12 +1,15 @@
 <!--让SPARK跑起来-->
 <launch>
 	<!-- camera -->
-	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
-	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2,ydlidar_g6]"/>
+        <arg name="arm_type_tel" default="uarm" doc="arm types [uarm, sagittarius_arm]"/>
+
 	<!--spark底盘驱动，机器人描述,底盘,相机-->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
-		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="camera_type_tel"	value="$(arg camera_type_tel)"/>
 		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
+                <arg name="arm_type_tel"        value="$(arg arm_type_tel)"/>
 	</include>
  	<!-- 启动雷达 -->
 	<include file="$(find lidar_driver_transfer)/launch/$(arg lidar_type_tel).launch">

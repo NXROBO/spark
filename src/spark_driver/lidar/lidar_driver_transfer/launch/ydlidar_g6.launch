@@ -1,0 +1,7 @@
+<!-- 启动杉川雷达 -->
+<launch>
+  	<arg name="3d_sensor" default="ydlidar_g6"/>  
+    		<include file="$(find ydlidar_ros_driver)/launch/G6_G7.launch">
+  	</include>
+</launch>
+

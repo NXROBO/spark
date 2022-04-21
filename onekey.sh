@@ -10,7 +10,7 @@ export PATH
 #	Site: http://www.nxrobo.com/
 #	SPARK技术讨论与反馈群：8346256
 #=================================================
-GAME_ENABLE="yes"
+GAME_ENABLE="no"
 sh_ver="1.1.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m" && Yellow_font_prefix="\e[1;33m" && Blue_font_prefix="\e[0;34m"
@@ -29,16 +29,6 @@ calibra_default="${filepath}/../.ros/camera_info"
 calibration="calibration"
 color_block="color_block"
 
-TYPE_LIDAR=$(cat /opt/lidar.txt)
-echo ${TYPE_LIDAR}
-if [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
-	LIDARTYPE="ydlidar_g2"
-elif [[ "${TYPE_LIDAR}" == "3iroboticslidar2" ]]; then
-	LIDARTYPE="3iroboticslidar2"
-else
-	echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的杉川雷达运行"
-	LIDARTYPE="3iroboticslidar2"
-fi
 
 #检查系统要求
 check_sys(){
@@ -60,9 +50,17 @@ check_dev(){
 		echo -e "${Error} 底盘没有正确连接，请确认正确连接！！"
 	fi
 	#检查机械臂
-	if [ ! -n "$(lsusb -d 2341:0042)" ]; then
-		echo -e "${Error} 机械臂没有正确连接，请确认正确连接！！"
+	if [ -n "$(lsusb -d 2341:0042)" ]; then
+		echo -e "${Info} 正在使用UARM机械臂"	
+		ARMTYPE="uarm"		
+	elif [ -n "$(lsusb -d 2e88:4603)" ]; then
+		echo -e "${Info} 正在使用射手座机械臂"
+		ARMTYPE="sagittarius_arm"	
+	else
+		echo -e "${Error} 机械臂没有正确连接或未上电，请确认正确连接！！"	
+		ARMTYPE="uarm"				
 	fi
+
 	
 	#检查摄像头
 	check_camera
@@ -159,15 +157,29 @@ check_camera(){
 
 #检查雷达设备
 check_lidar(){
+	BASEPATH=$(cd `dirname $0`; pwd)
+	TYPE_LIDAR=$(cat /opt/lidar.txt)
 
+	if [[ "${TYPE_LIDAR}" == "ydlidar_g6" ]]; then
+		LIDARTYPE="ydlidar_g6"
+		rm -f ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
+	elif [[ "${TYPE_LIDAR}" == "ydlidar_g2" ]]; then
+		LIDARTYPE="ydlidar_g2"
+		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
+	elif [[ "${TYPE_LIDAR}" == "3iroboticslidar2" ]]; then
+		LIDARTYPE="3iroboticslidar2"
+		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE
+	else
+		echo "暂不支持的雷达：${TYPE_LIDAR}，使用默认的杉川雷达运行"
+		LIDARTYPE="3iroboticslidar2"
+		touch ${BASEPATH}/src/spark_driver/lidar/ydlidar_g6/CATKIN_IGNORE	
+	fi
 	lidar_flag=0
 
 	#检查使用哪种设备
 	if [ -n "$(lsusb -d 10c4:ea60)" ]; then
 		lidar_flag=$[$lidar_flag + 1]
 	fi
-
-
 
 	if [ $lidar_flag -ge 2 ]; then
 		echo -e "${Warn} 正在使用多个雷达设备，请退出并拔掉其中一个再使用!"
@@ -428,7 +440,7 @@ let_robot_go(){
 	echo -e "${Info}    退出请输入：Ctrl + c    " 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
 
-	roslaunch spark_teleop teleop.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
+	roslaunch spark_teleop teleop.launch camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE} arm_type_tel:=${ARMTYPE} enable_arm_tel:="false"
 }
 
 
@@ -798,7 +810,7 @@ spark_build_map_2d(){
 	echo -e "${Info}退出请输入：Ctrl + c        " 
 	echo -e "${Info}" 
 	echo && stty erase ^? && read -p "按回车键（Enter）开始：" 
-
+	echo -e "roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}" 
 	roslaunch spark_slam 2d_slam_teleop.launch slam_methods_tel:=${SLAMTYPE} camera_type_tel:=${CAMERATYPE} lidar_type_tel:=${LIDARTYPE}
 	
 }

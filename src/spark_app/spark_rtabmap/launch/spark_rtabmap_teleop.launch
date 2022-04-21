@@ -6,7 +6,7 @@
 	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]" />
 	<!-- spark base driver -->
 	<include file="$(find spark_rtabmap)/launch/rtab_demo.launch">
-		<arg name="camera_types"	value="$(arg camera_type_tel)" />
+		<arg name="camera_type_tel"	value="$(arg camera_type_tel)" />
 		<arg name="depthtolaser"	value="$(arg depthtolaser)"/>	
 	</include>
 

@@ -4,13 +4,13 @@
   	<!-- Arguments -->
 	<arg name="depthtolaser"	default="/camera/depth/image_rect_raw"/>
   	<arg name="slam_methods" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
-  	<arg name="camera_types" default="astrapro" doc="camera type [astrapro, astra, d435]"/>
+  	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435]"/>
   	<arg name="configuration_basename" default="spark_lds_2d.lua"/>
   	<arg name="open_rviz" default="true"/>
 
 	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
 	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
-		<arg name="camera_types" 	value="$(arg camera_types)"/>
+		<arg name="camera_type_tel" 	value="$(arg camera_type_tel)"/>
 	</include>
 
   	<!-- Run the depthimage_to_laserscan node -->
@@ -37,10 +37,10 @@
 
   	<!-- rviz -->
   	<group if="$(arg open_rviz)"> 
-		<group if="$(eval arg('camera_types')=='d435')">
+		<group if="$(eval arg('camera_type_tel')=='d435')">
 			<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods)_d435.rviz"/>
 		</group>
-		<group unless="$(eval arg('camera_types')=='d435')">
+		<group unless="$(eval arg('camera_type_tel')=='d435')">
     			<node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find spark_slam)/rviz/spark_$(arg slam_methods).rviz"/>
 		</group>
   	</group>

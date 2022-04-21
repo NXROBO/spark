@@ -8,13 +8,17 @@
 
 <robot name="spark" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  	<xacro:arg name="camera_types"	default="astrapro"/>
+        <xacro:arg name="enable_arm_tel"	default="false"/>
+	<xacro:property name="enable_arm"	value="$(arg enable_arm_tel)"/>
 
-	<xacro:property name="camera"	value="$(arg camera_types)"/>
+        <xacro:arg name="camera_type_tel"	default="astrapro"/>
+        <xacro:property name="camera"	value="$(arg camera_type_tel)"/>
 
   	<xacro:arg name="lidar_type_tel"	default="astrapro"/>
-
 	<xacro:property name="lidar"	value="$(arg lidar_type_tel)"/>
+
+        <xacro:arg name="arm_type_tel"	default="uarm"/>
+        <xacro:property name="robot_arm_type"	value="$(arg arm_type_tel)"/>
 
   	<xacro:include filename="$(find spark_description)/urdf/base/spark_base.urdf"/>  	
   		
@@ -24,16 +28,29 @@
 		<xacro:include filename="$(find ydlidar_g2)/urdf/ydlidar.urdf" />
 	</xacro:if>
 
+	<xacro:if value="${lidar == 'ydlidar_g6'}">
+		<xacro:include filename="$(find ydlidar_g2)/urdf/ydlidar.urdf" />
+	</xacro:if>
+
 	<xacro:if value="${lidar == '3iroboticslidar2'}">
 		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_lidar.urdf"/>
 	</xacro:if>
 
 	<xacro:if value="${camera == 'astrapro' or camera == 'astra'}">
-		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_$(arg camera_types).urdf"/>
+                <xacro:include filename="$(find spark_description)/urdf/sensors/spark_$(arg camera_type_tel).urdf"/>
 	</xacro:if>
 
 	<xacro:if value="${camera == 'd435'}">
 		<xacro:include filename="$(find spark_description)/urdf/sensors/spark_d435.urdf.xacro"/>
+	</xacro:if>
+
+	<xacro:if value="${enable_arm == 'true'}">
+		<xacro:if value="${robot_arm_type == 'sagittarius_arm'}">
+  			<xacro:include filename="$(find sagittarius_descriptions)/urdf/spark_sagittarius_descriptions.urdf"/>  
+		</xacro:if>
+        	<xacro:if value="${robot_arm_type == 'uarm'}">
+  			<xacro:include filename="$(find swiftpro)/urdf/spark_pro_model.xacro"/>  
+		</xacro:if>
 	</xacro:if>
 
 </robot>
