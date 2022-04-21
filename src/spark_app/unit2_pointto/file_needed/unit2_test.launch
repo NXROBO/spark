@@ -1,0 +1,32 @@
+<!-- 启动文件 第二课：拿起指定对象 -->
+
+<launch>
+	<arg name="camera_types"	default="astrapro"/>
+ 	 <!--spark驱动，机器人描述，相机，底盘-->
+  	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+  		<arg name="camera_types"	value="$(arg camera_types)" />
+  	</include>
+
+	 <!--UARM机械臂-->
+  	<include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+
+	<node pkg= "tensorflow_object_detector" name="detect_ros_info" type="detect_ros_info.py"  output="screen"> 
+    		<remap from="image" to="/camera/color/image_raw" if="$(eval arg('camera_types')=='d435')"/>
+		<remap from="image" to="/camera/rgb/image_raw" unless="$(eval arg('camera_types')=='d435')"/>
+	</node>
+
+	<!-- rviz -->
+  	<arg name ="rviz" default="true" />
+  	<arg name ="rviz_file" default="$(find tensorflow_object_detector)/config/display.rviz"/>
+	<node pkg ="rviz" type="rviz" name="rviz" output="screen" args= "-d $(arg rviz_file)" if="$(arg rviz)"/>
+
+	
+	<!-- 想要识别到的物体名字-->
+	<!--<arg name="object_name"	 value="bottle" doc="object name [such as person,bottle,dog,cat]"/>-->
+	<arg name="object_name" default=""/>
+	<!-- Arm point to camera -->
+	<node pkg= "unit2_pointto" name="obj_pointto" type="DL_pointto.py" output="screen">
+		<param name="obj_name" value="$(arg object_name)"/>
+	</node>
+
+</launch>

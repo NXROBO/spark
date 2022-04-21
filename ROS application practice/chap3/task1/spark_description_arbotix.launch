@@ -1,0 +1,30 @@
+<!--spark description with rviz-->
+<launch>
+
+  <arg name="model" default="$(find spark_description)/robots/spark.urdf.xacro"/>
+  
+  <arg name="use_gui" default="false"/>
+  <arg name="publish_default_positions" default="true"/>
+  
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+
+  <node name="arbotix" pkg="arbotix_python" type="arbotix_driver" output="screen" clear_params="true">
+    <rosparam file="$(find spark_description)/config/fake_spark_arbotix.yaml" command="load" />
+    <param name="sim" value="true"/>
+  </node>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+  	<param name="use_gui" value="$(arg use_gui)"/>
+  	<param name="publish_default_positions" value="$(arg publish_default_positions)" />
+	<rosparam param="source_list">["wheel_states"]</rosparam>
+  </node>
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+      
+  <!--show robo with rviz -->
+  <arg name="rvizconfig" default="$(find spark_description)/rviz/urdf.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+
+
+</launch>

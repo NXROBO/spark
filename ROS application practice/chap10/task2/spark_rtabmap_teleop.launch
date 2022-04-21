@@ -1,0 +1,20 @@
+<!--spark rtabmap-->
+<!--SPARK技术讨论与反馈群：8346256-->
+<launch>
+	<arg name="depthtolaser" default="/camera/depth/image_rect_raw"/>
+	<!-- camera -->
+	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]" />
+	<!-- spark base driver -->
+	<include file="$(find spark_rtabmap)/launch/rtab_demo.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)" />
+		<arg name="depthtolaser"	value="$(arg depthtolaser)"/>	
+	</include>
+
+	<!-- rtabmap -->
+  	<include file="$(find spark_rtabmap)/launch/spark_mapping_$(arg camera_type_tel).launch"/>
+
+	<!-- rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find spark_rtabmap)/rviz/spark_rtab_map_$(arg camera_type_tel).rviz"/>
+      	<!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+  	<node pkg="spark_teleop" type="keyboard_control.sh" name="rtab_3d" />
+</launch>

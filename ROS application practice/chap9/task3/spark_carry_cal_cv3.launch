@@ -1,0 +1,29 @@
+<!--
+  机械臂与摄像头之间的校准功能。注意摄像头需要反着装，垂直向下。使用一个蓝色圆贴在吸盘的正上方当校准点。
+ -->
+<launch> 	
+  <!-- Camera -->
+  <arg name="camera_type_tel" default="" doc="camera type [astrapro, astra, d435...]"/>
+
+  <!--UARM机械臂-->
+  <include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+
+  <!--spark驱动，机器人描述，相机，底盘-->
+  <include file="$(find spark_bringup)/launch/driver_bringup.launch">
+  	<arg name="camera_types"	value="$(arg camera_type_tel)" />
+  </include>
+
+  <!--摄像头订阅与视觉定位-->
+  <node pkg="spark_carry_object" type="cali_cam_cv3.py" name="cali_cam_cv3_node" output="screen">
+	<remap from="/camera/rgb/image_raw" to="/camera/color/image_raw" if="$(eval arg('camera_type_tel')=='d435')"/>
+  </node>
+
+  <!--控制机械臂的定点移动-->
+  <node pkg="spark_carry_object" type="cali_pos.py" name="cali_pos_node" output="screen"/>  	  
+   <!--在rviz显示-->
+  <!--<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_$(arg camera_type_tel).rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>-->
+  
+  <!--是否开始 -->
+  <node pkg="spark_carry_object" type="publish_start_to_cali.sh" name="pstc" />
+</launch>

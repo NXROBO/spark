@@ -1,0 +1,33 @@
+<!-- NXROBO SPARK -->
+<launch> 	
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+	<!-- 摄像机类型 -->
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+
+  	<!--导航 -->
+  	<include file="$(find spark_navigation)/launch/amcl_demo_lidar.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="start_camera"	value="true"/>
+		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
+	</include>
+    
+  	<!--UARM机械臂 -->
+  	<include file="$(find swiftpro)/launch/pro_control_nomoveit.launch"/>
+	
+  	<!--搬运物体 -->
+  	<node pkg="spark_carry_object" type="s_carry_object_cv3.py" name="spark_carry_object_node" output="screen">
+		<remap from="/camera/rgb/image_raw" to="/camera/color/image_raw" if="$(eval arg('camera_type_tel')=='d435')"/>
+  		<param name ="a_Pose" value = "0,0,0,0,0,0,1"/>
+  		<param name ="b_Pose" value = "0.5,0.5,0,0,0,0,1"/>
+		<param name ="turnbody_min_z" value = "-0.2"/>
+		<param name ="turnbody_max_z" value = "0.2"/>
+  	</node>
+
+  	<!--在rviz显示 -->
+  	<arg name="rvizconfig" default="$(find spark_carry_object)/rviz/carry_object_amcl_$(arg camera_type_tel).rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+  	<!--是否开始抓取 -->
+  	<node pkg="spark_carry_object" type="cmd_spark_carry_start.sh" name="cscs" />
+
+</launch>

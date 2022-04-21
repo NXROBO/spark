@@ -1,0 +1,24 @@
+<!-- object detect -->
+
+<launch>
+  	<!-- camera -->
+  	<arg name="camera_type_tel" default="" doc="camera type [astrapro, astra]"/>
+
+	<node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen"> 
+    		<remap from="image" to="/camera/color/image_raw" if="$(eval arg('camera_type_tel')=='d435')"/>
+		<remap from="image" to="/camera/rgb/image_raw" unless="$(eval arg('camera_type_tel')=='d435')"/>
+	</node>
+
+	<!-- rviz -->
+  	<arg name ="rviz" default="true" />
+  	<arg name ="rviz_file" default="$(find tensorflow_object_detector)/config/display.rviz"/>
+	<node pkg ="rviz" type="rviz" name="rviz" output="screen" args= "-d $(arg rviz_file)" if="$(arg rviz)"/>
+
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="start_base" 		value="true"/>
+	</include>
+	<!--创建新的终端，spark键盘控制 “wsad”分别代表“前后左右”-->
+	<node pkg="spark_teleop" type="keyboard_control.sh" name="kc" />
+</launch>

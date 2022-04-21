@@ -1,0 +1,44 @@
+<!--spark navigation lidar-->
+<launch>
+	<arg name="start_camera" default="false"/>
+	<arg name="lidar_type_tel" default="3iroboticslidar2" doc="lidar type [3iroboticslidar2, ydlidar_g2]"/>
+	<arg name="camera_type_tel" default="astrapro" doc="camera type [astrapro, astra, d435...]"/>
+	<!-- spark底盘驱动，机器人描述,底盘,相机 -->
+	<include file="$(find spark_bringup)/launch/driver_bringup.launch">
+		<arg name="camera_types"	value="$(arg camera_type_tel)"/>
+		<arg name="lidar_type_tel"	value="$(arg lidar_type_tel)"/>
+		<arg name="start_camera" default="false"/>
+	</include>
+
+	<!-- 3D sensor -->
+  	<arg name="3d_sensor" default="3i_lidar"/>  
+  	<!-- 启动雷达 -->
+	<include file="$(find lidar_driver_transfer)/launch/$(arg lidar_type_tel).launch">
+	</include>
+
+
+	<!-- Map server -->
+  	<arg name="map_file" default="$(find spark_slam)/scripts/test_map.yaml"/>
+  	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  	<!-- AMCL -->
+  	<arg name="custom_amcl_launch_file" default="$(find spark_navigation)/launch/includes/amcl/$(arg 3d_sensor)_amcl.launch.xml"/>
+  	<arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  	<arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  	<arg name="initial_pose_a" default="0.0"/>
+  	<include file="$(arg custom_amcl_launch_file)">
+    		<arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    		<arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    		<arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  	</include>
+
+  	<!-- Move base -->
+  	<arg name="custom_param_file" default="$(find spark_navigation)/param/$(arg 3d_sensor)_costmap_params.yaml"/>
+  	<include file="$(find spark_navigation)/launch/includes/move_base.launch.xml">
+    		<arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  	</include>
+  	<!--在rviz显示-->
+  	<arg name="rvizconfig" default="$(find spark_navigation)/rviz/amcl_camera_$(arg camera_type_tel).rviz" />
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+</launch>
+

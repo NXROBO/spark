@@ -2,7 +2,9 @@
 <launch>
   <arg name="serialport"/> 
   <arg name="use_vel_rt" default="false" />
+  <arg name="publish_odom_tf" default="true" />
   <node pkg="spark_base" type="spark_base_node" name="spark_base_server" args="$(arg serialport)" output="screen">
 	<param name="vel_rt" type="bool" value="$(arg use_vel_rt)" />
+	<param name="publish_odom_tf" type="bool" value="$(arg publish_odom_tf)" />
   </node>
 </launch>
