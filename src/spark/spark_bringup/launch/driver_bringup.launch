@@ -22,11 +22,11 @@
   	<!--看运行的功能是否需要启动底盘，如果不需要就不启动 -->
   	<group if="$(arg start_base)">
 
-  		<include file="$(find spark_base)/launch/spark_base.launch">
+ 	<include file="$(find spark_base)/launch/spark_base.launch">
         <arg name="serialport"                  value="$(arg serialport)"/>
-        <arg name="use_vel_rt" 		value="$(arg use_vel_rt)" />
-        <arg name="publish_odom_tf" value="$(publish_odom_tf)" />
-  		</include>
+        <arg name="use_vel_rt"                  value="$(arg use_vel_rt)" />
+        <arg name="publish_odom_tf"             value="$(arg publish_odom_tf)" />
+ 	</include>
 
   	</group>
 

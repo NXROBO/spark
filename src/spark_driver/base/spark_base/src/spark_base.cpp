@@ -621,7 +621,7 @@ ComDealDataNode::ComDealDataNode(ros::NodeHandle _n, const char *new_serial_port
     }
 
 	//Edit by PengJiaxi
-	bool publish_odom_tf = false;
+	bool publish_odom_tf = true;
 	_n.getParam("publish_odom_tf", publish_odom_tf);
 	if(publish_odom_tf == true)
 		pn.param<std::string>("base_frame_id", base_frame_id, "base_footprint");

@@ -21,13 +21,48 @@ find_package(catkin REQUIRED COMPONENTS
   tf  
 )
 
+
+if(NOT WIN32)
+  string(ASCII 27 Esc)
+  set(ColourReset "${Esc}[m")
+  set(ColourBold  "${Esc}[1m")
+  set(Red         "${Esc}[31m")
+  set(Green       "${Esc}[32m")
+  set(Yellow      "${Esc}[33m")
+  set(Blue        "${Esc}[34m")
+  set(Magenta     "${Esc}[35m")
+  set(Cyan        "${Esc}[36m")
+  set(White       "${Esc}[37m")
+  set(BoldRed     "${Esc}[1;31m")
+  set(BoldGreen   "${Esc}[1;32m")
+  set(BoldYellow  "${Esc}[1;33m")
+  set(BoldBlue    "${Esc}[1;34m")
+  set(BoldMagenta "${Esc}[1;35m")
+  set(BoldCyan    "${Esc}[1;36m")
+  set(BoldWhite   "${Esc}[1;37m")
+endif()
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(cmake_modules REQUIRED)
 find_package(Eigen3 REQUIRED)
 
+find_package(MRPT CONFIG QUIET) 
+if(NOT MRPT_FOUND) 
+    message("${BoldRed}注意：检测到mrpt包未安装，请先安装相应的依赖包${ColourReset}")
+    message("${BoldRed}安装方法：${ColourReset}")
+    message("${BoldGreen}$ sudo apt install ros-kinetic-mrpt-slam ros-kinetic-mrpt-icp-slam-2d${ColourReset}")
+    message("${BoldRed}执行完毕后再重新执行catkin_make${ColourReset}")
+
+    message(FATAL_ERROR "${Red}${ColourReset}")
+
+else()
+    find_package(MRPT REQUIRED)
+    message("MRPT已找到！")
+endif()
+
 find_package(MRPT REQUIRED)
 MESSAGE(STATUS "Found MRPT: " ${MRPT_VERSION})
+
 IF(MRPT_VERSION VERSION_LESS 1.9.9)
         # MRPT<2.0
         find_package(MRPT REQUIRED base obs maps slam)
