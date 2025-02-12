@@ -3,13 +3,6 @@
   <img src="https://raw.githubusercontent.com/NXROBO/spark/master/doc/spark.jpg" width="300">
 
 
-
-- 相关产品了解更多，请使用微信扫描以下二维码：
-- 
-  <img src="https://raw.githubusercontent.com/NXROBO/spark/master/doc/ewm.png" width="300">
-
-  
-
 ## 列表 Table of Contents
 
 * [功能包说明packages-overview](#功能包说明packages-overview)
